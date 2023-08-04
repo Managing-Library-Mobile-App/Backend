@@ -2,7 +2,7 @@ class User:
     def __init__(self, email, password):
         self.email = email
         self.password = self.set_password(password)
-        self.role = 'user'
+        self.role = "user"
 
     def set_password(self, password):
         # Hash password here
@@ -15,7 +15,7 @@ def test_new_user():
     WHEN
     THEN
     """
-    user = User('patkennedy79@gmail.com', 'FlaskIsAwesome')
-    assert user.email == 'patkennedy79@gmail.com'
-    assert user.password == 'FlaskIsAwesome'
-    assert user.role == 'user'
+    user = User("patkennedy79@gmail.com", "FlaskIsAwesome")
+    assert user.email == "patkennedy79@gmail.com"
+    assert user.password == "FlaskIsAwesome"
+    assert user.role == "user"

@@ -1,5 +1,6 @@
 import json
 import os
+import logging
 
 from flask import Flask, jsonify
 import flask_sqlalchemy
