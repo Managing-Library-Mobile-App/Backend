@@ -3,3 +3,6 @@ flask-sqlalchemy==3.0.5
 flask-restful==0.3.10
 flask-swagger-ui==4.11.1
 pytest==7.4.0
+flake8==6.1.0
+black==23.7.0
+flask-debugtoolbar==0.13.1
