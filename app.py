@@ -10,6 +10,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SECRET_KEY"] = 'SECRET_KEY'
 toolbar = DebugToolbarExtension(app)
 
+from routes import favicon
 from routes import available_routes
 from routes import debug_toolbar
 from swagger import swagger
