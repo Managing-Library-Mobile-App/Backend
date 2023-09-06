@@ -6,3 +6,5 @@ pytest==7.4.0
 flake8==6.1.0
 black==23.7.0
 flask-debugtoolbar==0.13.1
+flask_prometheus_metrics==1.0.0
+mypy==1.5.1
