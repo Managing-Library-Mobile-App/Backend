@@ -1,0 +1,59 @@
+# LOCAL REQUIREMENTS
+Python 3.10
+Pip
+
+# CONTAINER REQUIREMENTS
+Docker
+(Docker Desktop on Windows)
+
+# DOWNLOAD
+To download the application, use
+clone https://github.com/Managing-Library-Mobile-App/Backend.git
+
+# LOCAL SETUP
+Go to the project's root directory
+To run the app locally, use:
+pip install virtualenv
+virtualenv venv
+pip install -r requirements.txt
+python app.py
+
+# DOCKER SETUP
+To run the app using docker, use:
+docker build -t app .
+docker run app
+
+# APP USAGE
+Then you can access the api using an address: http://192.168:100.7:5000
+or locally using http://127.0.0.1:5000
+or using curl command in the terminal:
+curl http://192.168:100.7:5000
+
+# TESTS
+To run tests, go to the root of the project and use:
+python -m pytest
+
+# FORMATTING COMMANDS
+
+# CHECK FORMAT
+flake8 --config=helpers/.flake8
+
+# FORMAT ALL .py FILES
+black .
+
+# CHECK STATIC TYPING
+mypy --config-file=helpers/mypy.ini .
+
+# FORMAT FILE
+black <file_name>
+
+# UPDATE DOCUMENTATION
+cd docs
+.\make html
+
+# OPEN DOCUMENTATION
+firefox docs/_build/html/index.html
+
+# TEST COVERAGE
+pytest --cov-config .coveragerc --cov-report term:skip-covered --cov=.
+pytest --cov-config .coveragerc --cov-report html --cov=.
