@@ -1,0 +1,12 @@
+[flake8]
+exclude = venv
+filename = *.py
+extend-ignore =
+    F401,
+    F403,
+    F405,
+    F406,
+    E402
+# Error codes to ignore can be found in flake8 documentation or are shown when running flake8
+
+max-line-length=120
