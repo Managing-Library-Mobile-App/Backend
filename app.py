@@ -9,7 +9,6 @@ from flask_restful import Api
 from prometheus_client import make_wsgi_app
 from werkzeug import run_simple
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
-from flask_debugtoolbar import DebugToolbarExtension
 from flask_prometheus_metrics import register_metrics
 
 from helpers.api_add_resources import api_add_resources_v1
@@ -31,8 +30,6 @@ limiter = Limiter(
     storage_uri="memory://",
 )
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
-
-toolbar = DebugToolbarExtension(app)
 
 # Prometheus metrics setup
 register_metrics(app, app_version="v0.1.2", app_config="staging")
