@@ -1,9 +1,7 @@
-from imports import *
-from __main__ import app
-from __main__ import api
+from flask import jsonify, current_app
+from flask_restful import Resource
 
 
-# Wyświetlenie wszystkich endpointów
 def routes_list():
     api_hidden_routes = [
         "/static/<path:filename>",
@@ -12,7 +10,7 @@ def routes_list():
         "/swagger/dist/<path:filename>",
     ]
     api_routes = []
-    for endpoint in app.url_map.iter_rules():
+    for endpoint in current_app.url_map.iter_rules():
         methods = ",".join(endpoint.methods)
         if endpoint.rule not in api_hidden_routes:
             api_routes.append({"endpoint": str(endpoint), "methods": methods})
@@ -20,9 +18,6 @@ def routes_list():
     return sorted_api_routes
 
 
-class available_routes(Resource):
+class AvailableRoutes(Resource):
     def get(self):
         return jsonify(routes_list())
-
-
-api.add_resource(available_routes, "/", "/available_routes")
