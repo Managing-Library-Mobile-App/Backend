@@ -5,21 +5,15 @@ within its expected parameters and can handle errors when the results are outsid
 Consists of: 
     black box testing
     white box testing
-    sanity testing
-    smoke testing
+    smoke testing - verification before changing the code
+    sanity testing - verification if the code still works after changes
     user acceptance testing
     integration testing
     unit testing
 
-- Fuzz - forcibly inputs huge amounts of random data -- also called noise or fuzz -- 
-into the system, attempting to create negative behavior, such as a forced crash or overflow.
-
-- Integration - type of software testing in which the different units, 
-modules or components of an application are tested as a combined entity. 
-Because APIs are used in integrations between two or more pieces of software, 
-an integration test analyzes how the API integrates the software.
-
-- Load - used to see how many calls an API can handle. This test is often performed 
+- Fuzz and load - forcibly inputs huge amounts of random data -- also called noise or fuzz -- 
+into the system, attempting to create negative behavior, such as a forced crash or overflow. 
+Seeing how many calls an API can handle. This test is often performed 
 after a specific unit or codebase is completed to determine whether the theoretical solution 
 can also work as a practical solution when acting under a given load.
 
