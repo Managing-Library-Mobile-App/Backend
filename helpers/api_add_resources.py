@@ -7,6 +7,7 @@ from routes.additional.favicon import Favicon
 from routes.v1.account.change_password import ChangePassword
 from routes.v1.account.delete_account import DeleteAccount
 from routes.v1.account.login import Login
+from routes.v1.account.logout import Logout
 from routes.v1.account.register import Register
 
 
@@ -52,4 +53,9 @@ def api_add_resources_v1(api: flask_restful.Api) -> None:
         DeleteAccount,
         f"{api_version}delete_account",
         endpoint="delete_account",
+    )
+    api.add_resource(
+        Logout,
+        f"{api_version}logout",
+        endpoint="logout",
     )

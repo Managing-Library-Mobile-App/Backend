@@ -21,7 +21,7 @@ class ChangePassword(Resource):
         # TODO odkomentować
         # if False:
         #     return {
-        #         "deleted": True,
+        #         "password_changed": False,
         #         "message": "user_not_logged_in",
         #         "details": "User not logged in (No session)",
         #     }
