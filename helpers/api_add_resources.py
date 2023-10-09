@@ -1,7 +1,8 @@
 import flask_restful
 
 from routes.available_versions import AvailableVersions
-from routes.v1.additional.available_routes import AvailableRoutes
+from routes.available_routes import AvailableRoutes
+from routes.swagger import Swagger
 from routes.v1.additional.favicon import Favicon
 from routes.v1.account.login import Login
 from routes.v1.account.register import Register
@@ -17,7 +18,7 @@ def api_add_resources_v1(api: flask_restful.Api) -> None:
     )
     api.add_resource(
         AvailableRoutes,
-        f"{api_version}available_routes",
+        f"{api_without_version}available_routes",
         endpoint="available_routes",
     )
     api.add_resource(
@@ -34,4 +35,9 @@ def api_add_resources_v1(api: flask_restful.Api) -> None:
         AvailableVersions,
         f"{api_without_version}available_versions",
         endpoint="available_versions",
+    )
+    api.add_resource(
+        Swagger,
+        f"{api_without_version}swagger",
+        endpoint="swagger",
     )
