@@ -11,6 +11,7 @@ from routes.v1.account.register import (
     contains_uppercase_char,
     contains_illegal_char,
     contains_special_char,
+    User,
 )
 
 
@@ -18,18 +19,20 @@ class InvalidLoginAttemptsCache(object):
     cache_table: str
 
     @staticmethod
-    def _key(email) -> str:
+    def _key(email: str) -> str:
         return f"invalid_login_attempt_{email}"
 
     @staticmethod
-    def _value(lockout_timestamp, timestamps: list[int]) -> dict[str, list[int]]:
+    def _value(
+        lockout_timestamp: float, timestamps: list[float]
+    ) -> dict[str, list[float] | float]:
         return {
             "lockout_start": lockout_timestamp,
             "invalid_attempt_timestamps": timestamps,
         }
 
     @staticmethod
-    def get(email) -> Any:
+    def get(email: str) -> Any:
         try:
             key: str = InvalidLoginAttemptsCache._key(email)
             return cache.get(key)
@@ -37,7 +40,7 @@ class InvalidLoginAttemptsCache(object):
             logger.exception(e)
 
     @staticmethod
-    def delete(email) -> None:
+    def delete(email: str) -> None:
         try:
             cache.get()
             cache.delete(InvalidLoginAttemptsCache._key(email))
@@ -76,37 +79,29 @@ class InvalidLoginAttemptsCache(object):
         return None
 
 
-class User:
-    active: bool = False
-
-    def __init__(self, username, password):
-        self.username = username
-        self.password = password
-
-
-def authenticate_login_credentials(username, password) -> User | dict[str, str]:
+def authenticate_login_credentials(username, password) -> dict[str, str | None | User]:
     if contains_illegal_char(username):
         return {
             "user": None,
-            "message": "username_illegal_chars",
+            "message": "contains_illegal_char_username",
             "details": "Illegal characters in username such as space",
         }
     if not contains_special_char(password):
         return {
             "user": None,
-            "message": "password_no_special_chars",
+            "message": "not_contains_special_char_password",
             "details": "No special characters in password. Required at least one",
         }
     if contains_illegal_char(password):
         return {
             "user": None,
-            "message": "password_illegal_chars",
+            "message": "contains_illegal_char_password",
             "details": "Illegal characters in password such as space",
         }
     if not contains_uppercase_char(password):
         return {
             "user": None,
-            "message": "password_no_uppercase_char",
+            "message": "not_contains_uppercase_char_password",
             "details": "Password has no uppercase letters. Required at least one.",
         }
     if len(username) < 10:
@@ -137,6 +132,7 @@ def authenticate_login_credentials(username, password) -> User | dict[str, str]:
     user = User(username=username, password=password)
     if username == "Admin-1234" and password == "Admin-1234":
         # true: zalogowany, false: niezalogowany
+        # TODO testy do user_already_logged_in
         if user.active:
             return {
                 "user": None,
@@ -145,8 +141,8 @@ def authenticate_login_credentials(username, password) -> User | dict[str, str]:
             }
         return {
             "user": user,
-            "message": "password_too_long",
-            "details": "Max 50 characters",
+            "message": "login_successful",
+            "details": "Login successful",
         }
     return {
         "user": None,
@@ -156,7 +152,7 @@ def authenticate_login_credentials(username, password) -> User | dict[str, str]:
 
 
 class Login(Resource):
-    def __init__(self):
+    def __init__(self) -> None:
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
             "username",
@@ -168,26 +164,34 @@ class Login(Resource):
         super(Login, self).__init__()
 
     @swag_from("login_swagger.yml")
-    def get(self):
+    def get(self) -> dict[str, bool | str]:
         args = self.reqparse.parse_args()
         username = args.get("username")
         password = args.get("password")
         login_output = authenticate_login(username, password)
 
-        if login_output["user"] is not None:
+        if isinstance(login_output["user"], User):
             logger.info(f"Zarejestrowano użytkownika {login_output['user'].username}")
-            return {"registered": True}
+            return {
+                "registered": True,
+                "message": login_output["message"],
+                "details": login_output["details"],
+            }
         logger.info(
             f"Nieudana próba logowania użytkownika. {login_output['message']}, {login_output['details']}"
         )
-        return {
-            "registered": False,
-            "message": login_output["message"],
-            "details": login_output["details"],
-        }
+        if isinstance(login_output["message"], str) and isinstance(
+            login_output["details"], str
+        ):
+            return {
+                "registered": False,
+                "message": login_output["message"],
+                "details": login_output["details"],
+            }
+        raise Exception("Unexpected login behavior! Raised exception!")
 
 
-def authenticate_login(username, password):
+def authenticate_login(username, password) -> dict[str, None | str | User]:
     current_datetime = datetime.datetime.now(datetime.timezone.utc)
     cache_results = InvalidLoginAttemptsCache.get(username)
     if cache_results and cache_results.get("lockout_start"):
@@ -210,7 +214,5 @@ def authenticate_login(username, password):
         except Exception as e:
             logger.exception(e)
     login_data = authenticate_login_credentials(username=username, password=password)
-    if login_data["user"] is not None:
-        return {"user": login_data["user"]}
     InvalidLoginAttemptsCache.invalid_attempt(cache_results, current_datetime, username)
     return login_data

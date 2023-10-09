@@ -10,7 +10,7 @@ from flask_restful import Resource
 class User:
     active: bool = False
 
-    def __init__(self, username, password, email):
+    def __init__(self, username, password, email=None) -> None:
         self.username = username
         self.password = password
         self.email = email
@@ -30,36 +30,36 @@ def contains_illegal_char(characters: str) -> bool:
 
 
 def contains_uppercase_char(characters: str) -> bool:
-    if characters.lower() == characters.upper():
+    if characters.lower() == characters:
         return False
     return True
 
 
 def authenticate_register_credentials(
     username: str, password: str, email: str
-) -> User | dict[str, str]:
+) -> dict[str, str | None | User]:
     if contains_illegal_char(username):
         return {
             "user": None,
-            "message": "username_illegal_chars",
+            "message": "contains_illegal_char_username",
             "details": "Illegal characters in username such as space",
         }
     if not contains_special_char(password):
         return {
             "user": None,
-            "message": "password_no_special_chars",
+            "message": "not_contains_special_char_password",
             "details": "No special characters in password. Required at least one",
         }
     if contains_illegal_char(password):
         return {
             "user": None,
-            "message": "password_illegal_chars",
+            "message": "contains_illegal_char_password",
             "details": "Illegal characters in password such as space",
         }
     if not contains_uppercase_char(password):
         return {
             "user": None,
-            "message": "password_no_uppercase_char",
+            "message": "not_contains_uppercase_char_password",
             "details": "Password has no uppercase letters. Required at least one.",
         }
     if len(username) < 10:
@@ -94,7 +94,7 @@ def authenticate_register_credentials(
             "details": "User already exists",
         }
     # TODO faktyczna weryfikacja użytkowników, którzy są w bazie
-    if username == "admin":
+    if username == "Admin-1234":
         return {
             "user": None,
             "message": "user_already_exists",
@@ -103,13 +103,13 @@ def authenticate_register_credentials(
     user = User(username=username, password=password, email=email)
     return {
         "user": user,
-        "message": "user_already_exists",
-        "details": "User already exists",
+        "message": "register_successful",
+        "details": "Register successful",
     }
 
 
 class Register(Resource):
-    def __init__(self):
+    def __init__(self) -> None:
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
             "username",
@@ -122,31 +122,33 @@ class Register(Resource):
         super(Register, self).__init__()
 
     @swag_from("login_swagger.yml")
-    def get(self):
+    def get(self) -> dict[str, None | str | bool]:
         args = self.reqparse.parse_args()
         username = args.get("username")
         password = args.get("password")
         email = args.get("email")
         registration_output = authenticate_register(username, password, email)
-        if registration_output["user"] is not None:
+        if isinstance(registration_output["user"], User):
             logger.info(
                 f"Zarejestrowano użytkownika {registration_output['user'].username}"
             )
-            return {"registered": True}
+            return {
+                "registered": True,
+                "message": str(registration_output["message"]),
+                "details": str(registration_output["details"]),
+            }
         logger.info(
             f"Nieudana próba rejestracji użytkownika. {registration_output['message']}"
         )
         return {
             "registered": False,
-            "message": registration_output["message"],
-            "details": registration_output["details"],
+            "message": str(registration_output["message"]),
+            "details": str(registration_output["details"]),
         }
 
 
-def authenticate_register(username, password, email):
+def authenticate_register(username, password, email) -> dict[str, None | str | User]:
     register_data = authenticate_register_credentials(
         username=username, password=password, email=email
     )
-    if register_data["user"] is not None:
-        return {"user": register_data["user"]}
     return register_data
