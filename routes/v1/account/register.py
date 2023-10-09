@@ -122,7 +122,7 @@ class Register(Resource):
         super(Register, self).__init__()
 
     @swag_from("login_swagger.yml")
-    def get(self) -> dict[str, None | str | bool]:
+    def post(self) -> dict[str, None | str | bool]:
         args = self.reqparse.parse_args()
         username = args.get("username")
         password = args.get("password")
