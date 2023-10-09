@@ -25,7 +25,7 @@ class DeleteAccount(Resource):
         #         "details": "User not logged in (No session)",
         #     }
         # TODO weryfikacja w bazie czy taki użytkownik wgl istnieje
-        if username == "Admin1234":
+        if username == "Admin-1234":
             # TODO wyrzucenie sesji po usunięciu użytkownika
             return {
                 "deleted": True,

@@ -25,7 +25,7 @@ class ChangePassword(Resource):
         #         "message": "user_not_logged_in",
         #         "details": "User not logged in (No session)",
         #     }
-        if username == "Admin1234":
+        if username == "Admin-1234":
             return {
                 "password_changed": True,
                 "message": "password_changed",
