@@ -13,7 +13,7 @@ from flask_prometheus_metrics import register_metrics
 
 from helpers.api_add_resources import api_add_resources_v1
 from helpers.init import cache
-from routes.swagger import swaggerui_blueprint, SWAGGER_URL
+from routes.additional.swagger import swaggerui_blueprint, SWAGGER_URL
 
 app = Flask(__name__)
 api = Api(app)

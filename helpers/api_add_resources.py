@@ -1,9 +1,9 @@
 import flask_restful
 
-from routes.available_versions import AvailableVersions
-from routes.available_routes import AvailableRoutes
-from routes.swagger import Swagger
-from routes.v1.additional.favicon import Favicon
+from routes.additional.available_versions import AvailableVersions
+from routes.additional.available_routes import AvailableRoutes
+from routes.additional.swagger import Swagger
+from routes.additional.favicon import Favicon
 from routes.v1.account.login import Login
 from routes.v1.account.register import Register
 
