@@ -1,3 +1,4 @@
 ../static/cert.pem
 ../static/key.pem
 ../.coverage
+.env
