@@ -2,7 +2,6 @@ import flask_restful
 
 from routes.additional.available_versions import AvailableVersions
 from routes.additional.available_routes import AvailableRoutes
-from routes.additional.swagger import Swagger
 from routes.additional.favicon import Favicon
 from routes.v1.account.change_password import ChangePassword
 from routes.v1.account.delete_account import DeleteAccount
@@ -38,11 +37,6 @@ def api_add_resources_v1(api: flask_restful.Api) -> None:
         AvailableVersions,
         f"{api_without_version}available_versions",
         endpoint="available_versions",
-    )
-    api.add_resource(
-        Swagger,
-        f"{api_without_version}swagger",
-        endpoint="swagger",
     )
     api.add_resource(
         ChangePassword,
