@@ -108,25 +108,25 @@ def authenticate_login_credentials(username, password) -> dict[str, str | None |
         return {
             "user": None,
             "message": "username_too_short",
-            "details": "Minimum of 10 characters",
+            "details": "Password should have a minimum of 10 characters",
         }
     if len(username) > 50:
         return {
             "user": None,
             "message": "username_too_long",
-            "details": "Max 50 characters",
+            "details": "Password should have 50 characters max",
         }
     if len(password) < 10:
         return {
             "user": None,
             "message": "password_too_short",
-            "details": "Minimum of 10 characters",
+            "details": "Password should have a minimum of 10 characters",
         }
     if len(password) > 50:
         return {
             "user": None,
             "message": "password_too_long",
-            "details": "Max 50 characters",
+            "details": "Password should have 50 characters max",
         }
     # TODO faktyczna weryfikacja użytkowników, którzy są w bazie
     user = User(username=username, password=password)

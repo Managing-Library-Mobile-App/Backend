@@ -66,25 +66,31 @@ def authenticate_register_credentials(
         return {
             "user": None,
             "message": "username_too_short",
-            "details": "Minimum of 10 characters",
+            "details": "Username should have a minimum of 10 characters",
         }
     if len(username) > 50:
         return {
             "user": None,
             "message": "username_too_long",
-            "details": "Max 50 characters",
+            "details": "Username should have 50 characters max",
         }
     if len(password) < 10:
         return {
             "user": None,
             "message": "password_too_short",
-            "details": "Minimum of 10 characters",
+            "details": "Password should have a minimum of 10 characters",
         }
     if len(password) > 50:
         return {
             "user": None,
             "message": "password_too_long",
-            "details": "Max 50 characters",
+            "details": "Passwrod should have 50 characters max",
+        }
+    if len(email) > 50:
+        return {
+            "user": None,
+            "message": "email_too_long",
+            "details": "Email should have 50 characters max",
         }
     regex = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
     if not re.fullmatch(regex, email):
