@@ -5,6 +5,7 @@ from flask import Flask
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_restful import Api
+from helpers.init import db
 
 from prometheus_client import make_wsgi_app
 from werkzeug import run_simple
@@ -13,23 +14,33 @@ from flask_prometheus_metrics import register_metrics
 
 from helpers.api_add_resources import api_add_resources_v1
 from helpers.init import cache
-from routes.additional.swagger import swaggerui_blueprint, SWAGGER_URL
+from flask_restful_swagger import swagger
 
 app = Flask(__name__)
-api = Api(app)
+api = swagger.docs(Api(app), apiVersion="1", api_spec_url="/api/v1/spec")
 app.debug = True
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+
+host = os.environ.get("host")
+database = os.environ.get("database")
+user = os.environ.get("user")
+password = os.environ.get("password")
+
+app.config[
+    "SQLALCHEMY_DATABASE_URI"
+] = f"postgresql://{user}:{password}@{host}/{database}"
 app.config["SECRET_KEY"] = "SECRET_KEY"
 app.config["JSONIFY_PRETTYPRINT_REGULAR"] = True
 app.config["CACHE_TYPE"] = "SimpleCache"
 cache.init_app(app)
+
+db.init_app(app)
+
 limiter = Limiter(
     get_remote_address,
     app=app,
     default_limits=["10000 per day", "5000 per hour"],
     storage_uri="memory://",
 )
-app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 # Prometheus metrics setup
 register_metrics(app, app_version="v0.1.2", app_config="staging")
