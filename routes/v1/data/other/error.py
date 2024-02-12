@@ -1,163 +1,188 @@
+from __future__ import annotations
+
 from datetime import datetime
 
+from flask import jsonify, Response
 from flask_restful import Resource, reqparse
 
-from helpers.init import cursor, conn
+import models
+from helpers.init import db
 
 from loguru import logger
 
+from models import error
+
 
 class Error:
-    @staticmethod
-    def get_all() -> list:
-        try:
-            cursor.execute(""" SELECT * FROM error""")
-            all_errors = cursor.fetchall()
-            print(all_errors)
-            return all_errors
-        except Exception as e:
-            logger.error("Adding error entry to database failed. %s", e)
-            return []
+    date_format: str = "%Y-%m-%dT%H:%M:%S.%fZ"
 
     @staticmethod
-    def get_last_n(rows_count: int = 100) -> list:
+    def add_entry(level: str, description: str) -> dict[str, str | list]:
         try:
-            cursor.execute(""" SELECT * FROM error LIMIT %s""", (rows_count,))
-            last_n_errors = cursor.fetchall()
-            print(last_n_errors)
-            return last_n_errors
-        except Exception as e:
-            logger.error("Adding error entry to database failed. %s", e)
-            return []
-
-    @staticmethod
-    def get_by_date(date: datetime) -> list:
-        try:
-            day_start = datetime(
-                year=date.year,
-                month=date.month,
-                day=date.day,
-                hour=0,
-                minute=0,
-                second=0,
-            )
-            day_end = datetime(
-                year=date.year,
-                month=date.month,
-                day=date.day,
-                hour=23,
-                minute=59,
-                second=59,
-            )
-            cursor.execute(
-                """ SELECT * FROM error WHERE occurence_date BETWEEN %s AND %s""",
-                (
-                    day_start,
-                    day_end,
+            assert level in [
+                "ERROR",
+                "INFO",
+                "WARNING",
+            ], "Valid levels are 'ERROR', 'INFO', 'WARNING'"
+            new_error_entry = models.error.Error(
+                level=level,
+                description=description,
+                occurence_date=datetime.strptime(
+                    datetime.now().strftime(Error.date_format),
+                    Error.date_format,
                 ),
             )
-            all_errors_from_one_day = cursor.fetchall()
-            print(all_errors_from_one_day)
-            return all_errors_from_one_day
+            db.session.add(new_error_entry)
+            db.session.commit()
+            return {"error": new_error_entry.as_dict()}
         except Exception as e:
-            logger.error("Adding error entry to database failed. %s", e)
-            return []
+            exception = "Adding error entry to database failed. {}".format(e)
+            logger.error(exception)
+            return {"exception": exception}
 
     @staticmethod
-    def add_entry(message: str, details: str) -> bool:
+    def delete(start_date_str: str, end_date_str: str) -> dict[str, str | list]:
         try:
-            cursor.execute(
-                """INSERT INTO error (occurence_date, type, description) 
-                VALUES (%s, %s, %s)""",
-                (
-                    datetime.now(),
-                    message,
-                    details,
-                ),
-            )
-            conn.commit()
-            print("added entry")
-            return True
+            start_date = datetime.strptime(start_date_str, Error.date_format)
+            end_date = datetime.strptime(end_date_str, Error.date_format)
+            errors = models.error.Error.query.filter(
+                models.error.Error.occurence_date.between(start_date, end_date)
+            ).all()
+            db.session.delete(errors)
+            db.session.commit()
+            return {"errors": [error_object.as_dict() for error_object in errors]}
         except Exception as e:
-            logger.error("Adding error entry to database failed. %s", e)
-            return False
+            exception = "Deleting errors from database failed. {}".format(e)
+            logger.error(exception)
+            return {"exception": exception}
+
+    @staticmethod
+    def get(
+        start_date_str: str | None,
+        end_date_str: str | None,
+        level: str | None,
+    ) -> dict[str, str | list]:
+        try:
+            if start_date_str is not None and end_date_str is not None:
+                if level is not None:
+                    start_date = datetime.strptime(start_date_str, Error.date_format)
+                    end_date = datetime.strptime(end_date_str, Error.date_format)
+                    errors = (
+                        models.error.Error.query.filter(
+                            models.error.Error.occurence_date.between(
+                                start_date, end_date
+                            )
+                        )
+                        .all()
+                        .filter_by(level=level)
+                        .all()
+                    )
+                else:
+                    start_date = datetime.strptime(start_date_str, Error.date_format)
+                    end_date = datetime.strptime(end_date_str, Error.date_format)
+                    errors = models.error.Error.query.filter(
+                        models.error.Error.occurence_date.between(start_date, end_date)
+                    ).all()
+            elif start_date_str is None and end_date_str is None:
+                if level is not None:
+                    errors = models.error.Error.query.filter(
+                        models.error.Error.level == level
+                    ).all()
+                else:
+                    errors = models.error.Error.query.all()
+            else:
+                return {"exception": "Both start date and end date are required"}
+
+            return {"errors": [error_object.as_dict() for error_object in errors]}
+        except Exception as e:
+            exception = "Getting errors from database failed. {}".format(e)
+            logger.error(exception)
+            return {"exception": exception}
 
 
-class ErrorGetAll(Resource):
-    def __init__(self) -> None:
-        self.reqparse = reqparse.RequestParser()
-        super(ErrorGetAll, self).__init__()
-
-    def get(self) -> dict[str, list]:
-        errors_all = Error.get_all()
-        return {"errors": errors_all}
-
-
-class ErrorGetLastN(Resource):
+class ErrorGet(Resource):
     def __init__(self) -> None:
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
-            "rows_count",
-            type=int,
+            "level",
+            type=str,
             required=False,
             location="json",
         )
-        super(ErrorGetLastN, self).__init__()
+        self.reqparse.add_argument(
+            "start_date",
+            type=str,
+            required=False,
+            location="json",
+        )
+        self.reqparse.add_argument(
+            "end_date",
+            type=str,
+            required=False,
+            location="json",
+        )
+        super(ErrorGet, self).__init__()
 
-    def get(self) -> dict[str, list]:
+    def get(self) -> Response:
         args = self.reqparse.parse_args()
-        rows_count = args.get("rows_count")
-        if rows_count is not None:
-            errors_all = Error.get_last_n(rows_count)
-        else:
-            print("no rows_count specified")
-            errors_all = Error.get_last_n()
-        return {"errors": errors_all}
+        level = args.get("level")
+        start_date_str = args.get("start_date")
+        end_date_str = args.get("end_date")
+        return jsonify(
+            Error.get(
+                start_date_str=start_date_str, end_date_str=end_date_str, level=level
+            )
+        )
 
 
-class ErrorGetByDate(Resource):
+class ErrorAdd(Resource):
     def __init__(self) -> None:
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
-            "date",
+            "level",
+            type=str,
+            required=True,
+            location="json",
+        )
+        self.reqparse.add_argument(
+            "description",
+            type=str,
+            required=True,
+            location="json",
+        )
+        super(ErrorAdd, self).__init__()
+
+    def post(self) -> Response:
+        args = self.reqparse.parse_args()
+        level = args.get("level")
+        description = args.get("description")
+        return jsonify(Error.add_entry(level=level, description=description))
+
+
+class ErrorDelete(Resource):
+    def __init__(self) -> None:
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument(
+            "start_date",
             type=datetime,
             required=True,
             location="json",
         )
-        super(ErrorGetByDate, self).__init__()
-
-    def get(self) -> dict[str, list]:
-        args = self.reqparse.parse_args()
-        date = args.get("date")
-
-
-class ErrorAddEntry(Resource):
-    def __init__(self) -> None:
-        self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
-            "message",
-            type=str,
+            "end_date",
+            type=datetime,
             required=True,
             location="json",
         )
-        self.reqparse.add_argument(
-            "details",
-            type=str,
-            required=True,
-            location="json",
-        )
-        super(ErrorAddEntry, self).__init__()
+        super(ErrorDelete, self).__init__()
 
-    def post(self) -> dict[str, list]:
+    def delete(self) -> Response:
         args = self.reqparse.parse_args()
-        message = args.get("message")
-        details = args.get("details")
+        start_date_str = args.get("start_date")
+        end_date_str = args.get("end_date")
+        return jsonify(
+            Error.delete(start_date_str=start_date_str, end_date_str=end_date_str)
+        )
 
 
-errorek = Error()
-errorek.get_all()
-errorek.add_entry(message="index error", details="very bad")
-errorek.get_all()
-errorek.get_by_date(date=datetime.now())
-errorek.add_entry(message="index error 2", details="very very bad")
-errorek.get_last_n()
+# TODO skrypt zapełniający logi
