@@ -34,5 +34,21 @@ class Author(db.Model):
         backref=db.backref("books", lazy=True),
     )
 
-    def __repr__(self):
-        return "<Author %s>" % self._id
+    def __init__(self, name: str, surname: str, genres: str, biography: str):
+        self.name = name
+        self.surname = surname
+        self.genres = genres
+        self.biography = biography
+
+    def as_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "surname": self.surname,
+            "genres": self.genres,
+            "biography": self.biography,
+            "fans_count": self.fans_count,
+            "fans": self.fans,
+            "released_books_count": self.released_books_count,
+            "released_books": self.released_books,
+        }

@@ -15,5 +15,21 @@ class User(db.Model):
     )
     profile_picture = db.Column(db.LargeBinary, nullable=False)
 
-    def __repr__(self):
-        return "<User %s>" % self._id
+    def __init__(self, username: str, email: str, password: str):
+        self.username = username
+        self.email = email
+        self.password = password
+
+    def as_dict(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "password": self.password,
+            "score": self.score,
+            "opinions_count": self.opinions_count,
+            "reviews_count": self.reviews_count,
+            "followed_authors_count": self.followed_authors_count,
+            "library_id": self.library_id,
+            "profile_picture": self.profile_picture,
+        }

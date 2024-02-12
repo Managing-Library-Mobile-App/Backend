@@ -4,10 +4,20 @@ from helpers.init import db
 
 
 class Error(db.Model):
-    _id = db.Column("id", db.Integer, nullable=False, primary_key=True)
-    type = db.Column(db.String(500), nullable=False)
+    id = db.Column("id", db.Integer, nullable=False, primary_key=True)
+    level = db.Column(db.String(500), nullable=False)
     description = db.Column(db.String(500), nullable=False)
     occurence_date = db.Column(db.DateTime, default=datetime.now)
 
-    def __repr__(self):
-        return "<Error %s>" % self._id
+    def __init__(self, level: str, description: str, occurence_date: datetime):
+        self.level = level
+        self.description = description
+        self.occurence_date = occurence_date
+
+    def as_dict(self):
+        return {
+            "id": self.id,
+            "level": self.level,
+            "description": self.description,
+            "occurence_date": self.occurence_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+        }

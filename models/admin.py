@@ -7,5 +7,15 @@ class Admin(db.Model):
     email = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(50), nullable=False)
 
-    def __repr__(self):
-        return "<Admin %s>" % self._id
+    def __init__(self, username: str, email: str, password: str) -> None:
+        self.username = username
+        self.email = email
+        self.password = password
+
+    def as_dict(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "password": self.password,
+        }
