@@ -19,7 +19,7 @@ Go to the project's root directory
 To run the app locally, use:
 pip install virtualenv
 virtualenv venv
-pip install -r requirements.txt
+pip install -r docker_and_setup/requirements.txt
 python app.py
 
 # DOCKER SETUP
