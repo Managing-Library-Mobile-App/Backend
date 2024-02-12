@@ -49,6 +49,9 @@ dispatcher = DispatcherMiddleware(app.wsgi_app, {"/metrics": make_wsgi_app()})
 api_add_resources_v1(api)
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
     port = int(os.environ.get("PORT", 5000))
     run_simple(
         hostname="0.0.0.0",
