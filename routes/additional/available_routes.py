@@ -4,15 +4,22 @@ from flask_restful import Resource
 
 def routes_list():
     api_hidden_routes = [
-        "/static/<path:filename>",
-        "/swagger.json",
-        "/swagger/<path:path>",
-        "/swagger/dist/<path:filename>",
+        "/static/",
+        "swagger",
+        ".help.html",
+        ".help.json",
+        "/spec",
+        "favicon",
     ]
     api_routes = []
     for endpoint in current_app.url_map.iter_rules():
+        forbidder_route = False
         methods = ",".join(endpoint.methods)
-        if endpoint.rule not in api_hidden_routes:
+        for api_hidden_route in api_hidden_routes:
+            if api_hidden_route in endpoint.rule:
+                forbidder_route = True
+                break
+        if not forbidder_route:
             api_routes.append({"endpoint": str(endpoint), "methods": methods})
     sorted_api_routes = sorted(api_routes, key=lambda k: k["endpoint"])
     return sorted_api_routes
