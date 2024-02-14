@@ -183,6 +183,3 @@ class ErrorDelete(Resource):
         return jsonify(
             Error.delete(start_date_str=start_date_str, end_date_str=end_date_str)
         )
-
-
-# TODO skrypt zapełniający logi
