@@ -1,6 +1,7 @@
-FROM python:3.11-alpine
+FROM python:3.9-alpine
 WORKDIR /app
 COPY .. /app
 COPY . /
-RUN pip install -r .\docker_and_setup\requirements.txt
+RUN pip install --upgrade pip
+#RUN pip install -r requirements.txt
 CMD ["python", "app.py"]
