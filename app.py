@@ -16,6 +16,18 @@ from helpers.api_add_resources import api_add_resources_v1
 from helpers.init import cache
 from flask_restful_swagger import swagger
 
+from models.admin import Admin
+from models.author import Author
+from models.book import Book
+from models.book_announcement import BookAnnouncement
+from models.error import Error
+from models.library import Library
+from models.opinion import Opinion
+from models.user import User
+
+from flask_jwt_extended import JWTManager
+
+
 app = Flask(__name__)
 api = swagger.docs(Api(app), apiVersion="1", api_spec_url="/api/v1/spec")
 app.debug = True
@@ -24,6 +36,11 @@ host = os.environ.get("host")
 database = os.environ.get("database")
 user = os.environ.get("user")
 password = os.environ.get("password")
+
+app.config[
+    "JWT_SECRET_KEY"
+] = "super-secret"  # Change this to a secure secret key in production
+jwt = JWTManager(app)
 
 app.config[
     "SQLALCHEMY_DATABASE_URI"
