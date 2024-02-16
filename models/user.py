@@ -6,19 +6,25 @@ class User(db.Model):
     username = db.Column(db.String(50), nullable=False, unique=True)
     email = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(50), nullable=False)
-    score = db.Column(db.Integer, default=0)
-    opinions_count = db.Column(db.Integer, default=0)
-    reviews_count = db.Column(db.Integer, default=0)
-    followed_authors_count = db.Column(db.Integer, default=0)
     library_id = db.Column(
-        db.Integer, db.ForeignKey("library.id"), nullable=False, unique=True
+        db.Integer,
+        db.ForeignKey("library.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
     )
-    profile_picture = db.Column(db.LargeBinary, nullable=False)
+    score = db.Column(db.Integer, default=0, nullable=True)
+    opinions_count = db.Column(db.Integer, default=0, nullable=True)
+    reviews_count = db.Column(db.Integer, default=0, nullable=True)
+    followed_authors_count = db.Column(db.Integer, default=0, nullable=True)
+    profile_picture = db.Column(db.LargeBinary, nullable=True)
 
-    def __init__(self, username: str, email: str, password: str):
+    def __init__(
+        self, username: str, email: str, password: str, library_id: int
+    ) -> None:
         self.username = username
         self.email = email
         self.password = password
+        self.library_id = library_id
 
     def as_dict(self):
         return {
