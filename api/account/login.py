@@ -1,18 +1,27 @@
+from __future__ import annotations
+
 import datetime
 from typing import Any
 
+from flask import jsonify, Response
+from flask_jwt_extended import (
+    get_jwt_identity,
+    create_access_token,
+    verify_jwt_in_request,
+    jwt_required,
+)
 from flask_restful import reqparse  # type: ignore
 from loguru import logger
-from flasgger import swag_from
 from flask_restful import Resource
 
 from helpers.init import cache
-from routes.v1.account.register import (
+from api.account.register import (
     contains_uppercase_char,
     contains_illegal_char,
     contains_special_char,
-    User,
 )
+
+from models.user import User
 
 
 class InvalidLoginAttemptsCache(object):
@@ -82,70 +91,67 @@ class InvalidLoginAttemptsCache(object):
 def authenticate_login_credentials(username, password) -> dict[str, str | None | User]:
     if contains_illegal_char(username):
         return {
-            "user": None,
+            "token": None,
             "message": "contains_illegal_char_username",
             "details": "Illegal characters in username such as space",
         }
     if not contains_special_char(password):
         return {
-            "user": None,
+            "token": None,
             "message": "not_contains_special_char_password",
             "details": "No special characters in password. Required at least one",
         }
     if contains_illegal_char(password):
         return {
-            "user": None,
+            "token": None,
             "message": "contains_illegal_char_password",
             "details": "Illegal characters in password such as space",
         }
     if not contains_uppercase_char(password):
         return {
-            "user": None,
+            "token": None,
             "message": "not_contains_uppercase_char_password",
             "details": "Password has no uppercase letters. Required at least one.",
         }
     if len(username) < 10:
         return {
-            "user": None,
+            "token": None,
             "message": "username_too_short",
             "details": "Password should have a minimum of 10 characters",
         }
     if len(username) > 50:
         return {
-            "user": None,
+            "token": None,
             "message": "username_too_long",
             "details": "Password should have 50 characters max",
         }
     if len(password) < 10:
         return {
-            "user": None,
+            "token": None,
             "message": "password_too_short",
             "details": "Password should have a minimum of 10 characters",
         }
     if len(password) > 50:
         return {
-            "user": None,
+            "token": None,
             "message": "password_too_long",
             "details": "Password should have 50 characters max",
         }
-    # TODO faktyczna weryfikacja użytkowników, którzy są w bazie
-    user = User(username=username, password=password)
-    if username == "Admin-1234" and password == "Admin-1234":
-        # true: zalogowany, false: niezalogowany
-        # TODO testy do user_already_logged_in
-        if user.active:
-            return {
-                "user": None,
-                "message": "user_already_logged_in",
-                "details": "User already logged in",
-            }
+
+    user = None
+    try:
+        user = User.query.filter_by(username=username, password=password).first()
+    except User.DoesNotExist:
+        logger.info("User does not exist")
+    if user:
+        access_token = create_access_token(identity=username)
         return {
-            "user": user,
+            "token": access_token,
             "message": "login_successful",
             "details": "Login successful",
         }
     return {
-        "user": None,
+        "token": None,
         "message": "authentication_failed",
         "details": "Wrong username or password",
     }
@@ -163,35 +169,43 @@ class Login(Resource):
         self.reqparse.add_argument("password", type=str, required=True, location="json")
         super(Login, self).__init__()
 
-    @swag_from("login_swagger.yml")
-    def get(self) -> dict[str, bool | str]:
+    def post(self) -> tuple[Response, int]:
         args = self.reqparse.parse_args()
         username = args.get("username")
         password = args.get("password")
         login_output = authenticate_login(username, password)
 
         if isinstance(login_output["user"], User):
-            logger.info(f"Zarejestrowano użytkownika {login_output['user'].username}")
-            return {
-                "registered": True,
-                "message": login_output["message"],
-                "details": login_output["details"],
-            }
+            logger.info(f"Zarejestrowano użytkownika {login_output['user']}")
+            return (
+                jsonify(
+                    logged_in=True,
+                    token=login_output["token"],
+                    message=login_output["message"],
+                    details=login_output["details"],
+                ),
+                200,
+            )
         logger.info(
             f"Nieudana próba logowania użytkownika. {login_output['message']}, {login_output['details']}"
         )
         if isinstance(login_output["message"], str) and isinstance(
             login_output["details"], str
         ):
-            return {
-                "registered": False,
-                "message": login_output["message"],
-                "details": login_output["details"],
-            }
+            return (
+                jsonify(
+                    registered=False,
+                    message=login_output["message"],
+                    details=login_output["details"],
+                ),
+                401,
+            )
         raise Exception("Unexpected login behavior! Raised exception!")
 
 
-def authenticate_login(username, password) -> dict[str, None | str | User]:
+def authenticate_login(
+    username, password
+) -> dict[str, str | None] | dict[str, str | None | User]:
     current_datetime = datetime.datetime.now(datetime.timezone.utc)
     cache_results = InvalidLoginAttemptsCache.get(username)
     if cache_results and cache_results.get("lockout_start"):
@@ -216,3 +230,36 @@ def authenticate_login(username, password) -> dict[str, None | str | User]:
     login_data = authenticate_login_credentials(username=username, password=password)
     InvalidLoginAttemptsCache.invalid_attempt(cache_results, current_datetime, username)
     return login_data
+
+
+# TODO
+
+# TODO jsonify przy zwracaniu wartości dla usera wraz z kodem odpowiedzi
+
+
+class Protected(Resource):
+    def __init__(self) -> None:
+        self.reqparse = reqparse.RequestParser()
+        super(Protected, self).__init__()
+
+    @jwt_required()
+    def get(self) -> tuple[Response, int]:
+        current_user = get_jwt_identity()
+        return jsonify(logged_in_as=current_user), 200
+
+
+class CheckLogin(Resource):
+    def __init__(self) -> None:
+        self.reqparse = reqparse.RequestParser()
+        super(CheckLogin, self).__init__()
+
+    def get(self) -> tuple[Response, int]:
+        try:
+            # Verify JWT token in the request
+            verify_jwt_in_request()
+            # If verification is successful, return the identity of the current user
+            current_user = get_jwt_identity()
+            return jsonify(logged_in_as=current_user), 200
+        except Exception as e:
+            # If verification fails or JWT token is missing, return a message indicating that the user is not logged in
+            return jsonify(message="User not logged in"), 401
