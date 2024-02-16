@@ -1,14 +1,14 @@
 import flask_restful
 
-from routes.additional.available_versions import AvailableVersions
-from routes.additional.available_routes import AvailableRoutes
-from routes.additional.favicon import Favicon
-from routes.v1.account.change_password import ChangePassword
-from routes.v1.account.delete_account import DeleteAccount
-from routes.v1.account.login import Login
-from routes.v1.account.logout import Logout
-from routes.v1.account.register import Register
-from routes.v1.data.other.error import (
+from api.available_versions import AvailableVersions
+from api.available_routes import AvailableRoutes
+from api.favicon import Favicon
+from api.account.change_password import ChangePassword
+from api.account.delete_account import DeleteAccount
+from api.account.login import Login, Protected, CheckLogin
+from api.account.logout import Logout
+from api.account.register import Register
+from api.data.other.error import (
     ErrorGet,
     ErrorDelete,
     ErrorAdd,
@@ -16,8 +16,9 @@ from routes.v1.data.other.error import (
 
 
 def api_add_resources_v1(api: flask_restful.Api) -> None:
-    api_version = "/api/v1/"
     api_without_version = "/api/"
+    account = "account/"
+    data = "data/"
 
     # additional
     api.add_resource(
@@ -39,29 +40,40 @@ def api_add_resources_v1(api: flask_restful.Api) -> None:
     # account
     api.add_resource(
         Login,
-        f"{api_version}login",
+        f"{api_without_version}{account}login",
         endpoint="login",
     )
     api.add_resource(
         Register,
-        f"{api_version}register",
+        f"{api_without_version}{account}register",
         endpoint="register",
     )
 
     api.add_resource(
         ChangePassword,
-        f"{api_version}change_password",
+        f"{api_without_version}{account}change_password",
         endpoint="change_password",
     )
     api.add_resource(
         DeleteAccount,
-        f"{api_version}delete_account",
+        f"{api_without_version}{account}delete_account",
         endpoint="delete_account",
     )
     api.add_resource(
         Logout,
-        f"{api_version}logout",
+        f"{api_without_version}{account}logout",
         endpoint="logout",
+    )
+
+    api.add_resource(
+        CheckLogin,
+        f"{api_without_version}{account}check_login",
+        endpoint="check_login",
+    )
+    api.add_resource(
+        Protected,
+        f"{api_without_version}{account}protected",
+        endpoint="protected",
     )
 
     # author
@@ -73,17 +85,17 @@ def api_add_resources_v1(api: flask_restful.Api) -> None:
     # error
     api.add_resource(
         ErrorAdd,
-        f"{api_version}error_add",
+        f"{api_without_version}{data}error_add",
         endpoint="error_add",
     )
     api.add_resource(
         ErrorGet,
-        f"{api_version}error_get",
+        f"{api_without_version}{data}error_get",
         endpoint="error_get",
     )
     api.add_resource(
         ErrorDelete,
-        f"{api_version}error_delete",
+        f"{api_without_version}{data}error_delete",
         endpoint="error_delete",
     )
 
