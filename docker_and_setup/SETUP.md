@@ -23,6 +23,7 @@ python app.py
 
 # DOCKER SETUP
 To run the app using docker, use:
+cd .\docker_and_setup\
 docker build -t app .
 docker run app
 
