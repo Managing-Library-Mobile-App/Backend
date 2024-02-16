@@ -14,7 +14,6 @@ from flask_prometheus_metrics import register_metrics
 
 from helpers.api_add_resources import api_add_resources_v1
 from helpers.init import cache
-from flask_restful_swagger import swagger
 
 from models.admin import Admin
 from models.author import Author
@@ -29,7 +28,7 @@ from flask_jwt_extended import JWTManager
 
 
 app = Flask(__name__)
-api = swagger.docs(Api(app), apiVersion="1", api_spec_url="/api/v1/spec")
+api = Api(app)
 app.debug = True
 
 host = os.environ.get("host")

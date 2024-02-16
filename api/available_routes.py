@@ -5,7 +5,6 @@ from flask_restful import Resource
 def routes_list():
     api_hidden_routes = [
         "/static/",
-        "swagger",
         ".help.html",
         ".help.json",
         "/spec",
