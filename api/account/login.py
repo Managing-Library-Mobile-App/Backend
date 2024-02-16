@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from typing import Any
 
-from flask import jsonify, Response
+from flask import jsonify, Response, make_response
 from flask_jwt_extended import (
     get_jwt_identity,
     create_access_token,
@@ -169,15 +169,15 @@ class Login(Resource):
         self.reqparse.add_argument("password", type=str, required=True, location="json")
         super(Login, self).__init__()
 
-    def post(self) -> tuple[Response, int]:
+    def post(self) -> Response:
         args = self.reqparse.parse_args()
         username = args.get("username")
         password = args.get("password")
         login_output = authenticate_login(username, password)
 
-        if isinstance(login_output["user"], User):
-            logger.info(f"Zarejestrowano użytkownika {login_output['user']}")
-            return (
+        if login_output["message"] == "login_successful":
+            logger.info(f"Zarejestrowano użytkownika {username}")
+            return make_response(
                 jsonify(
                     logged_in=True,
                     token=login_output["token"],
@@ -192,7 +192,7 @@ class Login(Resource):
         if isinstance(login_output["message"], str) and isinstance(
             login_output["details"], str
         ):
-            return (
+            return make_response(
                 jsonify(
                     registered=False,
                     message=login_output["message"],
