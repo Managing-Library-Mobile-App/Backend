@@ -3,15 +3,14 @@ Python 3.10
 Pip
 
 # CONTAINER REQUIREMENTS
-Docker
-(Docker Desktop on Windows)
+Docker (and Docker Desktop on Windows)
 
 # DOWNLOAD
 To download the application, use
 clone https://github.com/Managing-Library-Mobile-App/Backend.git
 
 # REQUIRED SECRET FILES
-To actually run the app, two files are required in the static folder: cert.pem and key.pem
+To run the app, two files are required in the static folder: cert.pem and key.pem
 They are not in the repository and need to be added manually as they cannot be exposed
 
 # LOCAL SETUP
@@ -50,13 +49,6 @@ mypy --config-file=helpers/mypy.ini .
 
 # FORMAT FILE
 black <file_name>
-
-# UPDATE DOCUMENTATION
-cd docs
-.\make html
-
-# OPEN DOCUMENTATION
-firefox docs/_build/html/index.html
 
 # TEST COVERAGE
 pytest --cov-config .coveragerc --cov-report term:skip-covered --cov=.
