@@ -3,7 +3,7 @@ from datetime import datetime
 from helpers.init import db
 
 
-class Error(db.Model):   # type: ignore[name-defined]
+class Error(db.Model):  # type: ignore[name-defined]
     id = db.Column("id", db.Integer, nullable=False, primary_key=True)
     level = db.Column(db.String(500), nullable=False)
     description = db.Column(db.String(500), nullable=False)

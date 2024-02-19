@@ -9,7 +9,7 @@ opinions = db.Table(
 )
 
 
-class Book(db.Model):   # type: ignore[name-defined]
+class Book(db.Model):  # type: ignore[name-defined]
     id = db.Column("id", db.Integer, nullable=False, primary_key=True)
     isbn = db.Column(db.Integer, nullable=False)
     title = db.Column(db.String(100), nullable=False)
