@@ -41,9 +41,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+    env_file:
+      - .env
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=d4d3d2d1
+      POSTGRES_USER: ${user}
+      POSTGRES_PASSWORD: ${password}
     expose:
       - "5432"
     ports:

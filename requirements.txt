@@ -19,3 +19,6 @@ pandas==2.2.0
 openpyxl==3.1.2
 pyarrow==15.0.0
 flask_jwt_extended==4.6.0
+SQLAlchemy==2.0.22
+requests==2.31.0
+Werkzeug==3.0.0

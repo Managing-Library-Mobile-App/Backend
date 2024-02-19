@@ -21,12 +21,16 @@ virtualenv venv
 pip install -r docker_and_setup/requirements.txt
 python app.py
 
-# Database setup
+When running locally, if the database is not seen from name db (error: sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) could not translate host name "db" to address: Nieznany host.
+), you have to add the line below to your etc/hosts file:
+127.0.0.1 db
+Check if your server/database has the same attributes as in the .env file
 
 # DOCKER SETUP
 To run the app using docker, use:
 docker-compose build
 docker-compose up
+
 
 # APP USAGE
 Then you can access the api using an address: http://192.168:100.7:5000

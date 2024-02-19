@@ -5,7 +5,6 @@ from flask import Flask
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_restful import Api
-from loguru import logger
 
 from prometheus_client import make_wsgi_app
 from werkzeug import run_simple
@@ -33,6 +32,7 @@ api = Api(app)
 app.debug = True
 
 host = os.environ.get("host")
+host_alternative = os.environ.get("host_alternative")
 port = os.environ.get("port")
 database = os.environ.get("database")
 user = os.environ.get("user")
