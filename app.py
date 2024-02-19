@@ -32,7 +32,6 @@ api = Api(app)
 app.debug = True
 
 host = os.environ.get("host")
-host_alternative = os.environ.get("host_alternative")
 port = os.environ.get("port")
 database = os.environ.get("database")
 user = os.environ.get("user")
