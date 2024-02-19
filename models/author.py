@@ -13,7 +13,7 @@ released_books = db.Table(
 )
 
 
-class Author(db.Model):
+class Author(db.Model):   # type: ignore[name-defined]
     id = db.Column("id", db.Integer, nullable=False, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     surname = db.Column(db.String(50), nullable=False)

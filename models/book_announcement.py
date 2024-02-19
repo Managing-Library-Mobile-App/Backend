@@ -3,7 +3,7 @@ import datetime
 from helpers.init import db
 
 
-class BookAnnouncement(db.Model):
+class BookAnnouncement(db.Model):   # type: ignore[name-defined]
     id = db.Column("id", db.Integer, nullable=False, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     author = db.Column(db.String(100), nullable=False)

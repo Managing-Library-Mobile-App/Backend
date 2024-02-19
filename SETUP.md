@@ -24,6 +24,7 @@ python app.py
 When running locally, if the database is not seen from name db (error: sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) could not translate host name "db" to address: Nieznany host.
 ), you have to add the line below to your etc/hosts file:
 127.0.0.1 db
+
 Check if your server/database has the same attributes as in the .env file
 
 # DOCKER SETUP
@@ -33,7 +34,7 @@ docker-compose up
 
 
 # APP USAGE
-Then you can access the api using an address: http://192.168:100.7:5000
+You can access the api using an address: http://192.168:100.7:5000
 or locally using http://127.0.0.1:5000
 or using curl command in the terminal:
 curl http://192.168:100.7:5000

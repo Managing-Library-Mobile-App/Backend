@@ -1,7 +1,7 @@
 from helpers.init import db
 
 
-class User(db.Model):
+class User(db.Model):  # type: ignore[name-defined]
     id = db.Column("id", db.Integer, nullable=False, primary_key=True)
     username = db.Column(db.String(50), nullable=False, unique=True)
     email = db.Column(db.String(50), nullable=False)

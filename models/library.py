@@ -49,7 +49,7 @@ read_books = db.Table(
 )
 
 
-class Library(db.Model):
+class Library(db.Model):   # type: ignore[name-defined]
     id = db.Column("id", db.Integer, nullable=False, primary_key=True)
     read_books_count = db.Column(db.Integer, default=0, nullable=True)
     favourite_books_count = db.Column(db.Integer, default=0, nullable=True)

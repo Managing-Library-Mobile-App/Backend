@@ -260,6 +260,6 @@ class CheckLogin(Resource):
             # If verification is successful, return the identity of the current user
             current_user = get_jwt_identity()
             return jsonify(logged_in_as=current_user), 200
-        except Exception as e:
+        except Exception:
             # If verification fails or JWT token is missing, return a message indicating that the user is not logged in
             return jsonify(message="User not logged in"), 401
