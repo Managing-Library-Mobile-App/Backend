@@ -5,8 +5,8 @@ services:
     image: prom/prometheus:v2.14.0
     restart: 'no'
     volumes:
-      - prometheus_data:/docker_and_setup/prometheus
-      - ./docker_and_setup/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
     depends_on:
@@ -25,7 +25,7 @@ services:
       - prometheus
 
   flask:
-    build: ./docker_and_setup/
+    build: .
     ports:
       - "5000:5000"
     depends_on:
@@ -34,26 +34,23 @@ services:
 
 
   db:
-    container_name: db
-    expose:
-      - "5433" # Publishes 5433 to other containers but NOT to host machine
-    ports:
-      - "5433:5432"
     image: postgres:latest
+    restart: always
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
+      interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 3
     environment:
-        POSTGRES_USER: username
-        POSTGRES_PASSWORD: secret
-        POSTGRES_DB: database
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=d4d3d2d1
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
-      # copy the sql script to create tables
-      - ./docker_and_setup/database/create_default_database_structure.sql:/docker-entrypoint-initdb.d/create_fixtures.sql
-
+      - ./data/postgres-data:/var/lib/postgresql/data
+      #- ./data/database/create_default_database_structure.sql:/docker-entrypoint-initdb.d/create_fixtures.sql
 
   pgadmin:
     container_name: pgadmin4
@@ -65,9 +62,12 @@ services:
     ports:
       - "5050:80"
     volumes:
-      - ./pgadmin-data:/var/lib/pgadmin
+      - ./data/pgadmin-data:/var/lib/pgadmin
 
 
 volumes:
   prometheus_data: { }
   grafana_data: { }
+  db:
+    driver:
+      local

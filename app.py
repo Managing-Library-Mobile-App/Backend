@@ -5,13 +5,14 @@ from flask import Flask
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_restful import Api
-from helpers.init import db
+from loguru import logger
 
 from prometheus_client import make_wsgi_app
 from werkzeug import run_simple
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from flask_prometheus_metrics import register_metrics
 
+from helpers.init import db
 from helpers.api_add_resources import api_add_resources_v1
 from helpers.init import cache
 
@@ -32,18 +33,17 @@ api = Api(app)
 app.debug = True
 
 host = os.environ.get("host")
+port = os.environ.get("port")
 database = os.environ.get("database")
 user = os.environ.get("user")
 password = os.environ.get("password")
 
-app.config[
-    "JWT_SECRET_KEY"
-] = "super-secret"  # Change this to a secure secret key in production
+app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
 jwt = JWTManager(app)
 
 app.config[
     "SQLALCHEMY_DATABASE_URI"
-] = f"postgresql://{user}:{password}@{host}/{database}"
+] = f"postgresql://{user}:{password}@{host}:{port}/{database}"
 app.config["SECRET_KEY"] = "SECRET_KEY"
 app.config["JSONIFY_PRETTYPRINT_REGULAR"] = True
 app.config["CACHE_TYPE"] = "SimpleCache"
