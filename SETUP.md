@@ -21,11 +21,12 @@ virtualenv venv
 pip install -r docker_and_setup/requirements.txt
 python app.py
 
+# Database setup
+
 # DOCKER SETUP
 To run the app using docker, use:
-cd .\docker_and_setup\
-docker build -t app .
-docker run app
+docker-compose build
+docker-compose up
 
 # APP USAGE
 Then you can access the api using an address: http://192.168:100.7:5000
