@@ -5,10 +5,7 @@ from typing import Any
 
 from flask import jsonify, Response, make_response
 from flask_jwt_extended import (
-    get_jwt_identity,
     create_access_token,
-    verify_jwt_in_request,
-    jwt_required,
 )
 from flask_restful import reqparse  # type: ignore
 from loguru import logger
@@ -88,7 +85,7 @@ class InvalidLoginAttemptsCache(object):
         return None
 
 
-def authenticate_login_credentials(username, password) -> dict[str, str | None | User]:
+def authenticate_login_credentials(username, password) -> dict[str, str | None]:
     if contains_illegal_char(username):
         return {
             "token": None,
@@ -203,9 +200,7 @@ class Login(Resource):
         raise Exception("Unexpected login behavior! Raised exception!")
 
 
-def authenticate_login(
-    username, password
-) -> dict[str, str | None] | dict[str, str | None | User]:
+def authenticate_login(username, password) -> dict[str, str | None]:
     current_datetime = datetime.datetime.now(datetime.timezone.utc)
     cache_results = InvalidLoginAttemptsCache.get(username)
     if cache_results and cache_results.get("lockout_start"):
@@ -230,36 +225,3 @@ def authenticate_login(
     login_data = authenticate_login_credentials(username=username, password=password)
     InvalidLoginAttemptsCache.invalid_attempt(cache_results, current_datetime, username)
     return login_data
-
-
-# TODO
-
-# TODO jsonify przy zwracaniu wartości dla usera wraz z kodem odpowiedzi
-
-
-class Protected(Resource):
-    def __init__(self) -> None:
-        self.reqparse = reqparse.RequestParser()
-        super(Protected, self).__init__()
-
-    @jwt_required()
-    def get(self) -> tuple[Response, int]:
-        current_user = get_jwt_identity()
-        return jsonify(logged_in_as=current_user), 200
-
-
-class CheckLogin(Resource):
-    def __init__(self) -> None:
-        self.reqparse = reqparse.RequestParser()
-        super(CheckLogin, self).__init__()
-
-    def get(self) -> tuple[Response, int]:
-        try:
-            # Verify JWT token in the request
-            verify_jwt_in_request()
-            # If verification is successful, return the identity of the current user
-            current_user = get_jwt_identity()
-            return jsonify(logged_in_as=current_user), 200
-        except Exception:
-            # If verification fails or JWT token is missing, return a message indicating that the user is not logged in
-            return jsonify(message="User not logged in"), 401
