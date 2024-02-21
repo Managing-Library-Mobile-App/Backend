@@ -17,6 +17,18 @@ book search API
 Authors API
 Covers API
 
+# API Methods
+
+GET - pobieranie danych z api
+
+POST - wrzucanie danych do api
+
+PUT - modyfikacja jakiejś danej np. pola z modelu
+
+PATCH - np. podmiana całego obiektu na nowy
+
+DELETE - usuwanie elementu z api
+
 ------------------------------------------------------------
 
 # Available endpoints
