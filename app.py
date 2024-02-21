@@ -11,20 +11,19 @@ from werkzeug import run_simple
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from flask_prometheus_metrics import register_metrics
 
-from helpers.init import db
+from helpers.init import db, cache, jwt
 from helpers.api_add_resources import api_add_resources_v1
-from helpers.init import cache
 
-from models.admin import Admin
-from models.author import Author
-from models.book import Book
-from models.book_announcement import BookAnnouncement
-from models.error import Error
-from models.library import Library
-from models.opinion import Opinion
-from models.user import User
+from models.admin import Admin  # noqa
+from models.author import Author  # noqa
+from models.book import Book  # noqa
+from models.book_announcement import BookAnnouncement  # noqa
+from models.error import Error  # noqa
+from models.library import Library  # noqa
+from models.opinion import Opinion  # noqa
+from models.user import User  # noqa
 
-from flask_jwt_extended import JWTManager
+from data.test_data.fill_db_script import fill_db
 
 
 app = Flask(__name__)
@@ -38,7 +37,7 @@ user = os.environ.get("user")
 password = os.environ.get("password")
 
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
-jwt = JWTManager(app)
+jwt.init_app(app)
 
 app.config[
     "SQLALCHEMY_DATABASE_URI"
@@ -64,9 +63,12 @@ dispatcher = DispatcherMiddleware(app.wsgi_app, {"/metrics": make_wsgi_app()})
 api_add_resources_v1(api)
 
 if __name__ == "__main__":
+    # Database setup
     with app.app_context():
         db.drop_all()
         db.create_all()
+        # fill_db(db)
+    # App setup
     run_simple(
         hostname="0.0.0.0",
         port=5000,
