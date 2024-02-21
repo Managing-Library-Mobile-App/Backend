@@ -7,7 +7,7 @@ url = "https://127.0.0.1:5000/api/account/register"
 data = {"username": "Blabla-123", "password": "Blabla-123", "email": "Email@email.com"}
 
 # Make a POST request to the API endpoint with the JSON data
-response = requests.post(url, json=data)
+response = requests.post(url, json=data, verify=False)
 
 # Check if the request was successful (status code 200)
 if response.status_code == 200:
