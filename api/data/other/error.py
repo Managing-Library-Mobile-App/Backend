@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from flask import jsonify, Response
+from flask import jsonify, Response, make_response
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource, reqparse
 
 import models
@@ -123,15 +124,22 @@ class ErrorGet(Resource):
         )
         super(ErrorGet, self).__init__()
 
+    @jwt_required()
     def get(self) -> Response:
         args = self.reqparse.parse_args()
         level = args.get("level")
         start_date_str = args.get("start_date")
         end_date_str = args.get("end_date")
-        return jsonify(
-            Error.get(
-                start_date_str=start_date_str, end_date_str=end_date_str, level=level
-            )
+        get_jwt_identity()
+        return make_response(
+            jsonify(
+                Error.get(
+                    start_date_str=start_date_str,
+                    end_date_str=end_date_str,
+                    level=level,
+                )
+            ),
+            200,
         )
 
 
@@ -152,11 +160,15 @@ class ErrorAdd(Resource):
         )
         super(ErrorAdd, self).__init__()
 
+    @jwt_required()
     def post(self) -> Response:
         args = self.reqparse.parse_args()
         level = args.get("level")
         description = args.get("description")
-        return jsonify(Error.add_entry(level=level, description=description))
+        get_jwt_identity()
+        return make_response(
+            jsonify(Error.add_entry(level=level, description=description)), 200
+        )
 
 
 class ErrorDelete(Resource):
@@ -176,10 +188,15 @@ class ErrorDelete(Resource):
         )
         super(ErrorDelete, self).__init__()
 
+    @jwt_required()
     def delete(self) -> Response:
         args = self.reqparse.parse_args()
         start_date_str = args.get("start_date")
         end_date_str = args.get("end_date")
-        return jsonify(
-            Error.delete(start_date_str=start_date_str, end_date_str=end_date_str)
+        get_jwt_identity()
+        return make_response(
+            jsonify(
+                Error.delete(start_date_str=start_date_str, end_date_str=end_date_str)
+            ),
+            200,
         )

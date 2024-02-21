@@ -5,7 +5,8 @@ from api.available_routes import AvailableRoutes
 from api.favicon import Favicon
 from api.account.change_password import ChangePassword
 from api.account.delete_account import DeleteAccount
-from api.account.login import Login, Protected, CheckLogin
+from api.account.login import Login
+from api.account.already_logged_in import CheckAlreadyLoggedIn
 from api.account.logout import Logout
 from api.account.register import Register
 from api.data.other.error import (
@@ -66,14 +67,9 @@ def api_add_resources_v1(api: flask_restful.Api) -> None:
     )
 
     api.add_resource(
-        CheckLogin,
+        CheckAlreadyLoggedIn,
         f"{api_without_version}{account}check_login",
         endpoint="check_login",
-    )
-    api.add_resource(
-        Protected,
-        f"{api_without_version}{account}protected",
-        endpoint="protected",
     )
 
     # author
