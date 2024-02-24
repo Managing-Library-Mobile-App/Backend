@@ -12,7 +12,7 @@ class Admin(db.Model):  # type: ignore[name-defined]
         self.email = email
         self.password = password
 
-    def as_dict(self):
+    def as_dict(self) -> dict:
         return {
             "id": self.id,
             "username": self.username,

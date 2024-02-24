@@ -8,7 +8,7 @@ class User(db.Model):  # type: ignore[name-defined]
     password = db.Column(db.String(50), nullable=False)
     library_id = db.Column(
         db.Integer,
-        db.ForeignKey("library.id", ondelete="CASCADE"),
+        db.ForeignKey("library.id"),
         nullable=False,
         unique=True,
     )
@@ -26,7 +26,7 @@ class User(db.Model):  # type: ignore[name-defined]
         self.password = password
         self.library_id = library_id
 
-    def as_dict(self):
+    def as_dict(self) -> dict:
         return {
             "id": self.id,
             "username": self.username,
