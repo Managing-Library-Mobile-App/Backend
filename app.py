@@ -67,7 +67,7 @@ if __name__ == "__main__":
     with app.app_context():
         db.drop_all()
         db.create_all()
-        # fill_db(db)
+        fill_db(db)
     # App setup
     run_simple(
         hostname="0.0.0.0",
