@@ -1,39 +1,59 @@
+from flask import Response, make_response, jsonify
+from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
 from flask_restful import Resource, reqparse
+
+from api.account.blocklist import BLOCK_LIST_USERS
+from helpers.init import db
+from models.user import User
 
 
 class DeleteAccount(Resource):
     def __init__(self) -> None:
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
-            "username",
+            "password",
             type=str,
             required=True,
             location="json",
         )
         super(DeleteAccount, self).__init__()
 
-    def delete(self) -> dict[str, bool | str]:
+    def delete(self) -> Response:
         args = self.reqparse.parse_args()
-        username = args.get("username")
-        # TODO weryfikacja sesji czy faktycznie ktoś z danym username ma aktywną sesję i jest to ta, która jest
-        # w zapytaniu
-        # TODO odkomentować
-        # if False:
-        #     return {
-        #         "deleted": False,
-        #         "message": "user_not_logged_in",
-        #         "details": "User not logged in (No session)",
-        #     }
-        # TODO weryfikacja w bazie czy taki użytkownik wgl istnieje
-        if username == "Admin-1234":
-            # TODO wyrzucenie sesji po usunięciu użytkownika
-            return {
-                "deleted": True,
-                "message": "user_deleted",
-                "details": "User deleted successfully",
-            }
-        return {
-            "deleted": False,
-            "message": "user_does_not_exist",
-            "details": "User does not exist",
-        }
+        password = args.get("password")
+        try:
+            verify_jwt_in_request()
+            email = get_jwt_identity()
+        except AttributeError:
+            return make_response(
+                jsonify(
+                    password_changed=False,
+                    message="user_not_logged_in",
+                    details="User not logged in (No session)",
+                ),
+                401,
+            )
+
+        user = User.query.filter_by(email=email, password=password).first()
+
+        if user:
+            print(BLOCK_LIST_USERS)
+            BLOCK_LIST_USERS.remove(email)
+            db.session.delete(user)
+            db.session.commit()
+            return make_response(
+                jsonify(
+                    password_changed=True,
+                    message="user_deleted",
+                    details="User deleted successfully",
+                ),
+                200,
+            )
+        return make_response(
+            jsonify(
+                password_changed=False,
+                message="user_does_not_exist",
+                details="User does not exist",
+            ),
+            404,
+        )

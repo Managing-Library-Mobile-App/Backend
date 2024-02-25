@@ -36,10 +36,10 @@ def contains_uppercase_char(characters: str) -> bool:
 def authenticate_register_credentials(
     username: str, password: str, email: str
 ) -> dict[str, str | None]:
-    if contains_illegal_char(username):
+    if contains_illegal_char(email):
         return {
-            "message": "contains_illegal_char_username",
-            "details": "Illegal characters in username such as space",
+            "message": "contains_illegal_char_email",
+            "details": "Illegal characters in email such as space",
         }
     if not contains_special_char(password):
         return {
@@ -56,15 +56,15 @@ def authenticate_register_credentials(
             "message": "not_contains_uppercase_char_password",
             "details": "Password has no uppercase letters. Required at least one.",
         }
-    if len(username) < 10:
+    if len(email) < 10:
         return {
-            "message": "username_too_short",
-            "details": "Username should have a minimum of 10 characters",
+            "message": "email_too_short",
+            "details": "email should have a minimum of 10 characters",
         }
-    if len(username) > 50:
+    if len(email) > 50:
         return {
-            "message": "username_too_long",
-            "details": "Username should have 50 characters max",
+            "message": "email_too_long",
+            "details": "email should have 50 characters max",
         }
     if len(password) < 10:
         return {
@@ -84,12 +84,12 @@ def authenticate_register_credentials(
     regex = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
     if not re.fullmatch(regex, email):
         return {
-            "message": "email_of_wrong_format",
-            "details": "User already exists",
+            "message": "email_wrong_format",
+            "details": "Wrong email format",
         }
 
     user_already_exists = db.session.query(
-        exists().where(User.username == username, User.email == email)
+        exists().where(User.email == email, User.username == username)
     ).scalar()
 
     if user_already_exists:
@@ -98,17 +98,17 @@ def authenticate_register_credentials(
             "details": "User already exists",
         }
 
-    new_user_library = Library()
-    db.session.add(new_user_library)
-    db.session.commit()
-
     new_user = User(
         username=username,
         password=password,
         email=email,
-        library_id=new_user_library.id,
     )
     db.session.add(new_user)
+
+    new_user_library = Library(
+        read_books=[], bought_books=[], favourite_books=[], user_id=new_user.id
+    )
+    db.session.add(new_user_library)
     db.session.commit()
 
     return {
