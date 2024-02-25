@@ -9,11 +9,6 @@ from api.account.login import Login
 from api.account.already_logged_in import CheckAlreadyLoggedIn
 from api.account.logout import Logout
 from api.account.register import Register
-from api.data.other.error import (
-    ErrorGet,
-    ErrorDelete,
-    ErrorAdd,
-)
 
 
 def api_add_resources_v1(api: flask_restful.Api) -> None:
@@ -71,34 +66,14 @@ def api_add_resources_v1(api: flask_restful.Api) -> None:
         f"{api_without_version}{account}check_login",
         endpoint="check_login",
     )
-
     # author
 
     # book
 
     # book announcement
 
-    # error
-    api.add_resource(
-        ErrorAdd,
-        f"{api_without_version}{data}error_add",
-        endpoint="error_add",
-    )
-    api.add_resource(
-        ErrorGet,
-        f"{api_without_version}{data}error_get",
-        endpoint="error_get",
-    )
-    api.add_resource(
-        ErrorDelete,
-        f"{api_without_version}{data}error_delete",
-        endpoint="error_delete",
-    )
-
     # library
 
     # opinion
 
     # user
-
-    # admin
