@@ -9,3 +9,18 @@ users = [
     {"username": "Kamil-1234", "email": "kamin@gmail.com", "password": "Kamil-1234"},
     {"username": "Marcin-1234", "email": "marcin@gmail.com", "password": "Marcin-1234"},
 ]
+
+admins = [
+    {
+        "username": "AdminAdmin-1234",
+        "email": "adminadmin@gmail.com",
+        "password": "AdminAdmin-1234",
+        "is_admin": True,
+    },
+    {
+        "username": "RootRoot-1234",
+        "email": "rootroot@gmail.com",
+        "password": "RootRoot-1234",
+        "is_admin": True,
+    },
+]

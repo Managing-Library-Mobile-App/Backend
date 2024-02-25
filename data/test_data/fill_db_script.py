@@ -1,15 +1,13 @@
 from flask_sqlalchemy import SQLAlchemy
 from loguru import logger
 
-from data.test_data.admins import admins
 from data.test_data.authors import authors
 from data.test_data.book_announcements import book_announcements
 from data.test_data.books import books
 from data.test_data.libraries import libraries
 from data.test_data.opinions import opinions
-from data.test_data.users import users
+from data.test_data.users import users, admins
 
-from models.admin import Admin
 from models.author import Author
 from models.book import Book
 from models.book_announcement import BookAnnouncement
@@ -22,7 +20,6 @@ def fill_db(db: SQLAlchemy):
     logger.info("Filling database")
 
     for author in authors:
-        print(author)
         new_author = Author(
             name=author["name"],
             genres=author["genres"],
@@ -61,32 +58,41 @@ def fill_db(db: SQLAlchemy):
         db.session.add(new_book_announcement)
         db.session.commit()
 
-    for admin in admins:
-        new_admin = Admin(
-            username=admin["username"],
-            password=admin["password"],
-            email=admin["email"],
-        )
-        db.session.add(new_admin)
-        db.session.commit()
-
     for index, user in enumerate(users):
-        new_user_library = Library(
-            read_books=libraries[index]["read_books"],
-            favourite_books=libraries[index]["favourite_books"],
-            bought_books=libraries[index]["bought_books"],
-        )
-        # append books to library read_books, favourite_books, bought_books
-        db.session.add(new_user_library)
-        db.session.commit()
-
         new_user = User(
             username=user["username"],
             password=user["password"],
             email=user["email"],
-            library_id=new_user_library.id,
         )
         db.session.add(new_user)
+        db.session.commit()
+
+        new_user_library = Library(
+            read_books=libraries[index]["read_books"],
+            favourite_books=libraries[index]["favourite_books"],
+            bought_books=libraries[index]["bought_books"],
+            user_id=new_user.id,
+        )
+        db.session.add(new_user_library)
+        db.session.commit()
+
+    for index, admin in enumerate(admins):
+        new_admin = User(
+            username=admin["username"],
+            password=admin["password"],
+            email=admin["email"],
+            is_admin=admin["is_admin"],
+        )
+        db.session.add(new_admin)
+        db.session.commit()
+
+        new_admin_library = Library(
+            read_books=[],
+            favourite_books=[],
+            bought_books=[],
+            user_id=new_admin.id,
+        )
+        db.session.add(new_admin_library)
         db.session.commit()
 
     for opinion in opinions:
