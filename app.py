@@ -14,11 +14,9 @@ from flask_prometheus_metrics import register_metrics
 from helpers.init import db, cache, jwt
 from helpers.api_add_resources import api_add_resources_v1
 
-from models.admin import Admin  # noqa
 from models.author import Author  # noqa
 from models.book import Book  # noqa
 from models.book_announcement import BookAnnouncement  # noqa
-from models.error import Error  # noqa
 from models.library import Library  # noqa
 from models.opinion import Opinion  # noqa
 from models.user import User  # noqa
