@@ -2,31 +2,15 @@ from sqlalchemy import ARRAY
 
 from helpers.init import db
 from models.book import Book
+from models.many_to_many_tables import authors_users, authors_released_books
 from models.user import User
-
-authors_users = db.Table(
-    "fans",
-    db.Column("author_id", db.Integer, db.ForeignKey("author.id"), primary_key=True),
-    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
-)
-
-authors_released_books = db.Table(
-    "released_books",
-    db.Column(
-        "author_id",
-        db.Integer,
-        db.ForeignKey("author.id"),
-        primary_key=True,
-    ),
-    db.Column("book_id", db.Integer, db.ForeignKey("book.id"), primary_key=True),
-)
 
 
 class Author(db.Model):  # type: ignore[name-defined]
-    id = db.Column("id", db.Integer, nullable=False, primary_key=True)
+    id = db.Column("id", db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
-    genres = db.Column(ARRAY(db.String), nullable=False)
-    biography = db.Column(db.String(1000), nullable=False)
+    genres = db.Column(ARRAY(db.String), default=[])
+    biography = db.Column(db.String(1000), default="No biography")
     picture = db.Column(db.String(1000), default=0)
     fans_count = db.Column(db.Integer, default=0)
     fans = db.relationship(
@@ -34,13 +18,14 @@ class Author(db.Model):  # type: ignore[name-defined]
         secondary=authors_users,
         lazy="subquery",
         backref=db.backref("authors_users", lazy=True),
+        overlaps="authors_users,followed_authors",
     )
     released_books_count = db.Column(db.Integer, default=0)
     released_books = db.relationship(
         "Book",
         secondary=authors_released_books,
         lazy="subquery",
-        backref=db.backref("authors_released_books", lazy=True),
+        backref=db.backref("authors_released_books"),
     )
 
     def __init__(
@@ -56,7 +41,6 @@ class Author(db.Model):  # type: ignore[name-defined]
         self.genres = genres
         self.biography = biography
         self.picture = picture
-        print(fans, released_books)
         for fan_id in fans:
             self.add_fan(fan_id)
         for released_book_id in released_books:

@@ -3,16 +3,11 @@ import datetime
 from sqlalchemy import ARRAY
 
 from helpers.init import db
-
-books_opinions = db.Table(
-    "books_opinions",
-    db.Column("opinion_id", db.Integer, db.ForeignKey("opinion.id"), primary_key=True),
-    db.Column("book_id", db.Integer, db.ForeignKey("book.id"), primary_key=True),
-)
+from models.many_to_many_tables import books_opinions
 
 
 class Book(db.Model):  # type: ignore[name-defined]
-    id = db.Column("id", db.Integer, nullable=False, primary_key=True)
+    id = db.Column("id", db.Integer, primary_key=True)
     isbn = db.Column(db.String(20), nullable=False)
     title = db.Column(db.String(100), nullable=False)
     author = db.Column(
@@ -21,17 +16,19 @@ class Book(db.Model):  # type: ignore[name-defined]
         nullable=False,
         unique=False,
     )
-    publishing_house = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(1000), nullable=False)
-    genres = db.Column(ARRAY(db.String(50)), default=0)
-    picture = db.Column(db.String(1000), default=0)
+    publishing_house = db.Column(db.String(100))
+    description = db.Column(db.String(1000), default=0)
+    genres = db.Column(ARRAY(db.String(50)), default=[])
+    picture = db.Column(
+        db.String(1000), default="https://demofree.sirv.com/nope-not-here.jpg?w=150"
+    )
     premiere_date = db.Column(db.DateTime, nullable=False)
     score = db.Column(db.Integer, default=0)
     opinions = db.relationship(
         "Opinion",
         secondary=books_opinions,
         lazy="subquery",
-        backref=db.backref("books_opinions", lazy=True),
+        backref=db.backref("books_opinions"),
     )
 
     def __init__(

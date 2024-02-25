@@ -6,7 +6,7 @@ from helpers.init import db
 
 
 class BookAnnouncement(db.Model):  # type: ignore[name-defined]
-    id = db.Column("id", db.Integer, nullable=False, primary_key=True)
+    id = db.Column("id", db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     author = db.Column(
         db.Integer,
@@ -14,10 +14,12 @@ class BookAnnouncement(db.Model):  # type: ignore[name-defined]
         nullable=False,
         unique=False,
     )
-    publishing_house = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(1000), nullable=False)
-    genres = db.Column(ARRAY(db.String(50)), default=0)
-    picture = db.Column(db.String(1000), default=0)
+    publishing_house = db.Column(db.String(100))
+    description = db.Column(db.String(1000), default="No description")
+    genres = db.Column(ARRAY(db.String(50)), default=[])
+    picture = db.Column(
+        db.String(1000), default="https://demofree.sirv.com/nope-not-here.jpg?w=150"
+    )
     premiere_date = db.Column(db.DateTime, nullable=False)
 
     def __init__(

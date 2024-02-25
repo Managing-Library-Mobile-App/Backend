@@ -53,35 +53,43 @@ library_books_read = db.Table(
 
 
 class Library(db.Model):  # type: ignore[name-defined]
-    id = db.Column("id", db.Integer, nullable=False, primary_key=True)
-    read_books_count = db.Column(db.Integer, default=0, nullable=True)
-    favourite_books_count = db.Column(db.Integer, default=0, nullable=True)
-    bought_books_count = db.Column(db.Integer, default=0, nullable=True)
+    id = db.Column("id", db.Integer, primary_key=True)
+    read_books_count = db.Column(db.Integer, default=0)
+    favourite_books_count = db.Column(db.Integer, default=0)
+    bought_books_count = db.Column(db.Integer, default=0)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
+    )
     read_books = db.relationship(
         "Book",
         secondary=library_books_read,
         lazy="subquery",
-        backref=backref("library_books_read", lazy=True),
+        backref=backref("library_books_read"),
     )
     favourite_books = db.relationship(
         "Book",
         secondary=library_books_favourite,
         lazy="subquery",
-        backref=backref("library_books_favourite", lazy=True),
+        backref=backref("library_books_favourite"),
     )
     bought_books = db.relationship(
         "Book",
         secondary=library_books_bought,
         lazy="subquery",
-        backref=backref("library_books_bought", lazy=True),
+        backref=backref("library_books_bought"),
     )
 
     def __init__(
-        self, read_books: list, bought_books: list, favourite_books: list
+        self, read_books: list, bought_books: list, favourite_books: list, user_id: int
     ) -> None:
         self.read_books_count = 0
         self.favourite_books_count = 0
         self.bought_books_count = 0
+        self.user_id = user_id
+        db.session.add(self)
         for read_book_id in read_books:
             book = Book.query.get(read_book_id)
             if book:
