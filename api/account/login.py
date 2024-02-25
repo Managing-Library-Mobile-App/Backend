@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import re
 from typing import Any
 
 from flask import jsonify, Response, make_response
@@ -11,6 +12,7 @@ from flask_restful import reqparse  # type: ignore
 from loguru import logger
 from flask_restful import Resource
 
+from api.account.blocklist import BLOCK_LIST_USERS, BLOCK_LIST_TOKENS
 from helpers.init import cache
 from api.account.register import (
     contains_uppercase_char,
@@ -85,12 +87,12 @@ class InvalidLoginAttemptsCache(object):
         return None
 
 
-def authenticate_login_credentials(username, password) -> dict[str, str | None]:
-    if contains_illegal_char(username):
+def authenticate_login_credentials(email, password) -> dict[str, str | None]:
+    regex = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
+    if not re.fullmatch(regex, email):
         return {
-            "token": None,
-            "message": "contains_illegal_char_username",
-            "details": "Illegal characters in username such as space",
+            "message": "wrong_email_format",
+            "details": "Wrong email format",
         }
     if not contains_special_char(password):
         return {
@@ -110,18 +112,6 @@ def authenticate_login_credentials(username, password) -> dict[str, str | None]:
             "message": "not_contains_uppercase_char_password",
             "details": "Password has no uppercase letters. Required at least one.",
         }
-    if len(username) < 10:
-        return {
-            "token": None,
-            "message": "username_too_short",
-            "details": "Password should have a minimum of 10 characters",
-        }
-    if len(username) > 50:
-        return {
-            "token": None,
-            "message": "username_too_long",
-            "details": "Password should have 50 characters max",
-        }
     if len(password) < 10:
         return {
             "token": None,
@@ -137,20 +127,22 @@ def authenticate_login_credentials(username, password) -> dict[str, str | None]:
 
     user = None
     try:
-        user = User.query.filter_by(username=username, password=password).first()
+        user = User.query.filter_by(email=email, password=password).first()
     except User.DoesNotExist:
         logger.info("User does not exist")
     if user:
-        access_token = create_access_token(identity=username)
+        token = create_access_token(identity=email)
+        BLOCK_LIST_USERS.add(email)
+        BLOCK_LIST_TOKENS.add(token)
         return {
-            "token": access_token,
+            "token": token,
             "message": "login_successful",
             "details": "Login successful",
         }
     return {
         "token": None,
         "message": "authentication_failed",
-        "details": "Wrong username or password",
+        "details": "Wrong email or password",
     }
 
 
@@ -158,7 +150,7 @@ class Login(Resource):
     def __init__(self) -> None:
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
-            "username",
+            "email",
             type=str,
             required=True,
             location="json",
@@ -168,12 +160,12 @@ class Login(Resource):
 
     def post(self) -> Response:
         args = self.reqparse.parse_args()
-        username = args.get("username")
+        email = args.get("email")
         password = args.get("password")
-        login_output = authenticate_login(username, password)
+        login_output = authenticate_login(email, password)
 
         if login_output["message"] == "login_successful":
-            logger.info(f"Zarejestrowano użytkownika {username}")
+            logger.info(f"Zalogowano użytkownika {email}")
             return make_response(
                 jsonify(
                     logged_in=True,
@@ -200,9 +192,9 @@ class Login(Resource):
         raise Exception("Unexpected login behavior! Raised exception!")
 
 
-def authenticate_login(username, password) -> dict[str, str | None]:
+def authenticate_login(email, password) -> dict[str, str | None]:
     current_datetime = datetime.datetime.now(datetime.timezone.utc)
-    cache_results = InvalidLoginAttemptsCache.get(username)
+    cache_results = InvalidLoginAttemptsCache.get(email)
     if cache_results and cache_results.get("lockout_start"):
         try:
             lockout_start = datetime.datetime.fromtimestamp(
@@ -212,9 +204,9 @@ def authenticate_login(username, password) -> dict[str, str | None]:
                 current_datetime + datetime.timedelta(minutes=-15)
             )
             if not locked_out:
-                InvalidLoginAttemptsCache.delete(username)
+                InvalidLoginAttemptsCache.delete(email)
             else:
-                logger.warning(f"locked out user: {username}")
+                logger.warning(f"locked out user: {email}")
                 return {
                     "user": None,
                     "message": "locked_user_login_attempts",
@@ -222,6 +214,6 @@ def authenticate_login(username, password) -> dict[str, str | None]:
                 }
         except Exception as e:
             logger.exception(e)
-    login_data = authenticate_login_credentials(username=username, password=password)
-    InvalidLoginAttemptsCache.invalid_attempt(cache_results, current_datetime, username)
+    login_data = authenticate_login_credentials(email=email, password=password)
+    InvalidLoginAttemptsCache.invalid_attempt(cache_results, current_datetime, email)
     return login_data
