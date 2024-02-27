@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from flask import jsonify, Response, make_response
 from flask_jwt_extended import get_jwt_identity, jwt_required, verify_jwt_in_request
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 
+from helpers.request_parser import RequestParser
 from models import book
 from helpers.init import db
 
@@ -12,124 +13,29 @@ from models.user import User
 
 class Book(Resource):
     def __init__(self) -> None:
-        self.get_parser = reqparse.RequestParser()
-        self.get_parser.add_argument(
-            "id",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.post_parser = reqparse.RequestParser()
-        self.post_parser.add_argument(
-            "isbn",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "title",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "author",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "publishing_house",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "description",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "genres",
-            type=list,
-            required=True,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "picture",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "premiere_date",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.delete_parser = reqparse.RequestParser()
-        self.delete_parser.add_argument(
-            "id",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.patch_parser = reqparse.RequestParser()
-        self.patch_parser.add_argument(
-            "id",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "isbn",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "title",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "author",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "publishing_house",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "description",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "genres",
-            type=list,
-            required=True,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "picture",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "premiere_date",
-            type=str,
-            required=True,
-            location="json",
-        )
+        self.get_parser = RequestParser()
+        self.get_parser.add_arg("id", type=int)
+        self.post_parser = RequestParser()
+        self.post_parser.add_arg("isbn", type=int)
+        self.post_parser.add_arg("title")
+        self.post_parser.add_arg("author")
+        self.post_parser.add_arg("publishing_house")
+        self.post_parser.add_arg("description")
+        self.post_parser.add_arg("genres", type=list)
+        self.post_parser.add_arg("picture")
+        self.post_parser.add_arg("premiere_date")
+        self.delete_parser = RequestParser()
+        self.delete_parser.add_arg("id", type=int)
+        self.patch_parser = RequestParser()
+        self.patch_parser.add_arg("id", type=int)
+        self.patch_parser.add_arg("isbn")
+        self.patch_parser.add_arg("title")
+        self.patch_parser.add_arg("author")
+        self.patch_parser.add_arg("publishing_house")
+        self.patch_parser.add_arg("description")
+        self.patch_parser.add_arg("genres", type=list)
+        self.patch_parser.add_arg("picture")
+        self.patch_parser.add_arg("premiere_date")
         super(Book, self).__init__()
 
     @jwt_required()

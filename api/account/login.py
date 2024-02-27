@@ -8,7 +8,6 @@ from flask import jsonify, Response, make_response
 from flask_jwt_extended import (
     create_access_token,
 )
-from flask_restful import reqparse  # type: ignore
 from loguru import logger
 from flask_restful import Resource
 
@@ -19,6 +18,7 @@ from api.account.register import (
     contains_illegal_char,
     contains_special_char,
 )
+from helpers.request_parser import RequestParser
 
 from models.user import User
 
@@ -148,14 +148,9 @@ def authenticate_login_credentials(email, password) -> dict[str, str | None]:
 
 class Login(Resource):
     def __init__(self) -> None:
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument(
-            "email",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.reqparse.add_argument("password", type=str, required=True, location="json")
+        self.reqparse = RequestParser()
+        self.reqparse.add_arg("email")
+        self.reqparse.add_arg("password")
         super(Login, self).__init__()
 
     def post(self) -> Response:

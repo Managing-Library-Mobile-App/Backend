@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from flask import jsonify, Response, make_response
 from flask_jwt_extended import get_jwt_identity, jwt_required, verify_jwt_in_request
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 
+from helpers.request_parser import RequestParser
 from models import author
 from helpers.init import db
 
@@ -12,88 +13,27 @@ from models.user import User
 
 class Author(Resource):
     def __init__(self) -> None:
-        self.get_parser = reqparse.RequestParser()
-        self.get_parser.add_argument(
-            "id",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.post_parser = reqparse.RequestParser()
-        self.post_parser.add_argument(
-            "name",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "genres",
-            type=list,
-            required=True,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "biography",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "picture",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "fans",
-            type=list,
-            required=False,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "released_books",
-            type=list,
-            required=False,
-            location="json",
-        )
-        self.delete_parser = reqparse.RequestParser()
-        self.delete_parser.add_argument(
-            "id",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.patch_parser = reqparse.RequestParser()
-        self.patch_parser.add_argument(
-            "id",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "name",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "genres",
-            type=list,
-            required=True,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "biography",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "picture",
-            type=str,
-            required=True,
-            location="json",
-        )
+        self.get_parser = RequestParser()
+        self.get_parser.add_arg("id", type="int")
+
+        self.post_parser = RequestParser()
+        self.post_parser.add_arg("name")
+        self.post_parser.add_arg("genres", type=list)
+        self.post_parser.add_arg("biography")
+        self.post_parser.add_arg("picture")
+        self.post_parser.add_arg("fans", type=list, required=False)
+        self.post_parser.add_arg("released_books", type=list, required=False)
+
+        self.delete_parser = RequestParser()
+        self.delete_parser.add_arg("id", type=int)
+
+        self.patch_parser = RequestParser()
+        self.patch_parser.add_arg("id", type=int)
+        self.patch_parser.add_arg("name", required=False)
+        self.patch_parser.add_arg("genres", type=list, required=False)
+        self.patch_parser.add_arg("biography", required=False)
+        self.patch_parser.add_arg("picture", required=False)
+
         super(Author, self).__init__()
 
     @jwt_required()

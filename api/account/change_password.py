@@ -3,24 +3,15 @@ from flask_jwt_extended import jwt_required, verify_jwt_in_request, get_jwt_iden
 from flask_restful import Resource, reqparse
 
 from helpers.init import db
+from helpers.request_parser import RequestParser
 from models.user import User
 
 
 class ChangePassword(Resource):
     def __init__(self) -> None:
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument(
-            "current_password",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.reqparse.add_argument(
-            "new_password",
-            type=str,
-            required=True,
-            location="json",
-        )
+        self.reqparse = RequestParser()
+        self.reqparse.add_arg("current_password")
+        self.reqparse.add_arg("new_password")
         super(ChangePassword, self).__init__()
 
     @jwt_required()

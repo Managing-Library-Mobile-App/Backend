@@ -4,6 +4,7 @@ from flask import jsonify, Response, make_response
 from flask_jwt_extended import get_jwt_identity, jwt_required, verify_jwt_in_request
 from flask_restful import Resource, reqparse
 
+from helpers.request_parser import RequestParser
 from models import library
 from helpers.init import db
 
@@ -12,70 +13,20 @@ from models.user import User
 
 class Library(Resource):
     def __init__(self) -> None:
-        self.get_parser = reqparse.RequestParser()
-        self.get_parser.add_argument(
-            "id",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.post_parser = reqparse.RequestParser()
-        self.post_parser.add_argument(
-            "read_books",
-            type=list,
-            required=False,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "bought_books",
-            type=list,
-            required=False,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "favourite_books",
-            type=list,
-            required=False,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "user_id",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.delete_parser = reqparse.RequestParser()
-        self.delete_parser.add_argument(
-            "id",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.patch_parser = reqparse.RequestParser()
-        self.patch_parser.add_argument(
-            "id",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "read_books",
-            type=list,
-            required=False,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "bought_books",
-            type=list,
-            required=False,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "favourite_books",
-            type=list,
-            required=False,
-            location="json",
-        )
+        self.get_parser = RequestParser()
+        self.get_parser.add_arg("id", type=int)
+        self.post_parser = RequestParser()
+        self.post_parser.add_arg("read_books", type=list, required=False)
+        self.post_parser.add_arg("bought_books", type=list, required=False)
+        self.post_parser.add_arg("favourite_books", type=list, required=False)
+        self.post_parser.add_arg("user_id", type=int)
+        self.delete_parser = RequestParser()
+        self.delete_parser.add_arg("id", type=int)
+        self.patch_parser = RequestParser()
+        self.patch_parser.add_arg("id", type=int)
+        self.patch_parser.add_arg("read_books", type=list, required=False)
+        self.patch_parser.add_arg("bought_books", type=list, required=False)
+        self.patch_parser.add_arg("favourite_books", type=list, required=False)
         super(Library, self).__init__()
 
     @jwt_required()

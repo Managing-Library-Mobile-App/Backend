@@ -4,11 +4,11 @@ import re
 import string
 
 from flask import Response, jsonify, make_response
-from flask_restful import reqparse  # type: ignore
 from loguru import logger
 from flask_restful import Resource
 from sqlalchemy import exists
 
+from helpers.request_parser import RequestParser
 from models.library import Library
 from models.user import User
 from helpers.init import db
@@ -116,15 +116,10 @@ def authenticate_register_credentials(
 
 class Register(Resource):
     def __init__(self) -> None:
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument(
-            "username",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.reqparse.add_argument("password", type=str, required=True, location="json")
-        self.reqparse.add_argument("email", type=str, required=True, location="json")
+        self.reqparse = RequestParser()
+        self.reqparse.add_arg("username")
+        self.reqparse.add_arg("password")
+        self.reqparse.add_arg("email")
         super(Register, self).__init__()
 
     def post(self) -> Response:

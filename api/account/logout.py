@@ -1,5 +1,5 @@
 from flask import jsonify, Response, make_response
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 
 from flask_jwt_extended import (
     jwt_required,
@@ -12,7 +12,6 @@ from .blocklist import BLOCK_LIST_USERS
 
 class Logout(Resource):
     def __init__(self) -> None:
-        self.reqparse = reqparse.RequestParser()
         super(Logout, self).__init__()
 
     @jwt_required()

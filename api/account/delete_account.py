@@ -1,21 +1,16 @@
 from flask import Response, make_response, jsonify
 from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
-from flask_restful import Resource, reqparse
-
+from flask_restful import Resource
 from api.account.blocklist import BLOCK_LIST_USERS
 from helpers.init import db
+from helpers.request_parser import RequestParser
 from models.user import User
 
 
 class DeleteAccount(Resource):
     def __init__(self) -> None:
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument(
-            "password",
-            type=str,
-            required=True,
-            location="json",
-        )
+        self.reqparse = RequestParser()
+        self.reqparse.add_arg("password")
         super(DeleteAccount, self).__init__()
 
     def delete(self) -> Response:

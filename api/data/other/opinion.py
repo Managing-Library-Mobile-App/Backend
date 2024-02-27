@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from flask import jsonify, Response, make_response
 from flask_jwt_extended import get_jwt_identity, jwt_required, verify_jwt_in_request
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 
+from helpers.request_parser import RequestParser
 from models import opinion
 from helpers.init import db
 
@@ -12,64 +13,19 @@ from models.user import User
 
 class Opinion(Resource):
     def __init__(self) -> None:
-        self.get_parser = reqparse.RequestParser()
-        self.get_parser.add_argument(
-            "id",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.post_parser = reqparse.RequestParser()
-        self.post_parser.add_argument(
-            "account_id",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "book_id",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "stars_count",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.post_parser.add_argument(
-            "comment",
-            type=str,
-            required=True,
-            location="json",
-        )
-        self.delete_parser = reqparse.RequestParser()
-        self.delete_parser.add_argument(
-            "id",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.patch_parser = reqparse.RequestParser()
-        self.patch_parser.add_argument(
-            "id",
-            type=int,
-            required=True,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "stars_count",
-            type=int,
-            required=False,
-            location="json",
-        )
-        self.patch_parser.add_argument(
-            "comment",
-            type=str,
-            required=False,
-            location="json",
-        )
+        self.get_parser = RequestParser()
+        self.get_parser.add_arg("id", type=int)
+        self.post_parser = RequestParser()
+        self.post_parser.add_arg("account_id", type=int)
+        self.post_parser.add_arg("book_id", type=int)
+        self.post_parser.add_arg("stars_count", type=int)
+        self.post_parser.add_arg("comment")
+        self.delete_parser = RequestParser()
+        self.delete_parser.add_arg("id", type=int)
+        self.patch_parser = RequestParser()
+        self.patch_parser.add_arg("id", type=int)
+        self.patch_parser.add_arg("stars_count", type=int, required=False)
+        self.patch_parser.add_arg("comment", type=str, required=False)
         super(Opinion, self).__init__()
 
     @jwt_required()
