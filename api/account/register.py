@@ -98,12 +98,9 @@ def authenticate_register_credentials(
             "details": "User already exists",
         }
 
-    new_user = User(
-        username=username,
-        password=password,
-        email=email,
-    )
+    new_user = User(username=username, password=password, email=email)
     db.session.add(new_user)
+    db.session.commit()
 
     new_user_library = Library(
         read_books=[], bought_books=[], favourite_books=[], user_id=new_user.id
