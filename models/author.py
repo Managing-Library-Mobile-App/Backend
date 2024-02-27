@@ -49,9 +49,9 @@ class Author(db.Model):  # type: ignore[name-defined]
         return {
             "id": self.id,
             "name": self.name,
-            "surname": self.surname,
             "genres": self.genres,
             "biography": self.biography,
+            "picture": self.picture,
             "fans_count": self.fans_count,
             "fans": self.fans,
             "released_books_count": self.released_books_count,

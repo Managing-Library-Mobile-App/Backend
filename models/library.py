@@ -2,53 +2,10 @@ from sqlalchemy.orm import backref
 
 from helpers.init import db
 from models.book import Book
-
-library_books_favourite = db.Table(
-    "favourite_books",
-    db.Column(
-        "library_id",
-        db.Integer,
-        db.ForeignKey("library.id"),
-        primary_key=True,
-    ),
-    db.Column(
-        "book_id",
-        db.Integer,
-        db.ForeignKey("book.id"),
-        primary_key=True,
-    ),
-)
-
-library_books_bought = db.Table(
-    "bought_books",
-    db.Column(
-        "library_id",
-        db.Integer,
-        db.ForeignKey("library.id"),
-        primary_key=True,
-    ),
-    db.Column(
-        "book_id",
-        db.Integer,
-        db.ForeignKey("book.id"),
-        primary_key=True,
-    ),
-)
-
-library_books_read = db.Table(
-    "read_books",
-    db.Column(
-        "library_id",
-        db.Integer,
-        db.ForeignKey("library.id"),
-        primary_key=True,
-    ),
-    db.Column(
-        "book_id",
-        db.Integer,
-        db.ForeignKey("book.id"),
-        primary_key=True,
-    ),
+from models.many_to_many_tables import (
+    library_books_read,
+    library_books_favourite,
+    library_books_bought,
 )
 
 
@@ -106,11 +63,12 @@ class Library(db.Model):  # type: ignore[name-defined]
     def as_dict(self) -> dict:
         return {
             "id": self.id,
+            "user_id": self.user_id,
             "read_books_count": self.read_books_count,
-            "favourite_books_count": self.favourite_books_count,
-            "bought_books_count": self.bought_books_count,
             "read_books": self.read_books,
+            "favourite_books_count": self.favourite_books_count,
             "favourite_books": self.favourite_books,
+            "bought_books_count": self.bought_books_count,
             "bought_books": self.bought_books,
         }
 

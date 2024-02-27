@@ -14,10 +14,10 @@ class User(db.Model):  # type: ignore[name-defined]
         passive_deletes=True,
     )
     score = db.Column(db.Integer, default=0)
+    opinions_count = db.Column(db.Integer, default=0)
     opinions = db.relationship(
         "Opinion", backref="opinion", cascade="all, delete", passive_deletes=True
     )
-    opinions_count = db.Column(db.Integer, default=0)
     followed_authors = db.relationship(
         "Author",
         secondary=authors_users,
@@ -44,10 +44,12 @@ class User(db.Model):  # type: ignore[name-defined]
             "username": self.username,
             "email": self.email,
             "password": self.password,
+            "library_id": self.library_id,
             "score": self.score,
             "opinions_count": self.opinions_count,
-            "reviews_count": self.reviews_count,
+            "opinions": self.opinions,
             "followed_authors_count": self.followed_authors_count,
-            "library_id": self.library_id,
+            "followed_authors": self.followed_authors,
             "profile_picture": self.profile_picture,
+            "is_admin": self.is_admin,
         }

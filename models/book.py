@@ -38,7 +38,7 @@ class Book(db.Model):  # type: ignore[name-defined]
         author: int,
         publishing_house: str,
         description: str,
-        genres: str,
+        genres: list,
         picture: str,
         premiere_date: datetime.datetime,
     ) -> None:
@@ -64,5 +64,4 @@ class Book(db.Model):  # type: ignore[name-defined]
             "premiere_date": self.premiere_date,
             "score": self.score,
             "opinions": self.opinions,
-            "has_audiobook": self.has_audiobook,
         }

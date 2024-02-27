@@ -28,7 +28,7 @@ class BookAnnouncement(db.Model):  # type: ignore[name-defined]
         author: int,
         publishing_house: str,
         description: str,
-        genres: str,
+        genres: list,
         picture: str,
         premiere_date: datetime.datetime,
     ) -> None:

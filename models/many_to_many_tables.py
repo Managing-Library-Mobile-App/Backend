@@ -22,3 +22,52 @@ books_opinions = db.Table(
     db.Column("opinion_id", db.Integer, db.ForeignKey("opinion.id"), primary_key=True),
     db.Column("book_id", db.Integer, db.ForeignKey("book.id"), primary_key=True),
 )
+
+
+library_books_favourite = db.Table(
+    "favourite_books",
+    db.Column(
+        "library_id",
+        db.Integer,
+        db.ForeignKey("library.id"),
+        primary_key=True,
+    ),
+    db.Column(
+        "book_id",
+        db.Integer,
+        db.ForeignKey("book.id"),
+        primary_key=True,
+    ),
+)
+
+library_books_bought = db.Table(
+    "bought_books",
+    db.Column(
+        "library_id",
+        db.Integer,
+        db.ForeignKey("library.id"),
+        primary_key=True,
+    ),
+    db.Column(
+        "book_id",
+        db.Integer,
+        db.ForeignKey("book.id"),
+        primary_key=True,
+    ),
+)
+
+library_books_read = db.Table(
+    "read_books",
+    db.Column(
+        "library_id",
+        db.Integer,
+        db.ForeignKey("library.id"),
+        primary_key=True,
+    ),
+    db.Column(
+        "book_id",
+        db.Integer,
+        db.ForeignKey("book.id"),
+        primary_key=True,
+    ),
+)
