@@ -1,12 +1,12 @@
 from flask_sqlalchemy import SQLAlchemy
 from loguru import logger
 
-from authors import authors
-from book_announcements import book_announcements
-from books import books
-from libraries import libraries
-from opinions import opinions
-from users import users, admins
+from data.test_data.authors import authors
+from data.test_data.book_announcements import book_announcements
+from data.test_data.books import books
+from data.test_data.libraries import libraries
+from data.test_data.opinions import opinions
+from data.test_data.users import users, admins
 
 from models.author import Author
 from models.book import Book
