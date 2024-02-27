@@ -5,7 +5,7 @@ from models.many_to_many_tables import authors_users
 class User(db.Model):  # type: ignore[name-defined]
     id = db.Column("id", db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False, unique=True)
-    email = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(50), nullable=False)
     library_id = db.relationship(
         "Library",

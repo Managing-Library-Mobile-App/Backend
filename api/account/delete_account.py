@@ -36,6 +36,16 @@ class DeleteAccount(Resource):
 
         user = User.query.filter_by(email=email, password=password).first()
 
+        if user.is_admin:
+            return make_response(
+                jsonify(
+                    password_changed=False,
+                    message="cannot_delete_admin",
+                    details="Admin account cannot be deleted",
+                ),
+                404,
+            )
+
         if user:
             print(BLOCK_LIST_USERS)
             BLOCK_LIST_USERS.remove(email)

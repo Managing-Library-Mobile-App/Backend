@@ -2,6 +2,8 @@ import flask_restful
 
 from api.available_versions import AvailableVersions
 from api.available_routes import AvailableRoutes
+from api.data.other.library import Library
+from api.data.other.opinion import Opinion
 from api.favicon import Favicon
 from api.account.change_password import ChangePassword
 from api.account.delete_account import DeleteAccount
@@ -73,7 +75,17 @@ def api_add_resources_v1(api: flask_restful.Api) -> None:
     # book announcement
 
     # library
+    api.add_resource(
+        Library,
+        f"{api_without_version}{data}library",
+        endpoint="library",
+    )
 
     # opinion
+    api.add_resource(
+        Opinion,
+        f"{api_without_version}{data}opinion",
+        endpoint="opinion",
+    )
 
     # user
