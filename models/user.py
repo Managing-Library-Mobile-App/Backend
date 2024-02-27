@@ -22,8 +22,7 @@ class User(db.Model):  # type: ignore[name-defined]
         "Author",
         secondary=authors_users,
         lazy="subquery",
-        backref=db.backref("authors_users", lazy=True),
-        overlaps="authors_users",
+        back_populates="fans",
     )
     followed_authors_count = db.Column(db.Integer, default=0)
     profile_picture = db.Column(

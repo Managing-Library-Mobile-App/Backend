@@ -17,8 +17,7 @@ class Author(db.Model):  # type: ignore[name-defined]
         "User",
         secondary=authors_users,
         lazy="subquery",
-        backref=db.backref("authors_users", lazy=True),
-        overlaps="authors_users,followed_authors",
+        back_populates="followed_authors",
     )
     released_books_count = db.Column(db.Integer, default=0)
     released_books = db.relationship(
