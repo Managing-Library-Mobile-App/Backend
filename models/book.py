@@ -12,7 +12,7 @@ class Book(db.Model):  # type: ignore[name-defined]
     title = db.Column(db.String(100), nullable=False)
     author = db.Column(
         db.Integer,
-        db.ForeignKey("author.id"),
+        db.ForeignKey("author.id", ondelete="CASCADE"),
         nullable=False,
         unique=False,
     )
@@ -29,6 +29,7 @@ class Book(db.Model):  # type: ignore[name-defined]
         secondary=books_opinions,
         lazy="subquery",
         backref=db.backref("books_opinions"),
+        cascade="all, delete",
     )
 
     def __init__(

@@ -10,7 +10,7 @@ class BookAnnouncement(db.Model):  # type: ignore[name-defined]
     title = db.Column(db.String(100), nullable=False)
     author = db.Column(
         db.Integer,
-        db.ForeignKey("author.id"),
+        db.ForeignKey("author.id", ondelete="CASCADE"),
         nullable=False,
         unique=False,
     )

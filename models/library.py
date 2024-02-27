@@ -25,18 +25,21 @@ class Library(db.Model):  # type: ignore[name-defined]
         secondary=library_books_read,
         lazy="subquery",
         backref=backref("library_books_read"),
+        cascade="all, delete",
     )
     favourite_books = db.relationship(
         "Book",
         secondary=library_books_favourite,
         lazy="subquery",
         backref=backref("library_books_favourite"),
+        cascade="all, delete",
     )
     bought_books = db.relationship(
         "Book",
         secondary=library_books_bought,
         lazy="subquery",
         backref=backref("library_books_bought"),
+        cascade="all, delete",
     )
 
     def __init__(

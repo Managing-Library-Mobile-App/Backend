@@ -2,8 +2,18 @@ from helpers.init import db
 
 authors_users = db.Table(
     "fans",
-    db.Column("author_id", db.Integer, db.ForeignKey("author.id"), primary_key=True),
-    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
+    db.Column(
+        "author_id",
+        db.Integer,
+        db.ForeignKey("author.id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
+    db.Column(
+        "user_id",
+        db.Integer,
+        db.ForeignKey("user.id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
 )
 
 authors_released_books = db.Table(
@@ -11,16 +21,31 @@ authors_released_books = db.Table(
     db.Column(
         "author_id",
         db.Integer,
-        db.ForeignKey("author.id"),
+        db.ForeignKey("author.id", ondelete="CASCADE"),
         primary_key=True,
     ),
-    db.Column("book_id", db.Integer, db.ForeignKey("book.id"), primary_key=True),
+    db.Column(
+        "book_id",
+        db.Integer,
+        db.ForeignKey("book.id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
 )
 
 books_opinions = db.Table(
     "books_opinions",
-    db.Column("opinion_id", db.Integer, db.ForeignKey("opinion.id"), primary_key=True),
-    db.Column("book_id", db.Integer, db.ForeignKey("book.id"), primary_key=True),
+    db.Column(
+        "opinion_id",
+        db.Integer,
+        db.ForeignKey("opinion.id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
+    db.Column(
+        "book_id",
+        db.Integer,
+        db.ForeignKey("book.id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
 )
 
 
@@ -29,13 +54,13 @@ library_books_favourite = db.Table(
     db.Column(
         "library_id",
         db.Integer,
-        db.ForeignKey("library.id"),
+        db.ForeignKey("library.id", ondelete="CASCADE"),
         primary_key=True,
     ),
     db.Column(
         "book_id",
         db.Integer,
-        db.ForeignKey("book.id"),
+        db.ForeignKey("book.id", ondelete="CASCADE"),
         primary_key=True,
     ),
 )
@@ -45,13 +70,13 @@ library_books_bought = db.Table(
     db.Column(
         "library_id",
         db.Integer,
-        db.ForeignKey("library.id"),
+        db.ForeignKey("library.id", ondelete="CASCADE"),
         primary_key=True,
     ),
     db.Column(
         "book_id",
         db.Integer,
-        db.ForeignKey("book.id"),
+        db.ForeignKey("book.id", ondelete="CASCADE"),
         primary_key=True,
     ),
 )
@@ -61,13 +86,13 @@ library_books_read = db.Table(
     db.Column(
         "library_id",
         db.Integer,
-        db.ForeignKey("library.id"),
+        db.ForeignKey("library.id", ondelete="CASCADE"),
         primary_key=True,
     ),
     db.Column(
         "book_id",
         db.Integer,
-        db.ForeignKey("book.id"),
+        db.ForeignKey("book.id", ondelete="CASCADE"),
         primary_key=True,
     ),
 )

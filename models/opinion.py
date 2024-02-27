@@ -3,8 +3,12 @@ from helpers.init import db
 
 class Opinion(db.Model):  # type: ignore[name-defined]
     id = db.Column("id", db.Integer, primary_key=True)
-    account_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    book_id = db.Column(db.Integer, db.ForeignKey("book.id"), nullable=False)
+    account_id = db.Column(
+        db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False
+    )
+    book_id = db.Column(
+        db.Integer, db.ForeignKey("book.id", ondelete="CASCADE"), nullable=False
+    )
     stars_count = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.String(1000), default="")
 

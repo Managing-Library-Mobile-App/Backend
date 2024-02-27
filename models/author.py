@@ -18,6 +18,7 @@ class Author(db.Model):  # type: ignore[name-defined]
         secondary=authors_users,
         lazy="subquery",
         back_populates="followed_authors",
+        cascade="all, delete",
     )
     released_books_count = db.Column(db.Integer, default=0)
     released_books = db.relationship(
@@ -25,6 +26,7 @@ class Author(db.Model):  # type: ignore[name-defined]
         secondary=authors_released_books,
         lazy="subquery",
         backref=db.backref("authors_released_books"),
+        cascade="all, delete",
     )
 
     def __init__(

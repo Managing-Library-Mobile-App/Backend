@@ -23,6 +23,7 @@ class User(db.Model):  # type: ignore[name-defined]
         secondary=authors_users,
         lazy="subquery",
         back_populates="fans",
+        cascade="all, delete",
     )
     followed_authors_count = db.Column(db.Integer, default=0)
     profile_picture = db.Column(
