@@ -2,6 +2,9 @@ import flask_restful
 
 from api.available_versions import AvailableVersions
 from api.available_routes import AvailableRoutes
+from api.data.authors.author import Author
+from api.data.books.book import Book
+from api.data.books.book_announcement import BookAnnouncement
 from api.data.other.library import Library
 from api.data.other.opinion import Opinion
 from api.favicon import Favicon
@@ -69,10 +72,25 @@ def api_add_resources_v1(api: flask_restful.Api) -> None:
         endpoint="check_login",
     )
     # author
+    api.add_resource(
+        Author,
+        f"{api_without_version}{data}author",
+        endpoint="author",
+    )
 
     # book
+    api.add_resource(
+        Book,
+        f"{api_without_version}{data}book",
+        endpoint="book",
+    )
 
     # book announcement
+    api.add_resource(
+        BookAnnouncement,
+        f"{api_without_version}{data}book_announcement",
+        endpoint="book_announcement",
+    )
 
     # library
     api.add_resource(

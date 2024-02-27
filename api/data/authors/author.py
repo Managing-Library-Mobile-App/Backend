@@ -1,0 +1,253 @@
+from __future__ import annotations
+
+from flask import jsonify, Response, make_response
+from flask_jwt_extended import get_jwt_identity, jwt_required, verify_jwt_in_request
+from flask_restful import Resource, reqparse
+
+from models import author
+from helpers.init import db
+
+from models.user import User
+
+
+class Author(Resource):
+    def __init__(self) -> None:
+        self.get_parser = reqparse.RequestParser()
+        self.get_parser.add_argument(
+            "id",
+            type=int,
+            required=True,
+            location="json",
+        )
+        self.post_parser = reqparse.RequestParser()
+        self.post_parser.add_argument(
+            "name",
+            type=str,
+            required=True,
+            location="json",
+        )
+        self.post_parser.add_argument(
+            "genres",
+            type=list,
+            required=True,
+            location="json",
+        )
+        self.post_parser.add_argument(
+            "biography",
+            type=str,
+            required=True,
+            location="json",
+        )
+        self.post_parser.add_argument(
+            "picture",
+            type=str,
+            required=True,
+            location="json",
+        )
+        self.post_parser.add_argument(
+            "fans",
+            type=list,
+            required=False,
+            location="json",
+        )
+        self.post_parser.add_argument(
+            "released_books",
+            type=list,
+            required=False,
+            location="json",
+        )
+        self.delete_parser = reqparse.RequestParser()
+        self.delete_parser.add_argument(
+            "id",
+            type=int,
+            required=True,
+            location="json",
+        )
+        self.patch_parser = reqparse.RequestParser()
+        self.patch_parser.add_argument(
+            "id",
+            type=int,
+            required=True,
+            location="json",
+        )
+        self.patch_parser.add_argument(
+            "name",
+            type=str,
+            required=True,
+            location="json",
+        )
+        self.patch_parser.add_argument(
+            "genres",
+            type=list,
+            required=True,
+            location="json",
+        )
+        self.patch_parser.add_argument(
+            "biography",
+            type=str,
+            required=True,
+            location="json",
+        )
+        self.patch_parser.add_argument(
+            "picture",
+            type=str,
+            required=True,
+            location="json",
+        )
+        super(Author, self).__init__()
+
+    @jwt_required()
+    def get(self) -> Response:
+        args = self.get_parser.parse_args()
+        author_id = args.get("id")
+        try:
+            verify_jwt_in_request()
+            get_jwt_identity()
+        except AttributeError:
+            return make_response(
+                jsonify(
+                    password_changed=False,
+                    message="user_not_logged_in",
+                    details="User not logged in (No session)",
+                ),
+                401,
+            )
+        author_object: author.Author = author.Author.query.filter_by(
+            id=author_id
+        ).first()
+
+        return make_response(
+            jsonify(author_object.as_dict()),
+            200,
+        )
+
+    @jwt_required()
+    def post(self) -> Response:
+        args = self.post_parser.parse_args()
+        name = args.get("name")
+        genres = args.get("genres")
+        biography = args.get("biography")
+        picture = args.get("picture")
+        fans = args.get("fans")
+        released_books = args.get("released_books")
+        try:
+            verify_jwt_in_request()
+            email = get_jwt_identity()
+        except AttributeError:
+            return make_response(
+                jsonify(
+                    message="user_not_logged_in",
+                    details="User not logged in (No session)",
+                ),
+                401,
+            )
+        user = User.query.filter_by(email=email).first()
+        if not user.is_admin:
+            return make_response(
+                jsonify(
+                    message="insufficient_permissions",
+                    details="Insufficient permissions. Requires admin status.",
+                ),
+                404,
+            )
+
+        # TODO A CO JEŚLI FANS LUB RELEASED_BOOKS O TAKICH ID NIE ISTNIEJE?
+        author_object: author.Author = author.Author(
+            name=name,
+            genres=genres,
+            biography=biography,
+            picture=picture,
+            fans=fans,
+            released_books=released_books,
+        )
+        db.session.add(author_object)
+        db.session.commit()
+
+        return make_response(
+            jsonify(message="author_created", details="Author created."),
+            200,
+        )
+
+    @jwt_required()
+    def delete(self) -> Response:
+        args = self.delete_parser.parse_args()
+        author_id = args.get("id")
+        try:
+            verify_jwt_in_request()
+            email = get_jwt_identity()
+        except AttributeError:
+            return make_response(
+                jsonify(
+                    message="user_not_logged_in",
+                    details="User not logged in (No session)",
+                ),
+                401,
+            )
+        user = User.query.filter_by(email=email).first()
+        if not user.is_admin:
+            return make_response(
+                jsonify(
+                    message="insufficient_permissions",
+                    details="Insufficient permissions. Requires admin status.",
+                ),
+                404,
+            )
+
+        author_object: author.Author = author.Author.query.filter_by(
+            id=author_id
+        ).first()
+
+        db.session.delete(author_object)
+        db.session.commit()
+
+        return make_response(
+            jsonify(message="author_deleted", details="Author deleted."),
+            200,
+        )
+
+    @jwt_required()
+    def patch(self) -> Response:
+        args = self.delete_parser.parse_args()
+        author_id = args.get("id")
+        name = args.get("name")
+        genres = args.get("genres")
+        biography = args.get("biography")
+        picture = args.get("picture")
+        try:
+            verify_jwt_in_request()
+            email = get_jwt_identity()
+        except AttributeError:
+            return make_response(
+                jsonify(
+                    message="user_not_logged_in",
+                    details="User not logged in (No session)",
+                ),
+                401,
+            )
+        user = User.query.filter_by(email=email).first()
+        if not user.is_admin:
+            return make_response(
+                jsonify(
+                    message="insufficient_permissions",
+                    details="Insufficient permissions. Requires admin status.",
+                ),
+                404,
+            )
+
+        modified_author = author.Author.query.filter_by(id=author_id).first()
+
+        if user:
+            if name:
+                modified_author.name = name
+            if genres:
+                modified_author.genres = genres
+            if biography:
+                modified_author.biography = biography
+            if picture:
+                modified_author.picture = picture
+            db.session.commit()
+
+        return make_response(
+            jsonify(message="author_modified", details="Author modified."),
+            200,
+        )
