@@ -2,8 +2,8 @@ authors = [
     {
         "name": "Angelina Beret",
         "genres": ["Action", "Romance"],
-        "biography": """The best author ever ever ever ever ever ever ever ever ever 
-                 ever ever ever ever ever ever ever ever ever ever ever ever ever""",
+        "biography": """The best author ever ever ever ever ever ever ever ever ever
+        ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1062/5000/3334",
         "fans": [1, 2, 3],
         "released_books": [1, 2, 3],
@@ -19,7 +19,7 @@ authors = [
     {
         "name": "Ania Franinska",
         "genres": [1],
-        "biography": """The best author ever ever ever ever ever ever ever ever ever 
+        "biography": """The best author ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
@@ -38,7 +38,7 @@ authors = [
     {
         "name": "Amina Marinara",
         "genres": ["Thriller"],
-        "biography": """The best author ever ever ever ever ever ever ever ever ever 
+        "biography": """The best author ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1027/2848/4272",
         "fans": [],
@@ -47,7 +47,7 @@ authors = [
     {
         "name": "Dziunia Joli",
         "genres": ["Romance"],
-        "biography": """The best author ever ever ever ever ever ever ever ever ever 
+        "biography": """The best author ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1005/5000/3333",
         "fans": [],
@@ -56,7 +56,7 @@ authors = [
     {
         "name": "Bartek Juli",
         "genres": ["Action"],
-        "biography": """The best author ever ever ever ever ever ever ever ever ever 
+        "biography": """The best author ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1062/5000/3334",
         "fans": [],
@@ -65,7 +65,7 @@ authors = [
     {
         "name": "Dziuniek Jelo",
         "genres": ["Romance"],
-        "biography": """The best author ever ever ever ever ever ever ever ever ever 
+        "biography": """The best author ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1027/2848/4272",
         "fans": [],
@@ -74,7 +74,7 @@ authors = [
     {
         "name": "Halina Jula",
         "genres": ["Action", "Thriller", "Romance"],
-        "biography": """The best author ever ever ever ever ever ever ever ever ever 
+        "biography": """The best author ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1005/5000/3333",
         "fans": [],
@@ -83,7 +83,7 @@ authors = [
     {
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
-        "biography": """The best author ever ever ever ever ever ever ever ever ever 
+        "biography": """The best author ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1062/5000/3334",
         "fans": [1, 5],
@@ -92,7 +92,7 @@ authors = [
     {
         "name": "Manga Jom",
         "genres": ["Action", "Romance"],
-        "biography": """The best author ever ever ever ever ever ever ever ever ever 
+        "biography": """The best author ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1027/2848/4272",
         "fans": [1, 2, 3, 4, 5],

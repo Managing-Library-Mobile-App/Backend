@@ -25,7 +25,7 @@ class BookAnnouncement(db.Model):  # type: ignore[name-defined]
     def __init__(
         self,
         title: str,
-        author: id,
+        author: int,
         publishing_house: str,
         description: str,
         genres: str,

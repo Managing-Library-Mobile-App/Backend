@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from flask import Response, jsonify, make_response, request
 from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
 from flask_restful import Resource
@@ -14,7 +16,10 @@ class CheckAlreadyLoggedIn(Resource):
         try:
             verify_jwt_in_request()
             current_user = get_jwt_identity()
-            token = request.headers.get("Authorization").split(" ")[1]
+            auth: str | None = request.headers.get("Authorization")
+            token: str = ""
+            if auth:
+                token = auth.split(" ")[1]
             logger.info(token)
             logger.info(BLOCK_LIST_USERS)
             logger.info(BLOCK_LIST_TOKENS)
