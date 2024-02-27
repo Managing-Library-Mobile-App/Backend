@@ -1,7 +1,5 @@
 import flask_restful
 
-from api.available_versions import AvailableVersions
-from api.available_routes import AvailableRoutes
 from api.data.authors.author import Author
 from api.data.books.book import Book
 from api.data.books.book_announcement import BookAnnouncement
@@ -26,16 +24,6 @@ def api_add_resources_v1(api: flask_restful.Api) -> None:
         Favicon,
         "/favicon.ico",
         endpoint="favicon",
-    )
-    api.add_resource(
-        AvailableRoutes,
-        f"{api_without_version}available_routes",
-        endpoint="available_routes",
-    )
-    api.add_resource(
-        AvailableVersions,
-        f"{api_without_version}available_versions",
-        endpoint="available_versions",
     )
 
     # account
