@@ -1,12 +1,11 @@
 from sqlalchemy import ARRAY
 
 from helpers.init import db
-from models.book import Book
 from models.many_to_many_tables import authors_users, authors_released_books
-from models.user import User
 
 
 class Author(db.Model):  # type: ignore[name-defined]
+    __tablename__ = "author"
     id = db.Column("id", db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     genres = db.Column(ARRAY(db.String), default=[])
@@ -61,25 +60,33 @@ class Author(db.Model):  # type: ignore[name-defined]
         }
 
     def add_fan(self, fan_id) -> None:
-        fan = User.query.get(fan_id)
+        from .user import User
+
+        fan = db.session.query(User).filter_by(id=fan_id).first()
         if fan:
             self.fans.append(fan)
             self.fans_count += 1
 
     def remove_fan(self, fan_id) -> None:
-        fan = User.query.get(fan_id)
+        from .user import User
+
+        fan = db.session.query(User).filter_by(id=fan_id).first()
         if fan:
             self.fans.remove(fan)
             self.fans_count -= 1
 
     def add_released_book(self, book_id) -> None:
-        book = Book.query.get(book_id)
+        from .book import Book
+
+        book = db.session.query(Book).filter_by(id=book_id).first()
         if book:
             self.released_books.append(book)
             self.released_books_count += 1
 
     def remove_released_book(self, book_id) -> None:
-        book = Book.query.get(book_id)
+        from .book import Book
+
+        book = db.session.query(Book).filter_by(id=book_id).first()
         if book:
             self.released_books.remove(book)
             self.released_books_count -= 1

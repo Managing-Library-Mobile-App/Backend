@@ -1,6 +1,4 @@
 from helpers.init import db
-from models.book import Book
-from models.user import User
 
 
 class Opinion(db.Model):  # type: ignore[name-defined]
@@ -26,12 +24,16 @@ class Opinion(db.Model):  # type: ignore[name-defined]
         self.comment = comment
         self.stars_count = stars_count
 
-        user = User.query.filter_by(id=account_id).first()
+        from .user import User
+
+        user = db.session.query(User).filter_by(id=account_id).first()
         user.opinions_count += 1
         user.score += 1
-        book = Book.query.filter_by(id=book_id).first()
+        from .book import Book
+
+        book = db.session.query(Book).filter_by(id=book_id).first()
         book.opinions_count += 1
-        book.stars_count += stars_count
+        book.score += stars_count
         db.session.commit()
 
     def as_dict(self) -> dict:

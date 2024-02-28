@@ -35,7 +35,7 @@ def fill_db(db: SQLAlchemy):
         new_book = Book(
             isbn=book["isbn"],
             title=book["title"],
-            author=book["author"],
+            author_id=book["author_id"],
             publishing_house=book["publishing_house"],
             description=book["description"],
             genres=book["genres"],

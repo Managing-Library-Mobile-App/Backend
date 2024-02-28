@@ -3,7 +3,6 @@ import datetime
 from sqlalchemy import ARRAY
 
 from helpers.init import db
-from models.author import Author
 from models.many_to_many_tables import books_opinions
 
 
@@ -49,7 +48,9 @@ class Book(db.Model):  # type: ignore[name-defined]
         self.title = title
         self.author_id = author_id
 
-        author = Author.query.filter_by(id=author_id).first()
+        from .author import Author
+
+        author = db.session.query(Author).filter_by(id=author_id).first()
         author.released_books_count += 1
         db.session.commit()
 

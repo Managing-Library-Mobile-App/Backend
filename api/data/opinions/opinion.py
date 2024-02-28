@@ -44,11 +44,20 @@ class Opinion(Resource):
                 ),
                 401,
             )
-        opinion_object: opinion.Opinion = opinion.Opinion.query.filter_by(
-            id=opinion_id
-        ).first()
         user = User.query.filter_by(email=email).first()
         if not user.is_admin:
+            return make_response(
+                jsonify(
+                    message="insufficient_permissions",
+                    details="Insufficient permissions. Requires admin or being library's owner",
+                ),
+                404,
+            )
+
+        if opinion_id:
+            opinion_object: opinion.Opinion = opinion.Opinion.query.filter_by(
+                id=opinion_id
+            ).first()
             if not user.id == opinion_object.user_id:
                 return make_response(
                     jsonify(
@@ -57,11 +66,18 @@ class Opinion(Resource):
                     ),
                     404,
                 )
-
-        return make_response(
-            jsonify(opinion_object.as_dict()),
-            200,
-        )
+            return make_response(
+                jsonify(opinion_object.as_dict()),
+                200,
+            )
+        if not opinion_id:
+            opinion_objects: list[opinion.Opinion] = opinion.Opinion.query.all()
+            return make_response(
+                jsonify(
+                    *[opinion_object.as_dict() for opinion_object in opinion_objects]
+                ),
+                200,
+            )
 
     @jwt_required()
     def post(self) -> Response:
@@ -145,7 +161,7 @@ class Opinion(Resource):
 
     @jwt_required()
     def patch(self) -> Response:
-        args = self.delete_parser.parse_args()
+        args = self.patch_parser.parse_args()
         opinion_id = args.get("id")
         stars_count = args.get("stars_count")
         comment = args.get("comment")
