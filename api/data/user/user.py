@@ -11,7 +11,7 @@ from models import user
 class User(Resource):
     def __init__(self) -> None:
         self.get_parser = RequestParser()
-        self.get_parser.add_arg("id", type=int)
+        self.get_parser.add_arg("id", type=int, required=False)
         super(User, self).__init__()
 
     @jwt_required()
@@ -35,7 +35,7 @@ class User(Resource):
             return make_response(
                 jsonify(
                     message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin or being library's owner",
+                    details="Insufficient permissions. Requires admin or being the user",
                 ),
                 404,
             )

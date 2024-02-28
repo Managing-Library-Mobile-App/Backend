@@ -14,7 +14,7 @@ from models.user import User
 class BookAnnouncement(Resource):
     def __init__(self) -> None:
         self.get_parser = RequestParser()
-        self.get_parser.add_arg("id", type=int)
+        self.get_parser.add_arg("id", type=int, required=False)
         self.post_parser = RequestParser()
         self.post_parser.add_arg("title")
         self.post_parser.add_arg("author")
@@ -52,13 +52,23 @@ class BookAnnouncement(Resource):
                 ),
                 401,
             )
-        book_announcement_object: book_announcement.BookAnnouncement = (
-            book_announcement.BookAnnouncement.query.filter_by(
-                id=book_announcement_id
-            ).first()
-        )
+        if book_announcement_id:
+            book_announcement_object: book_announcement.BookAnnouncement = (
+                book_announcement.BookAnnouncement.query.filter_by(
+                    id=book_announcement_id
+                ).first()
+            )
+            return make_response(
+                jsonify(book_announcement_object.as_dict()),
+                200,
+            )
+        book_announcement_objects: list[
+            book_announcement.BookAnnouncement
+        ] = book_announcement.BookAnnouncement.query.all()
         return make_response(
-            jsonify(book_announcement_object.as_dict()),
+            jsonify(
+                *[book_object.as_dict() for book_object in book_announcement_objects]
+            ),
             200,
         )
 

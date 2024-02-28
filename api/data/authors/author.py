@@ -14,7 +14,7 @@ from models.user import User
 class Author(Resource):
     def __init__(self) -> None:
         self.get_parser = RequestParser()
-        self.get_parser.add_arg("id", type=int)
+        self.get_parser.add_arg("id", type=int, required=False)
 
         self.post_parser = RequestParser()
         self.post_parser.add_arg("name")
@@ -52,12 +52,17 @@ class Author(Resource):
                 ),
                 401,
             )
-        author_object: author.Author = author.Author.query.filter_by(
-            id=author_id
-        ).first()
-
+        if author_id:
+            author_object: author.Author = author.Author.query.filter_by(
+                id=author_id
+            ).first()
+            return make_response(
+                jsonify(author_object.as_dict()),
+                200,
+            )
+        author_objects: list[author.Author] = author.Author.query.all()
         return make_response(
-            jsonify(author_object.as_dict()),
+            jsonify(*[author_object.as_dict() for author_object in author_objects]),
             200,
         )
 

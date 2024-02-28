@@ -14,7 +14,7 @@ from models.user import User
 class Opinion(Resource):
     def __init__(self) -> None:
         self.get_parser = RequestParser()
-        self.get_parser.add_arg("id", type=int)
+        self.get_parser.add_arg("id", type=int, required=False)
         self.post_parser = RequestParser()
         self.post_parser.add_arg("account_id", type=int)
         self.post_parser.add_arg("book_id", type=int)
@@ -49,7 +49,7 @@ class Opinion(Resource):
             return make_response(
                 jsonify(
                     message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin or being library's owner",
+                    details="Insufficient permissions. Requires admin or being opinion's owner",
                 ),
                 404,
             )

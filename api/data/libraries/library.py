@@ -14,7 +14,7 @@ from models.user import User
 class Library(Resource):
     def __init__(self) -> None:
         self.get_parser = RequestParser()
-        self.get_parser.add_arg("id", type=int)
+        self.get_parser.add_arg("id", type=int, required=False)
         self.post_parser = RequestParser()
         self.post_parser.add_arg("read_books", type=list, required=False)
         self.post_parser.add_arg("bought_books", type=list, required=False)
@@ -45,22 +45,39 @@ class Library(Resource):
                 ),
                 401,
             )
-        library_object: library.Library = library.Library.query.filter_by(
-            id=library_id
-        ).first()
         user = User.query.filter_by(email=email).first()
-        if not user.is_admin:
-            if not user.id == library_object.user_id:
+        if library_id:
+            library_object: library.Library = library.Library.query.filter_by(
+                id=library_id
+            ).first()
+            # TODO USERA (po emailu) MOŻE NIE ZNALEŹĆ, PO ZRESTARTOWANIU APKI TOKEN DALEJ DZIAŁA
+            # TODO ALE JUŻ EMAILA NIE WIDZI I TU SIE WYWALA!!!, jakimś cudem verify przechodzi
+            # TODO email jest, ale usera może nie być. Należy resetować listę i
+            # TODO tokeny przy każdym resecie
+            if not user.is_admin:
+                if not user.id == library_object.user_id:
+                    return make_response(
+                        jsonify(
+                            message="insufficient_permissions",
+                            details="Insufficient permissions. Requires admin or being library's owner",
+                        ),
+                        404,
+                    )
                 return make_response(
-                    jsonify(
-                        message="insufficient_permissions",
-                        details="Insufficient permissions. Requires admin or being library's owner",
-                    ),
-                    404,
+                    jsonify(library_object.as_dict()),
+                    200,
                 )
-
+        if not user.is_admin:
+            return make_response(
+                jsonify(
+                    message="insufficient_permissions",
+                    details="Insufficient permissions. Requires admin or being library's owner",
+                ),
+                404,
+            )
+        library_objects: list[library.Library] = library.Library.query.all()
         return make_response(
-            jsonify(library_object.as_dict()),
+            jsonify(*[library_object.as_dict() for library_object in library_objects]),
             200,
         )
 
