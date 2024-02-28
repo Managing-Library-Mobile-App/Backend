@@ -48,9 +48,11 @@ class User(db.Model):  # type: ignore[name-defined]
             "library_id": self.library_id,
             "score": self.score,
             "opinions_count": self.opinions_count,
-            "opinions": self.opinions,
+            "opinions": [opinion.id for opinion in self.opinions],
             "followed_authors_count": self.followed_authors_count,
-            "followed_authors": self.followed_authors,
+            "followed_authors": [
+                followed_author.id for followed_author in self.followed_authors
+            ],
             "profile_picture": self.profile_picture,
             "is_admin": self.is_admin,
         }

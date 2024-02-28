@@ -65,7 +65,7 @@ class Book(db.Model):  # type: ignore[name-defined]
             "id": self.id,
             "isbn": self.isbn,
             "title": self.title,
-            "author": self.author,
+            "author_id": self.author_id,
             "publishing_house": self.publishing_house,
             "description": self.description,
             "genres": self.genres,
@@ -73,5 +73,5 @@ class Book(db.Model):  # type: ignore[name-defined]
             "premiere_date": self.premiere_date,
             "score": self.score,
             "opinions_count": self.opinions_count,
-            "opinions": self.opinions,
+            "opinions": [opinion.id for opinion in self.opinions],
         }
