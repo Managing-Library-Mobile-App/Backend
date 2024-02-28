@@ -116,22 +116,14 @@ def authenticate_register_credentials(
 
 class Register(Resource):
     def __init__(self) -> None:
-        logger.info("BBBB")
-        self.reqparse = RequestParser()
-        logger.info("CCCC")
-        self.reqparse.add_arg("username")
-        self.reqparse.add_arg("password")
-        self.reqparse.add_arg("email")
-        logger.info("DDDD")
+        self.post_parser = RequestParser()
+        self.post_parser.add_arg("username")
+        self.post_parser.add_arg("password")
+        self.post_parser.add_arg("email")
         super(Register, self).__init__()
-        logger.info("EEE")
 
     def post(self) -> Response:
-        logger.info("FFFF")
-        logger.info(self.reqparse)
-        logger.info(type(self.reqparse))
-        args = self.reqparse.parse_args()
-        logger.info("AAAAAA")
+        args = self.post_parser.parse_args()
         username = args.get("username")
         password = args.get("password")
         email = args.get("email")

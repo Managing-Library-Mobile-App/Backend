@@ -9,12 +9,12 @@ from models.user import User
 
 class DeleteAccount(Resource):
     def __init__(self) -> None:
-        self.reqparse = RequestParser()
-        self.reqparse.add_arg("password")
+        self.delete_parser = RequestParser()
+        self.delete_parser.add_arg("password")
         super(DeleteAccount, self).__init__()
 
     def delete(self) -> Response:
-        args = self.reqparse.parse_args()
+        args = self.delete_parser.parse_args()
         password = args.get("password")
         try:
             verify_jwt_in_request()

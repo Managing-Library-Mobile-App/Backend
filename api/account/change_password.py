@@ -1,6 +1,6 @@
 from flask import Response, make_response, jsonify
 from flask_jwt_extended import jwt_required, verify_jwt_in_request, get_jwt_identity
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 
 from helpers.init import db
 from helpers.request_parser import RequestParser
@@ -9,14 +9,14 @@ from models.user import User
 
 class ChangePassword(Resource):
     def __init__(self) -> None:
-        self.reqparse = RequestParser()
-        self.reqparse.add_arg("current_password")
-        self.reqparse.add_arg("new_password")
+        self.patch_parser = RequestParser()
+        self.patch_parser.add_arg("current_password")
+        self.patch_parser.add_arg("new_password")
         super(ChangePassword, self).__init__()
 
     @jwt_required()
     def patch(self) -> Response:
-        args = self.reqparse.parse_args()
+        args = self.patch_parser.parse_args()
         current_password = args.get("current_password")
         new_password = args.get("new_password")
         try:

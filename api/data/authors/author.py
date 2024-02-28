@@ -14,7 +14,7 @@ from models.user import User
 class Author(Resource):
     def __init__(self) -> None:
         self.get_parser = RequestParser()
-        self.get_parser.add_arg("id", type="int")
+        self.get_parser.add_arg("id", type=int)
 
         self.post_parser = RequestParser()
         self.post_parser.add_arg("name")

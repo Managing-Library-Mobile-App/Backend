@@ -148,13 +148,13 @@ def authenticate_login_credentials(email, password) -> dict[str, str | None]:
 
 class Login(Resource):
     def __init__(self) -> None:
-        self.reqparse = RequestParser()
-        self.reqparse.add_arg("email")
-        self.reqparse.add_arg("password")
+        self.post_parser = RequestParser()
+        self.post_parser.add_arg("email")
+        self.post_parser.add_arg("password")
         super(Login, self).__init__()
 
     def post(self) -> Response:
-        args = self.reqparse.parse_args()
+        args = self.post_parser.parse_args()
         email = args.get("email")
         password = args.get("password")
         login_output = authenticate_login(email, password)
