@@ -2,9 +2,9 @@ import flask_restful
 
 from api.data.authors.author import Author
 from api.data.books.book import Book
-from api.data.books.book_announcement import BookAnnouncement
-from api.data.other.library import Library
-from api.data.other.opinion import Opinion
+from api.data.book_announcements.book_announcement import BookAnnouncement
+from api.data.libraries.library import Library
+from api.data.opinions.opinion import Opinion
 from api.favicon import Favicon
 from api.account.change_password import ChangePassword
 from api.account.delete_account import DeleteAccount
@@ -93,5 +93,3 @@ def api_add_resources_v1(api: flask_restful.Api) -> None:
         f"{api_without_version}{data}opinion",
         endpoint="opinion",
     )
-
-    # user

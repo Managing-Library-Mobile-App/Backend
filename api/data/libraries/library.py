@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from flask import jsonify, Response, make_response
 from flask_jwt_extended import get_jwt_identity, jwt_required, verify_jwt_in_request
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 
 from helpers.request_parser import RequestParser
 from models import library
