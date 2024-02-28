@@ -4,7 +4,7 @@ books = [
     {
         "isbn": "01010101010101",
         "title": "The Great Britain",
-        "author": 1,
+        "author_id": 1,
         "publishing_house": "Jans House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Action"],
@@ -14,7 +14,7 @@ books = [
     {
         "isbn": "01010101010102",
         "title": "The Great Britain",
-        "author": 1,
+        "author_id": 1,
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Action"],
@@ -24,7 +24,7 @@ books = [
     {
         "isbn": "01010101010103",
         "title": "The Great Britain",
-        "author": 1,
+        "author_id": 1,
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Action"],
@@ -34,7 +34,7 @@ books = [
     {
         "isbn": "01010101010104",
         "title": "The Great Britain",
-        "author": 2,
+        "author_id": 2,
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Action"],
@@ -44,7 +44,7 @@ books = [
     {
         "isbn": "01010101010105",
         "title": "The Great Britain",
-        "author": 2,
+        "author_id": 2,
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Action"],
@@ -54,7 +54,7 @@ books = [
     {
         "isbn": "01010101010106",
         "title": "The Great Britain",
-        "author": 2,
+        "author_id": 2,
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Romance"],
@@ -64,7 +64,7 @@ books = [
     {
         "isbn": "01010101010107",
         "title": "The Great Britain",
-        "author": 3,
+        "author_id": 3,
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Romance"],
@@ -74,7 +74,7 @@ books = [
     {
         "isbn": "01010101010108",
         "title": "The Great Britain",
-        "author": 4,
+        "author_id": 4,
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Romance"],
@@ -84,7 +84,7 @@ books = [
     {
         "isbn": "01010101010109",
         "title": "The Great Britain",
-        "author": 5,
+        "author_id": 5,
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Romance"],
@@ -94,7 +94,7 @@ books = [
     {
         "isbn": "01010101010111",
         "title": "The Great Britain",
-        "author": 5,
+        "author_id": 5,
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Romance"],
@@ -104,7 +104,7 @@ books = [
     {
         "isbn": "01010101010121",
         "title": "The Great Britain",
-        "author": 5,
+        "author_id": 5,
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Drama"],
@@ -114,7 +114,7 @@ books = [
     {
         "isbn": "01010101010131",
         "title": "The Great Britain",
-        "author": 5,
+        "author_id": 5,
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Horror"],
@@ -124,7 +124,7 @@ books = [
     {
         "isbn": "01010101010141",
         "title": "The Great Britain",
-        "author": 5,
+        "author_id": 5,
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Politics"],
@@ -134,7 +134,7 @@ books = [
     {
         "isbn": "01010101010151",
         "title": "The Great Britain",
-        "author": 5,
+        "author_id": 5,
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Law"],
@@ -144,7 +144,7 @@ books = [
     {
         "isbn": "01010101010161",
         "title": "The Great Britain",
-        "author": 3,
+        "author_id": 3,
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Comedy"],
@@ -154,7 +154,7 @@ books = [
     {
         "isbn": "01010101010171",
         "title": "The Great Britain",
-        "author": 2,
+        "author_id": 2,
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Botany"],

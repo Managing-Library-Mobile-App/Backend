@@ -3,6 +3,7 @@ import datetime
 from sqlalchemy import ARRAY
 
 from helpers.init import db
+from models.author import Author
 from models.many_to_many_tables import books_opinions
 
 
@@ -10,7 +11,7 @@ class Book(db.Model):  # type: ignore[name-defined]
     id = db.Column("id", db.Integer, primary_key=True)
     isbn = db.Column(db.String(20), nullable=False)
     title = db.Column(db.String(100), nullable=False)
-    author = db.Column(
+    author_id = db.Column(
         db.Integer,
         db.ForeignKey("author.id", ondelete="CASCADE"),
         nullable=False,
@@ -24,6 +25,7 @@ class Book(db.Model):  # type: ignore[name-defined]
     )
     premiere_date = db.Column(db.DateTime, nullable=False)
     score = db.Column(db.Integer, default=0)
+    opinions_count = db.Column(db.Integer, default=0)
     opinions = db.relationship(
         "Opinion",
         secondary=books_opinions,
@@ -36,7 +38,7 @@ class Book(db.Model):  # type: ignore[name-defined]
         self,
         isbn: str,
         title: str,
-        author: int,
+        author_id: int,
         publishing_house: str,
         description: str,
         genres: list,
@@ -45,7 +47,12 @@ class Book(db.Model):  # type: ignore[name-defined]
     ) -> None:
         self.isbn = isbn
         self.title = title
-        self.author = author
+        self.author_id = author_id
+
+        author = Author.query.filter_by(id=author_id).first()
+        author.released_books_count += 1
+        db.session.commit()
+
         self.publishing_house = publishing_house
         self.description = description
         self.genres = genres
@@ -64,5 +71,6 @@ class Book(db.Model):  # type: ignore[name-defined]
             "picture": self.picture,
             "premiere_date": self.premiere_date,
             "score": self.score,
+            "opinions_count": self.opinions_count,
             "opinions": self.opinions,
         }

@@ -18,7 +18,7 @@ class Book(Resource):
         self.post_parser = RequestParser()
         self.post_parser.add_arg("isbn", type=int)
         self.post_parser.add_arg("title")
-        self.post_parser.add_arg("author")
+        self.post_parser.add_arg("author_id")
         self.post_parser.add_arg("publishing_house")
         self.post_parser.add_arg("description")
         self.post_parser.add_arg("genres", type=list)
@@ -30,7 +30,7 @@ class Book(Resource):
         self.patch_parser.add_arg("id", type=int)
         self.patch_parser.add_arg("isbn")
         self.patch_parser.add_arg("title")
-        self.patch_parser.add_arg("author")
+        self.patch_parser.add_arg("author_id")
         self.patch_parser.add_arg("publishing_house")
         self.patch_parser.add_arg("description")
         self.patch_parser.add_arg("genres", type=list)
@@ -65,7 +65,7 @@ class Book(Resource):
         args = self.post_parser.parse_args()
         isbn = args.get("isbn")
         title = args.get("title")
-        author = args.get("author")
+        author_id = args.get("author_id")
         publishing_house = args.get("publishing_house")
         description = args.get("description")
         genres = args.get("genres")
@@ -96,7 +96,7 @@ class Book(Resource):
         book_object: book.Book = book.Book(
             isbn=isbn,
             title=title,
-            author=author,
+            author_id=author_id,
             publishing_house=publishing_house,
             description=description,
             genres=genres,
