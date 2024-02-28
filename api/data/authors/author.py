@@ -97,8 +97,8 @@ class Author(Resource):
             genres=genres,
             biography=biography,
             picture=picture,
-            fans=fans,
-            released_books=released_books,
+            fans=fans if fans else [],
+            released_books=released_books if released_books else [],
         )
         db.session.add(author_object)
         db.session.commit()

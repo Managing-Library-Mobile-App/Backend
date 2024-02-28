@@ -94,9 +94,9 @@ class Library(Resource):
 
         # TODO A CO JEŚLI USER O TAKIM ID NIE ISTNIEJE?
         library_object: library.Library = library.Library(
-            read_books=read_books,
-            bought_books=bought_books,
-            favourite_books=favourite_books,
+            read_books=read_books if read_books else [],
+            bought_books=bought_books if bought_books else [],
+            favourite_books=favourite_books if favourite_books else [],
             user_id=user_id,
         )
         db.session.add(library_object)
