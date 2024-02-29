@@ -4,6 +4,7 @@ from flask import jsonify, Response, make_response
 from flask_jwt_extended import get_jwt_identity, jwt_required, verify_jwt_in_request
 from flask_restful import Resource
 
+from helpers.jwt_auth import verify_jwt_token
 from helpers.request_parser import RequestParser
 from models import library
 from helpers.init import db
@@ -33,18 +34,11 @@ class Library(Resource):
     def get(self) -> Response:
         args = self.get_parser.parse_args()
         library_id = args.get("id")
-        try:
-            verify_jwt_in_request()
-            email = get_jwt_identity()
-        except AttributeError:
-            return make_response(
-                jsonify(
-                    password_changed=False,
-                    message="user_not_logged_in",
-                    details="User not logged in (No session)",
-                ),
-                401,
-            )
+        verification_output = verify_jwt_token()
+        if type(verification_output) is str:
+            email = verification_output
+        else:
+            return make_response(verification_output, 401)
         user = User.query.filter_by(email=email).first()
         if library_id:
             library_object: library.Library = library.Library.query.filter_by(
@@ -88,17 +82,11 @@ class Library(Resource):
         bought_books = args.get("bought_books")
         favourite_books = args.get("favourite_books")
         user_id = args.get("user_id")
-        try:
-            verify_jwt_in_request()
-            email = get_jwt_identity()
-        except AttributeError:
-            return make_response(
-                jsonify(
-                    message="user_not_logged_in",
-                    details="User not logged in (No session)",
-                ),
-                401,
-            )
+        verification_output = verify_jwt_token()
+        if type(verification_output) is str:
+            email = verification_output
+        else:
+            return make_response(verification_output, 401)
         user = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return make_response(
@@ -128,17 +116,11 @@ class Library(Resource):
     def delete(self) -> Response:
         args = self.delete_parser.parse_args()
         library_id = args.get("id")
-        try:
-            verify_jwt_in_request()
-            email = get_jwt_identity()
-        except AttributeError:
-            return make_response(
-                jsonify(
-                    message="user_not_logged_in",
-                    details="User not logged in (No session)",
-                ),
-                401,
-            )
+        verification_output = verify_jwt_token()
+        if type(verification_output) is str:
+            email = verification_output
+        else:
+            return make_response(verification_output, 401)
         user = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return make_response(
@@ -168,17 +150,11 @@ class Library(Resource):
         read_books = args.get("read_books")
         bought_books = args.get("bought_books")
         favourite_books = args.get("favourite_books")
-        try:
-            verify_jwt_in_request()
-            email = get_jwt_identity()
-        except AttributeError:
-            return make_response(
-                jsonify(
-                    message="user_not_logged_in",
-                    details="User not logged in (No session)",
-                ),
-                401,
-            )
+        verification_output = verify_jwt_token()
+        if type(verification_output) is str:
+            email = verification_output
+        else:
+            return make_response(verification_output, 401)
         user = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return make_response(

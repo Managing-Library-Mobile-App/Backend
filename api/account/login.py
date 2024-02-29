@@ -5,19 +5,12 @@ import re
 from typing import Any
 
 from flask import jsonify, Response, make_response
-from flask_jwt_extended import (
-    create_access_token,
-)
+from flask_jwt_extended import create_access_token
 from loguru import logger
 from flask_restful import Resource
 
 from api.account.blocklist import BLOCK_LIST_USERS, BLOCK_LIST_TOKENS
 from helpers.init import cache
-from api.account.register import (
-    contains_uppercase_char,
-    contains_illegal_char,
-    contains_special_char,
-)
 from helpers.request_parser import RequestParser
 
 from models.user import User
@@ -88,41 +81,20 @@ class InvalidLoginAttemptsCache(object):
 
 
 def authenticate_login_credentials(email, password) -> dict[str, str | None]:
-    regex = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
-    if not re.fullmatch(regex, email):
+    if not re.fullmatch(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b", email):
         return {
-            "message": "wrong_email_format",
-            "details": "Wrong email format",
+            "message": "email_wrong_format",
+            "details": "Wrong email format.",
         }
-    if not contains_special_char(password):
+    if not re.fullmatch(
+        r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{10,50}$",
+        password,
+    ):
         return {
-            "token": None,
-            "message": "not_contains_special_char_password",
-            "details": "No special characters in password. Required at least one",
-        }
-    if contains_illegal_char(password):
-        return {
-            "token": None,
-            "message": "contains_illegal_char_password",
-            "details": "Illegal characters in password such as space",
-        }
-    if not contains_uppercase_char(password):
-        return {
-            "token": None,
-            "message": "not_contains_uppercase_char_password",
-            "details": "Password has no uppercase letters. Required at least one.",
-        }
-    if len(password) < 10:
-        return {
-            "token": None,
-            "message": "password_too_short",
-            "details": "Password should have a minimum of 10 characters",
-        }
-    if len(password) > 50:
-        return {
-            "token": None,
-            "message": "password_too_long",
-            "details": "Password should have 50 characters max",
+            "message": "password_wrong_format",
+            "details": """Wrong password format. Password should have from 10 to 50 characters.
+            It should contain at least one upper letter, at least 1 lower letter, at least 1 number and 
+            at least one special character""",
         }
 
     user = None
@@ -157,6 +129,17 @@ class Login(Resource):
         args = self.post_parser.parse_args()
         email = args.get("email")
         password = args.get("password")
+        if email in BLOCK_LIST_USERS:
+            logger.info(BLOCK_LIST_USERS)
+            logger.info(email)
+            return make_response(
+                jsonify(
+                    password_changed=False,
+                    message="user_already_logged_in",
+                    details="User already logged in",
+                ),
+                401,
+            )
         login_output = authenticate_login(email, password)
 
         if login_output["message"] == "login_successful":

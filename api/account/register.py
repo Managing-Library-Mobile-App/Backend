@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import re
-import string
 
 from flask import Response, jsonify, make_response
 from loguru import logger
@@ -14,78 +13,30 @@ from models.user import User
 from helpers.init import db
 
 
-def contains_special_char(characters: str) -> bool:
-    for character in characters:
-        if character in string.punctuation:
-            return True
-    return False
-
-
-def contains_illegal_char(characters: str) -> bool:
-    if characters.__contains__(" "):
-        return True
-    return False
-
-
-def contains_uppercase_char(characters: str) -> bool:
-    if characters.lower() == characters:
-        return False
-    return True
-
-
 def authenticate_register_credentials(
     username: str, password: str, email: str
 ) -> dict[str, str | None]:
-    if contains_illegal_char(email):
-        return {
-            "message": "contains_illegal_char_email",
-            "details": "Illegal characters in email such as space",
-        }
-    if not contains_special_char(password):
-        return {
-            "message": "not_contains_special_char_password",
-            "details": "No special characters in password. Required at least one",
-        }
-    if contains_illegal_char(password):
-        return {
-            "message": "contains_illegal_char_password",
-            "details": "Illegal characters in password such as space",
-        }
-    if not contains_uppercase_char(password):
-        return {
-            "message": "not_contains_uppercase_char_password",
-            "details": "Password has no uppercase letters. Required at least one.",
-        }
-    if len(email) < 10:
-        return {
-            "message": "email_too_short",
-            "details": "email should have a minimum of 10 characters",
-        }
-    if len(email) > 50:
-        return {
-            "message": "email_too_long",
-            "details": "email should have 50 characters max",
-        }
-    if len(password) < 10:
-        return {
-            "message": "password_too_short",
-            "details": "Password should have a minimum of 10 characters",
-        }
-    if len(password) > 50:
-        return {
-            "message": "password_too_long",
-            "details": "Passwrod should have 50 characters max",
-        }
-    if len(email) > 50:
-        return {
-            "message": "email_too_long",
-            "details": "Email should have 50 characters max",
-        }
-    regex = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
-    if not re.fullmatch(regex, email):
+    if not re.fullmatch(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b", email):
         return {
             "message": "email_wrong_format",
-            "details": "Wrong email format",
+            "details": "Wrong email format.",
+        }
+    if not re.fullmatch(r"^[a-zA-Z0-9_-]{10,50}$", username):
+        return {
+            "message": "username_wrong_format",
+            "details": "Wrong username format. It should be from 10 to 50 characters "
+            "and it can only contain upper letters, lower letters, "
+            "numbers and signs: - and _",
+        }
+    if not re.fullmatch(
+        r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{10,50}$",
+        password,
+    ):
+        return {
+            "message": "password_wrong_format",
+            "details": """Wrong password format. Password should have from 10 to 50 characters.
+            It should contain at least one upper letter, at least 1 lower letter, at least 1 number and 
+            at least one special character""",
         }
 
     user_already_exists = db.session.query(

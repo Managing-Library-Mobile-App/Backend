@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, verify_jwt_in_request, get_jwt_iden
 from flask_restful import Resource
 
 from helpers.init import db
+from helpers.jwt_auth import verify_jwt_token
 from helpers.request_parser import RequestParser
 from models.user import User
 
@@ -19,18 +20,11 @@ class ChangePassword(Resource):
         args = self.patch_parser.parse_args()
         current_password = args.get("current_password")
         new_password = args.get("new_password")
-        try:
-            verify_jwt_in_request()
-            email = get_jwt_identity()
-        except AttributeError:
-            return make_response(
-                jsonify(
-                    password_changed=False,
-                    message="user_not_logged_in",
-                    details="User not logged in (No session)",
-                ),
-                401,
-            )
+        verification_output = verify_jwt_token()
+        if type(verification_output) is str:
+            email = verification_output
+        else:
+            return make_response(verification_output, 401)
 
         user = User.query.filter_by(email=email, password=current_password).first()
         if user:
