@@ -1,5 +1,6 @@
 import flask_restful
 
+from api.account.logged_in_users import LoggedInUsers
 from api.data.authors.author import Author
 from api.data.books.book import Book
 from api.data.book_announcements.book_announcement import BookAnnouncement
@@ -9,7 +10,6 @@ from api.favicon import Favicon
 from api.account.change_password import ChangePassword
 from api.account.delete_account import DeleteAccount
 from api.account.login import Login
-from api.account.already_logged_in import CheckAlreadyLoggedIn
 from api.account.logout import Logout
 from api.account.register import Register
 
@@ -55,10 +55,11 @@ def api_add_resources_v1(api: flask_restful.Api) -> None:
     )
 
     api.add_resource(
-        CheckAlreadyLoggedIn,
-        f"{api_without_version}{account}check_login",
-        endpoint="check_login",
+        LoggedInUsers,
+        f"{api_without_version}{account}logged_in_users",
+        endpoint="logged_in_users",
     )
+
     # author
     api.add_resource(
         Author,
