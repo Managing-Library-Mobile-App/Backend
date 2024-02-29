@@ -1,7 +1,7 @@
 import datetime
 import os
 
-from flask import Flask
+from flask import Flask, make_response, jsonify
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_restful import Api
@@ -23,6 +23,7 @@ from models.user import User  # noqa
 
 from data.test_data.fill_db_script import fill_db
 
+from flask_jwt_extended import unset_access_cookies
 
 app = Flask(__name__)
 api = Api(app)
@@ -66,6 +67,12 @@ if __name__ == "__main__":
         db.drop_all()
         db.create_all()
         fill_db(db)
+        response = make_response(
+            jsonify({"message": "All tokens have been revoked"}), 200
+        )
+        unset_access_cookies(response)
+        BLOCK_LIST_USERS = []
+        BLOCK_LIST_TOKENS = []
     # App setup
     run_simple(
         hostname="0.0.0.0",
