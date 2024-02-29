@@ -1,4 +1,6 @@
-opinions = [
+from typing import Any
+
+opinions: list[dict[str, Any]] = [
     {
         "account_id": 1,
         "book_id": 1,

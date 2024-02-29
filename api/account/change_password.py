@@ -1,5 +1,5 @@
 from flask import Response, make_response, jsonify
-from flask_jwt_extended import jwt_required, verify_jwt_in_request, get_jwt_identity
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
 from helpers.init import db

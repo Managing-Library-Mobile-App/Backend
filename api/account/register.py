@@ -35,7 +35,7 @@ def authenticate_register_credentials(
         return {
             "message": "password_wrong_format",
             "details": """Wrong password format. Password should have from 10 to 50 characters.
-            It should contain at least one upper letter, at least 1 lower letter, at least 1 number and 
+            It should contain at least one upper letter, at least 1 lower letter, at least 1 number and
             at least one special character""",
         }
 

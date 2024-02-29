@@ -1,4 +1,8 @@
-authors = [
+from __future__ import annotations
+
+from typing import Any
+
+authors: list[dict[str, Any]] = [
     {
         "name": "Angelina Beret",
         "genres": ["Action", "Romance"],

@@ -1,4 +1,6 @@
-libraries = [
+from typing import Any
+
+libraries: list[dict[str, Any]] = [
     {"read_books": [1, 2, 3], "favourite_books": [1, 2], "bought_books": [3]},
     {"read_books": [1], "favourite_books": [1], "bought_books": [1]},
     {"read_books": [1, 2, 3], "favourite_books": [1, 2, 3], "bought_books": [1, 2, 3]},

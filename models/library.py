@@ -68,13 +68,15 @@ class Library(db.Model):  # type: ignore[name-defined]
             "id": self.id,
             "user_id": self.user_id,
             "read_books_count": self.read_books_count,
-            "read_books": [read_book.id for read_book in self.read_books],
+            "read_books": [read_book.id for read_book in self.read_books],  # type: ignore
             "favourite_books_count": self.favourite_books_count,
             "favourite_books": [
-                favourite_book.id for favourite_book in self.favourite_books
+                favourite_book.id for favourite_book in self.favourite_books  # type: ignore
             ],
             "bought_books_count": self.bought_books_count,
-            "bought_books": [bought_book.id for bought_book in self.bought_books],
+            "bought_books": [
+                bought_book.id for bought_book in self.bought_books  # type: ignore
+            ],
         }
 
     def add_read_book(self, book) -> None:

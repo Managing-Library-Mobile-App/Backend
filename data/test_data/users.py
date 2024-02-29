@@ -1,4 +1,6 @@
-users = [
+from typing import Any
+
+users: list[dict[str, Any]] = [
     {
         "username": "Adamus-1234",
         "email": "adamus@gmail.com",
@@ -10,7 +12,7 @@ users = [
     {"username": "Marcin-1234", "email": "marcin@gmail.com", "password": "Marcin-1234"},
 ]
 
-admins = [
+admins: list[dict[str, Any]] = [
     {
         "username": "AdminAdmin-1234",
         "email": "adminadmin@gmail.com",

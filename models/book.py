@@ -51,8 +51,9 @@ class Book(db.Model):  # type: ignore[name-defined]
         from .author import Author
 
         author = db.session.query(Author).filter_by(id=author_id).first()
-        author.released_books_count += 1
-        db.session.commit()
+        if author:
+            author.released_books_count += 1
+            db.session.commit()
 
         self.publishing_house = publishing_house
         self.description = description
@@ -73,5 +74,5 @@ class Book(db.Model):  # type: ignore[name-defined]
             "premiere_date": self.premiere_date,
             "score": self.score,
             "opinions_count": self.opinions_count,
-            "opinions": [opinion.id for opinion in self.opinions],
+            "opinions": [opinion.id for opinion in self.opinions],  # type: ignore
         }

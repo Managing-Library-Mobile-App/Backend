@@ -1,6 +1,7 @@
 from datetime import datetime
+from typing import Any
 
-book_announcements = [
+book_announcements: list[dict[str, Any]] = [
     {
         "title": "The Great Britain",
         "author": 1,

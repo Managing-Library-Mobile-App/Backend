@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from flask import jsonify, Response, make_response
-from flask_jwt_extended import get_jwt_identity, jwt_required, verify_jwt_in_request
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
 from helpers.jwt_auth import verify_jwt_token
@@ -43,7 +43,7 @@ class Author(Resource):
         author_id = args.get("id")
         verification_output = verify_jwt_token()
         if type(verification_output) is str:
-            email = verification_output
+            pass
         else:
             return make_response(verification_output, 401)
         if author_id:

@@ -64,14 +64,11 @@ class Opinion(Resource):
                 jsonify(opinion_object.as_dict()),
                 200,
             )
-        if not opinion_id:
-            opinion_objects: list[opinion.Opinion] = opinion.Opinion.query.all()
-            return make_response(
-                jsonify(
-                    *[opinion_object.as_dict() for opinion_object in opinion_objects]
-                ),
-                200,
-            )
+        opinion_objects: list[opinion.Opinion] = opinion.Opinion.query.all()
+        return make_response(
+            jsonify(*[opinion_object.as_dict() for opinion_object in opinion_objects]),
+            200,
+        )
 
     @jwt_required()
     def post(self) -> Response:

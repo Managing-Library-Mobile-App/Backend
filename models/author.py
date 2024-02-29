@@ -1,6 +1,5 @@
 from loguru import logger
 from sqlalchemy import ARRAY
-from sqlalchemy.orm import joinedload
 
 from helpers.init import db
 from models.many_to_many_tables import authors_users, authors_released_books
@@ -57,10 +56,10 @@ class Author(db.Model):  # type: ignore[name-defined]
             "biography": self.biography,
             "picture": self.picture,
             "fans_count": self.fans_count,
-            "fans": [fan.id for fan in self.fans],
+            "fans": [fan.id for fan in self.fans],  # type: ignore
             "released_books_count": self.released_books_count,
             "released_books": [
-                released_book.id for released_book in self.released_books
+                released_book.id for released_book in self.released_books  # type: ignore
             ],
         }
 

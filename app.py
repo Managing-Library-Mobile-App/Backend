@@ -13,6 +13,7 @@ from flask_prometheus_metrics import register_metrics
 
 from helpers.init import db, cache, jwt
 from helpers.api_add_resources import api_add_resources_v1
+from helpers import blocklist
 
 from models.author import Author  # noqa
 from models.book import Book  # noqa
@@ -71,8 +72,8 @@ if __name__ == "__main__":
             jsonify({"message": "All tokens have been revoked"}), 200
         )
         unset_access_cookies(response)
-        BLOCK_LIST_USERS = []
-        BLOCK_LIST_TOKENS = []
+        blocklist.BLOCK_LIST_USERS = set()
+        blocklist.BLOCK_LIST_TOKENS = set()
     # App setup
     run_simple(
         hostname="0.0.0.0",

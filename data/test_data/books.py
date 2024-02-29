@@ -1,6 +1,7 @@
 from datetime import datetime
+from typing import Any
 
-books = [
+books: list[dict[str, Any]] = [
     {
         "isbn": "01010101010101",
         "title": "The Great Britain",
