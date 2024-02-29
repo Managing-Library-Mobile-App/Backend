@@ -9,7 +9,7 @@ from flask_jwt_extended import create_access_token
 from loguru import logger
 from flask_restful import Resource
 
-from api.account.blocklist import BLOCK_LIST_USERS, BLOCK_LIST_TOKENS
+from helpers.blocklist import BLOCK_LIST_USERS, BLOCK_LIST_TOKENS
 from helpers.init import cache
 from helpers.request_parser import RequestParser
 

@@ -7,7 +7,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
 )
 
-from .blocklist import BLOCK_LIST_USERS
+from helpers.blocklist import BLOCK_LIST_USERS
 
 
 class Logout(Resource):

@@ -1,7 +1,6 @@
 from flask import Response, make_response, jsonify
-from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
 from flask_restful import Resource
-from api.account.blocklist import BLOCK_LIST_USERS
+from helpers.blocklist import BLOCK_LIST_USERS
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
 from helpers.request_parser import RequestParser

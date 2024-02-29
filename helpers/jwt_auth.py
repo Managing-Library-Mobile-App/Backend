@@ -6,7 +6,7 @@ import jwt
 from flask import jsonify, Response
 from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
 
-from api.account.blocklist import BLOCK_LIST_USERS, BLOCK_LIST_TOKENS
+from helpers.blocklist import BLOCK_LIST_USERS, BLOCK_LIST_TOKENS
 
 
 def verify_jwt_token() -> Response | str:

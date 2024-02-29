@@ -1,13 +1,9 @@
 from __future__ import annotations
 
-import os
-
-import jwt
 from flask import jsonify, Response, make_response
-from flask_jwt_extended import get_jwt_identity, jwt_required, verify_jwt_in_request
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
-from api.account.blocklist import BLOCK_LIST_USERS, BLOCK_LIST_TOKENS
 from helpers.jwt_auth import verify_jwt_token
 from helpers.request_parser import RequestParser
 from models import user
