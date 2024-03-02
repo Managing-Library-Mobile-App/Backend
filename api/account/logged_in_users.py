@@ -1,46 +1,31 @@
 from flask import Response, make_response, jsonify
-from flask_jwt_extended import jwt_required
 from flask_restful import Resource
+from loguru import logger
 
 from helpers.blocklist import BLOCK_LIST_USERS
-from helpers.jwt_auth import verify_jwt_token
-from models.user import User
+from helpers.request_parser import RequestParser
 
 
 class LoggedInUsers(Resource):
     def __init__(self) -> None:
+        self.get_parser = RequestParser()
+        self.get_parser.add_arg("secret")
         super(LoggedInUsers, self).__init__()
 
-    @jwt_required()
     def get(self) -> Response:
-        verification_output = verify_jwt_token()
-        if type(verification_output) is str:
-            email = verification_output
-        else:
-            return make_response(verification_output, 401)
-
-        user = User.query.filter_by(email=email).first()
-        if user:
-            if user.is_admin:
-                return make_response(
-                    jsonify(
-                        logged_in_users=[user for user in BLOCK_LIST_USERS],
-                    ),
-                    200,
-                )
+        args = self.get_parser.parse_args()
+        secret = args.get("secret")
+        if secret == "admin":
             return make_response(
                 jsonify(
-                    password_changed=False,
-                    message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin account.",
+                    logged_in_users=[user for user in BLOCK_LIST_USERS],
                 ),
-                404,
+                200,
             )
         return make_response(
             jsonify(
-                password_changed=False,
-                message="user_does_not_exist",
-                details="User does not exist",
+                message="wrong_secret",
+                details="Wrong secret. Cannot view logged in users.",
             ),
-            404,
+            401,
         )
