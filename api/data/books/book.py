@@ -48,6 +48,7 @@ class Book(Resource):
             pass
         else:
             return make_response(verification_output, 401)
+
         if book_id:
             book_object: book.Book = book.Book.query.filter_by(id=book_id).first()
             return make_response(

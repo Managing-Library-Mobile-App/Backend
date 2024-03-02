@@ -48,7 +48,6 @@ class Author(db.Model):  # type: ignore[name-defined]
             self.add_released_book(released_book_id)
 
     def as_dict(self) -> dict:
-        logger.info(self.fans)
         return {
             "id": self.id,
             "name": self.name,

@@ -78,7 +78,6 @@ class Register(Resource):
         username = args.get("username")
         password = args.get("password")
         email = args.get("email")
-        logger.info(username, password, email)
         registration_output = authenticate_register_credentials(
             username=username, password=password, email=email
         )

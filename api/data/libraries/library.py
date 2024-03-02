@@ -44,10 +44,6 @@ class Library(Resource):
             library_object: library.Library = library.Library.query.filter_by(
                 id=library_id
             ).first()
-            # TODO USERA (po emailu) MOŻE NIE ZNALEŹĆ, PO ZRESTARTOWANIU APKI TOKEN DALEJ DZIAŁA
-            # TODO ALE JUŻ EMAILA NIE WIDZI I TU SIE WYWALA!!!, jakimś cudem verify przechodzi
-            # TODO email jest, ale usera może nie być. Należy resetować listę i
-            # TODO tokeny przy każdym resecie
             if not user.is_admin:
                 if not user.id == library_object.user_id:
                     return make_response(

@@ -130,8 +130,6 @@ class Login(Resource):
         email = args.get("email")
         password = args.get("password")
         if email in BLOCK_LIST_USERS:
-            logger.info(BLOCK_LIST_USERS)
-            logger.info(email)
             return make_response(
                 jsonify(
                     password_changed=False,
