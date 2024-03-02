@@ -13,6 +13,7 @@ class Author(db.Model):  # type: ignore[name-defined]
     picture = db.Column(db.String(1000), default=0)
     fans_count = db.Column(db.Integer, default=0)
     # TODO pobranie listy fanów? czy wgl potrzebne
+    # TODO dodanie fana
     fans = db.relationship(
         "User",
         secondary=authors_users,

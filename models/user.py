@@ -29,6 +29,7 @@ class User(db.Model):  # type: ignore[name-defined]
         cascade="all, delete",
     )
     followed_authors_count = db.Column(db.Integer, default=0)
+    # TODO możliwość ustawienia zdjęcia profilowego, jak to się ma do przechowywania linków?
     profile_picture = db.Column(
         db.String(200), default="https://www.gravatar.com/avatar/?d=mp"
     )
