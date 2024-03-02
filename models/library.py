@@ -20,6 +20,7 @@ class Library(db.Model):  # type: ignore[name-defined]
         nullable=False,
         unique=True,
     )
+    # TODO pobranie listy książek przeczytanych
     read_books = db.relationship(
         "Book",
         secondary=library_books_read,
@@ -27,6 +28,7 @@ class Library(db.Model):  # type: ignore[name-defined]
         backref=backref("library_books_read"),
         cascade="all, delete",
     )
+    # TODO pobranie listy książek ulubionych
     favourite_books = db.relationship(
         "Book",
         secondary=library_books_favourite,
@@ -34,6 +36,7 @@ class Library(db.Model):  # type: ignore[name-defined]
         backref=backref("library_books_favourite"),
         cascade="all, delete",
     )
+    # TODO pobranie listy książek kupionych
     bought_books = db.relationship(
         "Book",
         secondary=library_books_bought,

@@ -7,6 +7,7 @@ class User(db.Model):  # type: ignore[name-defined]
     username = db.Column(db.String(50), nullable=False, unique=True)
     email = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(50), nullable=False)
+    # TODO pobranie biblioteki dla usera
     library_id = db.relationship(
         "Library",
         backref="library",
@@ -15,9 +16,11 @@ class User(db.Model):  # type: ignore[name-defined]
     )
     score = db.Column(db.Integer, default=0)
     opinions_count = db.Column(db.Integer, default=0)
+    # TODO listy opinii raczej nie pobieramy
     opinions = db.relationship(
         "Opinion", backref="opinion", cascade="all, delete", passive_deletes=True
     )
+    # TODO pobranie listy autorów
     followed_authors = db.relationship(
         "Author",
         secondary=authors_users,
