@@ -1,6 +1,5 @@
 from flask import Response, make_response, jsonify
 from flask_restful import Resource
-from loguru import logger
 
 from helpers.blocklist import BLOCK_LIST_USERS
 from helpers.request_parser import RequestParser
