@@ -1,5 +1,6 @@
 import flask_restful
 
+from api.account.already_logged_in import CheckIfLoggedIn
 from api.account.logged_in_users import LoggedInUsers
 from api.data.authors.author import Author
 from api.data.books.book import Book
@@ -58,6 +59,12 @@ def api_add_resources_v1(api: flask_restful.Api) -> None:
         LoggedInUsers,
         f"{api_without_version}{account}logged_in_users",
         endpoint="logged_in_users",
+    )
+
+    api.add_resource(
+        CheckIfLoggedIn,
+        f"{api_without_version}{account}check_if_logged_in",
+        endpoint="check_if_logged_in",
     )
 
     # author
