@@ -6,7 +6,7 @@ import jwt
 from flask import jsonify, Response
 from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
 
-from helpers.blocklist import BLOCK_LIST_USERS, BLOCK_LIST_TOKENS
+from helpers.blocklist import BLOCKED_USER_TOKENS, LOGGED_IN_USER_TOKENS
 
 
 def verify_jwt_token() -> Response | str:
@@ -23,7 +23,10 @@ def verify_jwt_token() -> Response | str:
             headers=jwt_header,
         )
         email = get_jwt_identity()
-        if email not in BLOCK_LIST_USERS or token not in BLOCK_LIST_TOKENS:
+        if (
+            email not in LOGGED_IN_USER_TOKENS.keys()
+            or token in BLOCKED_USER_TOKENS[email]
+        ):
             raise AttributeError
     except AttributeError:
         return jsonify(
