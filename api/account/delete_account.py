@@ -1,6 +1,6 @@
 from flask import Response, make_response, jsonify
 from flask_restful import Resource
-from helpers.blocklist import BLOCK_LIST_USERS
+from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
 from helpers.request_parser import RequestParser
@@ -35,8 +35,8 @@ class DeleteAccount(Resource):
             )
 
         if user:
-            print(BLOCK_LIST_USERS)
-            BLOCK_LIST_USERS.remove(email)
+            print(LOGGED_IN_USER_TOKENS)
+            LOGGED_IN_USER_TOKENS.pop(email)
             db.session.delete(user)
             db.session.commit()
             return make_response(

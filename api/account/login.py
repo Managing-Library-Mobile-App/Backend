@@ -9,7 +9,7 @@ from flask_jwt_extended import create_access_token
 from loguru import logger
 from flask_restful import Resource
 
-from helpers.blocklist import BLOCK_LIST_USERS, BLOCK_LIST_TOKENS
+from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.init import cache
 from helpers.request_parser import RequestParser
 
@@ -103,9 +103,14 @@ def authenticate_login_credentials(email, password) -> dict[str, str | None]:
     except User.DoesNotExist:
         logger.info("User does not exist")
     if user:
+        if email in LOGGED_IN_USER_TOKENS.keys():
+            return {
+                "token": LOGGED_IN_USER_TOKENS[email],
+                "message": "already_logged_in",
+                "details": "Login already_logged_in",
+            }
         token = create_access_token(identity=email)
-        BLOCK_LIST_USERS.add(email)
-        BLOCK_LIST_TOKENS.add(token)
+        LOGGED_IN_USER_TOKENS[email] = token
         return {
             "token": token,
             "message": "login_successful",
@@ -129,17 +134,7 @@ class Login(Resource):
         args = self.post_parser.parse_args()
         email = args.get("email")
         password = args.get("password")
-        if email in BLOCK_LIST_USERS:
-            return make_response(
-                jsonify(
-                    password_changed=False,
-                    message="user_already_logged_in",
-                    details="User already logged in",
-                ),
-                401,
-            )
         login_output = authenticate_login(email, password)
-
         if login_output["message"] == "login_successful":
             logger.info(f"Zalogowano użytkownika {email}")
             return make_response(
@@ -151,21 +146,27 @@ class Login(Resource):
                 ),
                 200,
             )
-        logger.info(
-            f"Nieudana próba logowania użytkownika. {login_output['message']}, {login_output['details']}"
-        )
-        if isinstance(login_output["message"], str) and isinstance(
-            login_output["details"], str
-        ):
+        elif login_output["message"] == "already_logged_in":
             return make_response(
                 jsonify(
-                    registered=False,
-                    message=login_output["message"],
-                    details=login_output["details"],
+                    token=login_output["token"],
+                    password_changed=False,
+                    message="user_already_logged_in",
+                    details="User already logged in",
                 ),
                 401,
             )
-        raise Exception("Unexpected login behavior! Raised exception!")
+        logger.info(
+            f"Nieudana próba logowania użytkownika. {login_output['message']}, {login_output['details']}"
+        )
+        return make_response(
+            jsonify(
+                registered=False,
+                message=login_output["message"],
+                details=login_output["details"],
+            ),
+            401,
+        )
 
 
 def authenticate_login(email, password) -> dict[str, str | None]:

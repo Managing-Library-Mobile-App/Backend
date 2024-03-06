@@ -7,7 +7,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
 )
 
-from helpers.blocklist import BLOCK_LIST_USERS
+from helpers.blocklist import LOGGED_IN_USER_TOKENS
 
 
 class Logout(Resource):
@@ -19,7 +19,7 @@ class Logout(Resource):
         try:
             verify_jwt_in_request()
             current_user = get_jwt_identity()
-            BLOCK_LIST_USERS.remove(current_user)
+            LOGGED_IN_USER_TOKENS.pop(current_user)
             return make_response(jsonify(message="logged_out"), 200)
         except KeyError:
             return make_response(

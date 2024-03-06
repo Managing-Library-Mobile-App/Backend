@@ -5,7 +5,7 @@ from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
 from flask_restful import Resource
 from loguru import logger
 
-from helpers.blocklist import BLOCK_LIST_USERS, BLOCK_LIST_TOKENS
+from helpers.blocklist import BLOCKED_USER_TOKENS, LOGGED_IN_USER_TOKENS
 
 
 class CheckIfLoggedIn(Resource):
@@ -21,9 +21,12 @@ class CheckIfLoggedIn(Resource):
             if auth:
                 token = auth.split(" ")[1]
             logger.info("TOKEN: " + token)
-            logger.info("BLOCK_LIST_USERS: " + str(BLOCK_LIST_USERS))
-            logger.info("BLOCK_LIST_TOKENS: " + str(BLOCK_LIST_TOKENS))
-            if token in BLOCK_LIST_TOKENS and current_user not in BLOCK_LIST_USERS:
+            logger.info("LOGGED_IN_USER_TOKENS: " + str(LOGGED_IN_USER_TOKENS))
+            logger.info("BLOCKED_USER_TOKENS: " + str(BLOCKED_USER_TOKENS))
+            if (
+                token in BLOCKED_USER_TOKENS
+                and current_user not in LOGGED_IN_USER_TOKENS.keys()
+            ):
                 return make_response(
                     jsonify(msg="Token has expired"),
                     401,

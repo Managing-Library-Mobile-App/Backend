@@ -1,3 +1,3 @@
-BLOCK_LIST_TOKENS: set[str] = set()
+LOGGED_IN_USER_TOKENS: dict[str, str] = dict()
 
-BLOCK_LIST_USERS: set[str] = set()
+BLOCKED_USER_TOKENS: dict[str, str] = dict()
