@@ -150,7 +150,6 @@ class Login(Resource):
             return make_response(
                 jsonify(
                     token=login_output["token"],
-                    password_changed=False,
                     message="user_already_logged_in",
                     details="User already logged in",
                 ),
@@ -161,7 +160,7 @@ class Login(Resource):
         )
         return make_response(
             jsonify(
-                registered=False,
+                token=None,
                 message=login_output["message"],
                 details=login_output["details"],
             ),

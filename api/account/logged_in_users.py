@@ -29,7 +29,7 @@ class LoggedInUsers(Resource):
         return make_response(
             jsonify(
                 message="wrong_secret",
-                details="Wrong secret. Cannot view logged in users.",
+                details="Wrong secret field value. Cannot view logged in users.",
             ),
             401,
         )
