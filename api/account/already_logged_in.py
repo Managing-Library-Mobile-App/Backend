@@ -15,7 +15,7 @@ class CheckIfLoggedIn(Resource):
     def get(self) -> Response:
         try:
             verify_jwt_in_request()
-            current_user = get_jwt_identity()
+            get_jwt_identity()
             auth: str | None = request.headers.get("Authorization")
             token: str = ""
             if auth:
@@ -23,18 +23,12 @@ class CheckIfLoggedIn(Resource):
             logger.info("TOKEN: " + token)
             logger.info("LOGGED_IN_USER_TOKENS: " + str(LOGGED_IN_USER_TOKENS))
             logger.info("BLOCKED_USER_TOKENS: " + str(BLOCKED_USER_TOKENS))
-            if (
-                token in BLOCKED_USER_TOKENS
-                and current_user not in LOGGED_IN_USER_TOKENS.keys()
-            ):
+            if token in LOGGED_IN_USER_TOKENS.values():
                 return make_response(
-                    jsonify(msg="Token has expired"),
-                    401,
+                    jsonify(msg="Token valid"),
+                    200,
                 )
-            return make_response(
-                jsonify(msg="Token valid"),
-                200,
-            )
+            return make_response(jsonify(msg="Token has expired"), 401)
         except AttributeError as e:
             logger.error(e)
             return make_response(jsonify(msg="Token has expired"), 401)
