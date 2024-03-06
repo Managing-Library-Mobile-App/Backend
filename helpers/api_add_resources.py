@@ -1,6 +1,6 @@
 import flask_restful
 
-from api.account.already_logged_in import CheckIfLoggedIn
+from api.account.check_if_logged_in import CheckIfLoggedIn
 from api.account.logged_in_users import LoggedInUsers
 from api.data.authors.author import Author
 from api.data.books.book import Book

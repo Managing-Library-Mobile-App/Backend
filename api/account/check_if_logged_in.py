@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from flask import Response, jsonify, make_response, request
-from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 from flask_restful import Resource
 from loguru import logger
 
@@ -14,8 +14,10 @@ class CheckIfLoggedIn(Resource):
 
     def get(self) -> Response:
         try:
-            verify_jwt_in_request()
-            get_jwt_identity()
+            verify_jwt_in_request(optional=True)
+            current_user = get_jwt_identity()
+            if not current_user:
+                raise ValueError()
             auth: str | None = request.headers.get("Authorization")
             token: str = ""
             if auth:
@@ -28,7 +30,7 @@ class CheckIfLoggedIn(Resource):
                     jsonify(msg="Token valid"),
                     200,
                 )
-            return make_response(jsonify(msg="Token has expired"), 401)
-        except AttributeError as e:
+            raise ValueError
+        except ValueError as e:
             logger.error(e)
-            return make_response(jsonify(msg="Token has expired"), 401)
+            return make_response(jsonify(msg="Token invalid"), 401)
