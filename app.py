@@ -1,19 +1,11 @@
 import datetime
-import os
 
-from flask import Flask, make_response, jsonify
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
+from flask import make_response, jsonify
 from flask_restful import Api
-
-from prometheus_client import make_wsgi_app
 from werkzeug import run_simple
-from werkzeug.middleware.dispatcher import DispatcherMiddleware
-from flask_prometheus_metrics import register_metrics
 
-from helpers.init import db, cache, jwt
 from helpers.api_add_resources import api_add_resources_v1
-from helpers import blocklist
+from helpers.init import db, app, dispatcher
 
 from models.author import Author  # noqa
 from models.book import Book  # noqa
@@ -24,46 +16,13 @@ from models.user import User  # noqa
 
 from data.test_data.fill_db_script import fill_db
 
-from flask_jwt_extended import unset_access_cookies
 
-app = Flask(__name__)
 api = Api(app)
-app.debug = True
-
-host = os.environ.get("host")
-port = os.environ.get("port")
-database = os.environ.get("database")
-user = os.environ.get("user")
-password = os.environ.get("password")
-
-app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
-jwt.init_app(app)
-
-app.config[
-    "SQLALCHEMY_DATABASE_URI"
-] = f"postgresql://{user}:{password}@{host}:{port}/{database}"
-app.config["SECRET_KEY"] = "SECRET_KEY"
-app.config["JSONIFY_PRETTYPRINT_REGULAR"] = True
-app.config["CACHE_TYPE"] = "SimpleCache"
-cache.init_app(app)
-
-db.init_app(app)
-
-limiter = Limiter(
-    get_remote_address,
-    app=app,
-    default_limits=["10000 per day", "5000 per hour"],
-    storage_uri="memory://",
-)
-
-# Prometheus metrics setup
-register_metrics(app, app_version="v0.1.2", app_config="staging")
-dispatcher = DispatcherMiddleware(app.wsgi_app, {"/metrics": make_wsgi_app()})
-
 api_add_resources_v1(api)
 
 if __name__ == "__main__":
     # Database setup
+    # TODO Delete later when delivering later versions
     with app.app_context():
         db.drop_all()
         db.create_all()
@@ -71,14 +30,14 @@ if __name__ == "__main__":
         response = make_response(
             jsonify({"message": "All tokens have been revoked"}), 200
         )
-        unset_access_cookies(response)
-        blocklist.BLOCK_LIST_USERS = set()
-        blocklist.BLOCK_LIST_TOKENS = set()
     # App setup
     run_simple(
         hostname="0.0.0.0",
         port=5000,
         application=dispatcher,
         ssl_context=("static/cert.pem", "static/key.pem"),
+        use_debugger=True,
     )
+    # TODO Są dziwne problemy że jak odpalimy aplikację na 192...
+    #  i potem na localhost to się sypie?
     application_start_date = datetime.datetime.now().strftime("%m-%d-%Y %H-%M-%S")
