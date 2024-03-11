@@ -1,13 +1,10 @@
 from flask import jsonify, Response, make_response
 from flask_restful import Resource
 
-from flask_jwt_extended import (
-    jwt_required,
-    verify_jwt_in_request,
-    get_jwt_identity,
-)
+from flask_jwt_extended import jwt_required
 
 from helpers.blocklist import LOGGED_IN_USER_TOKENS
+from helpers.jwt_auth import verify_jwt_token
 
 
 class Logout(Resource):
@@ -17,8 +14,12 @@ class Logout(Resource):
     @jwt_required()
     def post(self) -> Response:
         try:
-            verify_jwt_in_request()
-            current_user = get_jwt_identity()
+            verification_output = verify_jwt_token()
+
+            if type(verification_output) is str:
+                current_user = verification_output
+            else:
+                raise ValueError()
             LOGGED_IN_USER_TOKENS.pop(current_user)
             return make_response(jsonify(message="logged_out"), 200)
         except KeyError:

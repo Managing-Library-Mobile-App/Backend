@@ -17,6 +17,41 @@ class ChangePassword(Resource):
 
     @jwt_required()
     def patch(self) -> Response:
+        """
+        This examples uses FlaskRESTful Resource
+        It works also with swag_from, schemas and spec_dict
+        ---
+        parameters:
+        - in: body
+          name: passwords
+          description: The passwords.
+          schema:
+            type: object
+            required:
+              - current_password
+              - new_password
+            properties:
+              current_password:
+                type: string
+              new_password:
+                type: string
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        security:
+        - APIKeyHeader: ['x-access-token']
+        responses:
+          200:
+            description: A single user item
+            schema:
+              id: User
+              properties:
+                username:
+                  type: string
+                  description: The name of the user
+                  default: Steven Wilson
+        """
         args = self.patch_parser.parse_args()
         current_password = args.get("current_password")
         new_password = args.get("new_password")
@@ -42,8 +77,8 @@ class ChangePassword(Resource):
         return make_response(
             jsonify(
                 password_changed=False,
-                message="user_does_not_exist",
-                details="User does not exist",
+                message="wrong_password",
+                details="Wrong password",
             ),
-            404,
+            401,
         )

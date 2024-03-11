@@ -113,3 +113,5 @@ def fill_db(db: SQLAlchemy):
             for fan in author["fans"]:
                 author_object.add_fan(fan)
         db.session.commit()
+
+    logger.info("Database filled")
