@@ -1,5 +1,3 @@
-import os
-
 from flasgger import Swagger
 from flask import Flask
 from flask_caching import Cache
@@ -26,27 +24,6 @@ jwt = JWTManager()
 swagger = Swagger()
 cache = Cache()
 db: SQLAlchemy = SQLAlchemy()
-
-host = os.environ.get("host")
-port = os.environ.get("port")
-database = os.environ.get("database")
-user = os.environ.get("user")
-password = os.environ.get("password")
-
-app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
-
-app.config[
-    "SQLALCHEMY_DATABASE_URI"
-] = f"postgresql://{user}:{password}@{host}:{port}/{database}"
-app.config["SECRET_KEY"] = "SECRET_KEY"
-app.config["JSONIFY_PRETTYPRINT_REGULAR"] = True
-app.config["CACHE_TYPE"] = "SimpleCache"
-
-jwt.init_app(app)
-cache.init_app(app)
-db.init_app(app)
-swagger.init_app(app)
-limiter.init_app(app)
 
 # Prometheus metrics setup
 register_metrics(app, app_version="v0.1.2", app_config="staging")

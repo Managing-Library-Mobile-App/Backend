@@ -21,6 +21,7 @@ def api_add_resources_v1(api: flask_restful.Api) -> None:
     data = "data/"
 
     # additional
+
     api.add_resource(
         Favicon,
         "/favicon.ico",
