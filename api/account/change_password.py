@@ -1,3 +1,5 @@
+import re
+
 from flask import Response, make_response, jsonify
 from flask_restful import Resource
 
@@ -65,6 +67,20 @@ class ChangePassword(Resource):
                 details:
                   type: string
                   example: Wrong password
+          403:
+            schema:
+              properties:
+                password_changed:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: password_wrong_format
+                details:
+                  type: string
+                  example: Wrong password format. Password should have from 10 to 50 characters.
+                        It should contain at least one upper letter, at least 1 lower letter, at least 1 number and
+                        at least one special character
 
         """
         args = self.patch_parser.parse_args()
@@ -75,6 +91,20 @@ class ChangePassword(Resource):
             email = verification_output
         else:
             return make_response(verification_output, 401)
+
+        if not re.fullmatch(
+            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{10,50}$",
+            new_password,
+        ):
+            return make_response(
+                jsonify(
+                    message="password_wrong_format",
+                    details="""Wrong password format. Password should have from 10 to 50 characters.
+                It should contain at least one upper letter, at least 1 lower letter, at least 1 number and
+                at least one special character""",
+                ),
+                403,
+            )
 
         user = User.query.filter_by(email=email, password=current_password).first()
         if user:
