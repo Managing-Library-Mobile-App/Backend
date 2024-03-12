@@ -5,7 +5,7 @@ from flasgger import Swagger
 from flask_restful import Api
 from werkzeug import run_simple
 
-from helpers.api_add_resources import api_add_resources_v1
+from helpers.api_add_resources import api_add_resources
 from helpers.init import db, app, dispatcher, jwt, cache, limiter
 
 from models.author import Author  # noqa
@@ -24,7 +24,7 @@ SWAGGER_TEMPLATE = {
 }
 swagger = Swagger(app, template=SWAGGER_TEMPLATE)
 api = Api(app)
-api_add_resources_v1(api)
+api_add_resources(api)
 
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
 

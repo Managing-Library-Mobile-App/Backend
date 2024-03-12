@@ -15,7 +15,14 @@ from api.account.logout import Logout
 from api.account.register import Register
 
 
-def api_add_resources_v1(api: flask_restful.Api) -> None:
+def api_add_resources(api: flask_restful.Api) -> None:
+    """
+    Register endpoints for app
+    :returns: None
+    :rtype: None
+    :raises ValueError: Token invalid
+    :raises Exception: Token invalid in unknown way
+    """
     api_without_version = "/api/"
     account = "account/"
     data = "data/"

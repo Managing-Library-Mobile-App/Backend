@@ -6,6 +6,8 @@ from helpers.init import db
 
 
 class BookAnnouncement(db.Model):  # type: ignore[name-defined]
+    """The class representing table book_announcement in database."""
+
     id = db.Column("id", db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     # TODO przejście do autora
@@ -33,6 +35,10 @@ class BookAnnouncement(db.Model):  # type: ignore[name-defined]
         picture: str,
         premiere_date: datetime.datetime,
     ) -> None:
+        """Initializing an object of the class.
+        :param picture: link to the picture
+        :param premiere_date: format(YYYY-MM-DD)
+        """
         self.title = title
         self.author = author
         self.publishing_house = publishing_house
@@ -42,6 +48,7 @@ class BookAnnouncement(db.Model):  # type: ignore[name-defined]
         self.premiere_date = premiere_date
 
     def as_dict(self) -> dict:
+        """Serializing object to dictionary."""
         return {
             "id": self.id,
             "title": self.title,

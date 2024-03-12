@@ -7,6 +7,8 @@ from models.many_to_many_tables import books_opinions
 
 
 class Book(db.Model):  # type: ignore[name-defined]
+    """The class representing table book in database."""
+
     id = db.Column("id", db.Integer, primary_key=True)
     isbn = db.Column(db.String(20), nullable=False)
     title = db.Column(db.String(100), nullable=False)
@@ -46,6 +48,11 @@ class Book(db.Model):  # type: ignore[name-defined]
         picture: str,
         premiere_date: datetime.datetime,
     ) -> None:
+        """Initializing an object of the class.
+        :param isbn: either isbn-13 or isbn-15
+        :param picture: link to the picture
+        :param premiere_date: format(YYYY-MM-DD)
+        """
         self.isbn = isbn
         self.title = title
         self.author_id = author_id
@@ -64,6 +71,7 @@ class Book(db.Model):  # type: ignore[name-defined]
         self.premiere_date = premiere_date
 
     def as_dict(self) -> dict:
+        """Serializing object to dictionary."""
         return {
             "id": self.id,
             "isbn": self.isbn,

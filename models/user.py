@@ -3,6 +3,8 @@ from models.many_to_many_tables import authors_users
 
 
 class User(db.Model):  # type: ignore[name-defined]
+    """The class representing table user in database."""
+
     id = db.Column("id", db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False, unique=True)
     email = db.Column(db.String(50), nullable=False, unique=True)
@@ -38,12 +40,16 @@ class User(db.Model):  # type: ignore[name-defined]
     def __init__(
         self, username: str, email: str, password: str, is_admin=False
     ) -> None:
+        """Initializing an object of the class.
+        :param is_admin: used for authentication
+        """
         self.username = username
         self.email = email
         self.password = password
         self.is_admin = is_admin
 
     def as_dict(self) -> dict:
+        """Serializing object to dictionary."""
         return {
             "id": self.id,
             "username": self.username,

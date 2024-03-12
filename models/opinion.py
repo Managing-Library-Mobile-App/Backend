@@ -2,6 +2,8 @@ from helpers.init import db
 
 
 class Opinion(db.Model):  # type: ignore[name-defined]
+    """The class representing table opinion in database."""
+
     id = db.Column("id", db.Integer, primary_key=True)
     account_id = db.Column(
         db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False
@@ -19,6 +21,9 @@ class Opinion(db.Model):  # type: ignore[name-defined]
     def __init__(
         self, account_id: int, book_id: int, stars_count: int, comment: str
     ) -> None:
+        """Initializing an object of the class.
+        :param stars_count: x/5, only integer values are allowed
+        """
         self.account_id = account_id
         self.book_id = book_id
         self.comment = comment
@@ -40,6 +45,7 @@ class Opinion(db.Model):  # type: ignore[name-defined]
             db.session.commit()
 
     def as_dict(self) -> dict:
+        """Serializing object to dictionary."""
         return {
             "id": self.id,
             "account_id": self.account_id,

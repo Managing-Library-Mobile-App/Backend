@@ -1,6 +1,20 @@
 # Backend
 Written in Flask
 
+Docstring format (class):
+"""[Summary]
+
+:param [ParamName]: [ParamDescription]
+"""
+Docstring format (function):
+"""[Summary]
+:param [ParamName]: [ParamDescription]
+:raises [ErrorType]: [ErrorDescription]
+:return: [ReturnDescription]
+"""
+
+Docstring format (API Endpoints):
+
 # API Methods
 
 GET - pobieranie danych z api

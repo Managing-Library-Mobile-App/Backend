@@ -5,6 +5,8 @@ from models.many_to_many_tables import authors_users, authors_released_books
 
 
 class Author(db.Model):  # type: ignore[name-defined]
+    """The class representing table author in database."""
+
     __tablename__ = "author"
     id = db.Column("id", db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
@@ -13,7 +15,6 @@ class Author(db.Model):  # type: ignore[name-defined]
     picture = db.Column(db.String(1000), default=0)
     fans_count = db.Column(db.Integer, default=0)
     # TODO pobranie listy fanów? czy wgl potrzebne
-    # TODO dodanie fana
     fans = db.relationship(
         "User",
         secondary=authors_users,
@@ -40,6 +41,12 @@ class Author(db.Model):  # type: ignore[name-defined]
         fans: list[int],
         released_books: list[int],
     ) -> None:
+        """Initializing an object of the class.
+        :param biography: description of the author
+        :param picture: link to the picture
+        :param fans: list of users who like the author
+        :param released_books: list of author's books
+        """
         self.name = name
         self.genres = genres
         self.biography = biography
@@ -50,6 +57,7 @@ class Author(db.Model):  # type: ignore[name-defined]
             self.add_released_book(released_book_id)
 
     def as_dict(self) -> dict:
+        """Serializing object to dictionary."""
         return {
             "id": self.id,
             "name": self.name,
@@ -65,6 +73,9 @@ class Author(db.Model):  # type: ignore[name-defined]
         }
 
     def add_fan(self, fan_id) -> None:
+        """Add a user to fans' list
+        :param fan_id: user id
+        """
         from .user import User
 
         fan = db.session.query(User).filter_by(id=fan_id).first()
@@ -73,6 +84,9 @@ class Author(db.Model):  # type: ignore[name-defined]
             self.fans_count += 1
 
     def remove_fan(self, fan_id) -> None:
+        """remove a user from fans' list
+        :param fan_id: user id
+        """
         from .user import User
 
         fan = db.session.query(User).filter_by(id=fan_id).first()
@@ -81,6 +95,7 @@ class Author(db.Model):  # type: ignore[name-defined]
             self.fans_count -= 1
 
     def add_released_book(self, book_id) -> None:
+        """Add a book to released_books' list"""
         from .book import Book
 
         book = db.session.query(Book).filter_by(id=book_id).first()
@@ -89,6 +104,7 @@ class Author(db.Model):  # type: ignore[name-defined]
             self.released_books_count += 1
 
     def remove_released_book(self, book_id) -> None:
+        """Remove a book from released_books' list"""
         from .book import Book
 
         book = db.session.query(Book).filter_by(id=book_id).first()

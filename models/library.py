@@ -10,6 +10,8 @@ from models.many_to_many_tables import (
 
 
 class Library(db.Model):  # type: ignore[name-defined]
+    """The class representing table library in database."""
+
     id = db.Column("id", db.Integer, primary_key=True)
     read_books_count = db.Column(db.Integer, default=0)
     favourite_books_count = db.Column(db.Integer, default=0)
@@ -48,6 +50,7 @@ class Library(db.Model):  # type: ignore[name-defined]
     def __init__(
         self, read_books: list, bought_books: list, favourite_books: list, user_id: int
     ) -> None:
+        """Initializing an object of the class."""
         self.read_books_count = 0
         self.favourite_books_count = 0
         self.bought_books_count = 0
@@ -67,6 +70,7 @@ class Library(db.Model):  # type: ignore[name-defined]
                 self.add_favourite_book(book)
 
     def as_dict(self) -> dict:
+        """Serializing object to dictionary."""
         return {
             "id": self.id,
             "user_id": self.user_id,
