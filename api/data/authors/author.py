@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from flask import jsonify, Response, make_response
-from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
 from helpers.jwt_auth import verify_jwt_token
@@ -37,7 +36,6 @@ class Author(Resource):
 
         super(Author, self).__init__()
 
-    @jwt_required()
     def get(self) -> Response:
         args = self.get_parser.parse_args()
         author_id = args.get("id")
@@ -60,7 +58,6 @@ class Author(Resource):
             200,
         )
 
-    @jwt_required()
     def post(self) -> Response:
         args = self.post_parser.parse_args()
         name = args.get("name")
@@ -101,7 +98,6 @@ class Author(Resource):
             200,
         )
 
-    @jwt_required()
     def delete(self) -> Response:
         args = self.delete_parser.parse_args()
         author_id = args.get("id")
@@ -132,7 +128,6 @@ class Author(Resource):
             200,
         )
 
-    @jwt_required()
     def patch(self) -> Response:
         args = self.delete_parser.parse_args()
         author_id = args.get("id")

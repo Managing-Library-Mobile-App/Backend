@@ -1,8 +1,6 @@
 from flask import jsonify, Response, make_response
 from flask_restful import Resource
 
-from flask_jwt_extended import jwt_required
-
 from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.jwt_auth import verify_jwt_token
 
@@ -11,7 +9,6 @@ class Logout(Resource):
     def __init__(self) -> None:
         super(Logout, self).__init__()
 
-    @jwt_required()
     def post(self) -> Response:
         try:
             verification_output = verify_jwt_token()

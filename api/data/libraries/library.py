@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from flask import jsonify, Response, make_response
-from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
 from helpers.jwt_auth import verify_jwt_token
@@ -30,7 +29,6 @@ class Library(Resource):
         self.patch_parser.add_arg("favourite_books", type=list, required=False)
         super(Library, self).__init__()
 
-    @jwt_required()
     def get(self) -> Response:
         args = self.get_parser.parse_args()
         library_id = args.get("id")
@@ -71,7 +69,6 @@ class Library(Resource):
             200,
         )
 
-    @jwt_required()
     def post(self) -> Response:
         args = self.post_parser.parse_args()
         read_books = args.get("read_books")
@@ -108,7 +105,6 @@ class Library(Resource):
             200,
         )
 
-    @jwt_required()
     def delete(self) -> Response:
         args = self.delete_parser.parse_args()
         library_id = args.get("id")
@@ -139,7 +135,6 @@ class Library(Resource):
             200,
         )
 
-    @jwt_required()
     def patch(self) -> Response:
         args = self.delete_parser.parse_args()
         library_id = args.get("id")

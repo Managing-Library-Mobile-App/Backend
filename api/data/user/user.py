@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from flask import jsonify, Response, make_response
-from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
 from helpers.jwt_auth import verify_jwt_token
@@ -15,7 +14,6 @@ class User(Resource):
         self.get_parser.add_arg("id", type=int, required=False)
         super(User, self).__init__()
 
-    @jwt_required()
     def get(self) -> Response:
         args = self.get_parser.parse_args()
         user_id = args.get("id")

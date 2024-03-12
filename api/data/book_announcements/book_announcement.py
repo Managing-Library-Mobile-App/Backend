@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from flask import jsonify, Response, make_response
-from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
 from helpers.jwt_auth import verify_jwt_token
@@ -37,7 +36,6 @@ class BookAnnouncement(Resource):
         self.patch_parser.add_arg("premiere_date")
         super(BookAnnouncement, self).__init__()
 
-    @jwt_required()
     def get(self) -> Response:
         args = self.get_parser.parse_args()
         book_announcement_id = args.get("id")
@@ -66,7 +64,6 @@ class BookAnnouncement(Resource):
             200,
         )
 
-    @jwt_required()
     def post(self) -> Response:
         args = self.post_parser.parse_args()
         title = args.get("title")
@@ -114,7 +111,6 @@ class BookAnnouncement(Resource):
             200,
         )
 
-    @jwt_required()
     def delete(self) -> Response:
         args = self.delete_parser.parse_args()
         book_announcement_id = args.get("id")
@@ -150,7 +146,6 @@ class BookAnnouncement(Resource):
             200,
         )
 
-    @jwt_required()
     def patch(self) -> Response:
         args = self.delete_parser.parse_args()
         book_announcement_id = args.get("id")
