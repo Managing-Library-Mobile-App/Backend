@@ -1,5 +1,4 @@
 from flask import Response, make_response, jsonify
-from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
 from helpers.init import db
@@ -15,7 +14,6 @@ class ChangePassword(Resource):
         self.patch_parser.add_arg("new_password")
         super(ChangePassword, self).__init__()
 
-    @jwt_required()
     def patch(self) -> Response:
         """
         This examples uses FlaskRESTful Resource
@@ -45,12 +43,29 @@ class ChangePassword(Resource):
           200:
             description: A single user item
             schema:
-              id: User
               properties:
-                username:
+                password_changed:
+                  type: boolean
+                  example: true
+                message:
                   type: string
-                  description: The name of the user
-                  default: Steven Wilson
+                  example: password_changed
+                details:
+                  type: string
+                  example: Password changed
+          401:
+            schema:
+              properties:
+                password_changed:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: wrong_password
+                details:
+                  type: string
+                  example: Wrong password
+
         """
         args = self.patch_parser.parse_args()
         current_password = args.get("current_password")
@@ -70,7 +85,7 @@ class ChangePassword(Resource):
                 jsonify(
                     password_changed=True,
                     message="password_changed",
-                    details="Password changed successfully",
+                    details="Password changed",
                 ),
                 200,
             )
