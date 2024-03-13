@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import re
 
 from flask import Response, jsonify, make_response

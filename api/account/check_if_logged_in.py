@@ -1,11 +1,8 @@
-from __future__ import annotations
-
 from flask import Response, jsonify, make_response, request
 from flask_restful import Resource
 from loguru import logger
 
 from helpers.blocklist import BLOCKED_USER_TOKENS, LOGGED_IN_USER_TOKENS
-from helpers.init import jwt
 from helpers.jwt_auth import verify_jwt_token
 
 

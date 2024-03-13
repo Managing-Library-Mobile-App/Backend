@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from flask import jsonify, Response, make_response
 from flask_restful import Resource
 

@@ -1,4 +1,5 @@
 import re
+from typing import Any
 
 from flask import Response, make_response, jsonify
 from flask_restful import Resource
@@ -83,10 +84,10 @@ class ChangePassword(Resource):
                         at least one special character
 
         """
-        args = self.patch_parser.parse_args()
-        current_password = args.get("current_password")
-        new_password = args.get("new_password")
-        verification_output = verify_jwt_token()
+        args: Any = self.patch_parser.parse_args()
+        current_password: str = args.get("current_password")
+        new_password: str = args.get("new_password")
+        verification_output: Response | int = verify_jwt_token()
         if type(verification_output) is str:
             email = verification_output
         else:
