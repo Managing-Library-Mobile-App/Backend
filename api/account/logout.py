@@ -11,7 +11,7 @@ class Logout(Resource):
 
     def post(self) -> Response:
         try:
-            verification_output = verify_jwt_token()
+            verification_output: Response | str = verify_jwt_token()
 
             if type(verification_output) is str:
                 current_user = verification_output

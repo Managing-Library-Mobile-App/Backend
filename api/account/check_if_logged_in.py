@@ -11,7 +11,7 @@ class CheckIfLoggedIn(Resource):
         super(CheckIfLoggedIn, self).__init__()
 
     def get(self) -> Response:
-        verification_output = verify_jwt_token()
+        verification_output: Response | str = verify_jwt_token()
         if not type(verification_output) is str:
             return make_response(verification_output, 401)
         auth: str | None = request.headers.get("Authorization")

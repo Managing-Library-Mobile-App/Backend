@@ -1,6 +1,6 @@
 from helpers.init import db
 
-authors_users = db.Table(
+authors_users: db.Table = db.Table(
     "fans",
     db.Column(
         "author_id",
@@ -16,7 +16,7 @@ authors_users = db.Table(
     ),
 )
 
-authors_released_books = db.Table(
+authors_released_books: db.Table = db.Table(
     "released_books",
     db.Column(
         "author_id",
@@ -32,7 +32,7 @@ authors_released_books = db.Table(
     ),
 )
 
-books_opinions = db.Table(
+books_opinions: db.Table = db.Table(
     "books_opinions",
     db.Column(
         "opinion_id",
@@ -49,7 +49,7 @@ books_opinions = db.Table(
 )
 
 
-library_books_favourite = db.Table(
+library_books_favourite: db.Table = db.Table(
     "favourite_books",
     db.Column(
         "library_id",
@@ -65,7 +65,7 @@ library_books_favourite = db.Table(
     ),
 )
 
-library_books_bought = db.Table(
+library_books_bought: db.Table = db.Table(
     "bought_books",
     db.Column(
         "library_id",
@@ -81,7 +81,7 @@ library_books_bought = db.Table(
     ),
 )
 
-library_books_read = db.Table(
+library_books_read: db.Table = db.Table(
     "read_books",
     db.Column(
         "library_id",

@@ -11,16 +11,16 @@ from models.user import User
 
 class Library(Resource):
     def __init__(self) -> None:
-        self.get_parser = RequestParser()
+        self.get_parser: RequestParser = RequestParser()
         self.get_parser.add_arg("id", type=int, required=False)
-        self.post_parser = RequestParser()
+        self.post_parser: RequestParser = RequestParser()
         self.post_parser.add_arg("read_books", type=list, required=False)
         self.post_parser.add_arg("bought_books", type=list, required=False)
         self.post_parser.add_arg("favourite_books", type=list, required=False)
         self.post_parser.add_arg("user_id", type=int)
-        self.delete_parser = RequestParser()
+        self.delete_parser: RequestParser = RequestParser()
         self.delete_parser.add_arg("id", type=int)
-        self.patch_parser = RequestParser()
+        self.patch_parser: RequestParser = RequestParser()
         self.patch_parser.add_arg("id", type=int)
         self.patch_parser.add_arg("read_books", type=list, required=False)
         self.patch_parser.add_arg("bought_books", type=list, required=False)
@@ -28,14 +28,14 @@ class Library(Resource):
         super(Library, self).__init__()
 
     def get(self) -> Response:
-        args = self.get_parser.parse_args()
-        library_id = args.get("id")
-        verification_output = verify_jwt_token()
+        args: dict = self.get_parser.parse_args()
+        library_id: int = args.get("id")
+        verification_output: Response | str = verify_jwt_token()
         if type(verification_output) is str:
-            email = verification_output
+            email: str = verification_output
         else:
             return make_response(verification_output, 401)
-        user = User.query.filter_by(email=email).first()
+        user: User = User.query.filter_by(email=email).first()
         if library_id:
             library_object: library.Library = library.Library.query.filter_by(
                 id=library_id
@@ -68,17 +68,17 @@ class Library(Resource):
         )
 
     def post(self) -> Response:
-        args = self.post_parser.parse_args()
-        read_books = args.get("read_books")
-        bought_books = args.get("bought_books")
-        favourite_books = args.get("favourite_books")
-        user_id = args.get("user_id")
-        verification_output = verify_jwt_token()
+        args: dict = self.post_parser.parse_args()
+        read_books: list[int] = args.get("read_books")
+        bought_books: list[int] = args.get("bought_books")
+        favourite_books: list[int] = args.get("favourite_books")
+        user_id: int = args.get("user_id")
+        verification_output: Response | str = verify_jwt_token()
         if type(verification_output) is str:
-            email = verification_output
+            email: str = verification_output
         else:
             return make_response(verification_output, 401)
-        user = User.query.filter_by(email=email).first()
+        user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return make_response(
                 jsonify(
@@ -104,14 +104,14 @@ class Library(Resource):
         )
 
     def delete(self) -> Response:
-        args = self.delete_parser.parse_args()
-        library_id = args.get("id")
-        verification_output = verify_jwt_token()
+        args: dict = self.delete_parser.parse_args()
+        library_id: int = args.get("id")
+        verification_output: Response | str = verify_jwt_token()
         if type(verification_output) is str:
-            email = verification_output
+            email: str = verification_output
         else:
             return make_response(verification_output, 401)
-        user = User.query.filter_by(email=email).first()
+        user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return make_response(
                 jsonify(
@@ -134,17 +134,17 @@ class Library(Resource):
         )
 
     def patch(self) -> Response:
-        args = self.delete_parser.parse_args()
-        library_id = args.get("id")
-        read_books = args.get("read_books")
-        bought_books = args.get("bought_books")
-        favourite_books = args.get("favourite_books")
-        verification_output = verify_jwt_token()
+        args: dict = self.delete_parser.parse_args()
+        library_id: int = args.get("id")
+        read_books: list[int] = args.get("read_books")
+        bought_books: list[int] = args.get("bought_books")
+        favourite_books: list[int] = args.get("favourite_books")
+        verification_output: Response | str = verify_jwt_token()
         if type(verification_output) is str:
-            email = verification_output
+            email: str = verification_output
         else:
             return make_response(verification_output, 401)
-        user = User.query.filter_by(email=email).first()
+        user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return make_response(
                 jsonify(
@@ -154,7 +154,9 @@ class Library(Resource):
                 404,
             )
 
-        modified_library = library.Library.query.filter_by(id=library_id).first()
+        modified_library: library.Library = library.Library.query.filter_by(
+            id=library_id
+        ).first()
 
         if user:
             if read_books:

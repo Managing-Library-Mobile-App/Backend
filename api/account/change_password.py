@@ -1,5 +1,4 @@
 import re
-from typing import Any
 
 from flask import Response, make_response, jsonify
 from flask_restful import Resource
@@ -12,7 +11,7 @@ from models.user import User
 
 class ChangePassword(Resource):
     def __init__(self) -> None:
-        self.patch_parser = RequestParser()
+        self.patch_parser: RequestParser = RequestParser()
         self.patch_parser.add_arg("current_password")
         self.patch_parser.add_arg("new_password")
         super(ChangePassword, self).__init__()
@@ -84,7 +83,7 @@ class ChangePassword(Resource):
                         at least one special character
 
         """
-        args: Any = self.patch_parser.parse_args()
+        args: dict = self.patch_parser.parse_args()
         current_password: str = args.get("current_password")
         new_password: str = args.get("new_password")
         verification_output: Response | int = verify_jwt_token()
@@ -107,7 +106,9 @@ class ChangePassword(Resource):
                 403,
             )
 
-        user = User.query.filter_by(email=email, password=current_password).first()
+        user: User = User.query.filter_by(
+            email=email, password=current_password
+        ).first()
         if user:
             user.password = new_password
             db.session.commit()

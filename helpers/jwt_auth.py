@@ -15,19 +15,19 @@ def verify_jwt_token() -> Response | str:
     :rtype: Response | str
     """
     try:
-        data = verify_jwt_in_request(optional=True)
+        data: tuple[dict, dict] | None = verify_jwt_in_request(optional=True)
         logger.info(data)
         if data:
             jwt_header, jwt_data = data
         else:
             raise ValueError
-        token = jwt.encode(
+        token: str = jwt.encode(
             payload=jwt_data,
             key=os.environ.get("JWT_SECRET_KEY"),
             algorithm="HS256",
             headers=jwt_header,
         )
-        email = get_jwt_identity()
+        email: str = get_jwt_identity()
         logger.info(email)
         if email in LOGGED_IN_USER_TOKENS.keys() and (
             email not in BLOCKED_USER_TOKENS.keys()

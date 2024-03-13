@@ -9,20 +9,20 @@ from models.user import User
 
 class DeleteAccount(Resource):
     def __init__(self) -> None:
-        self.delete_parser = RequestParser()
+        self.delete_parser: RequestParser = RequestParser()
         self.delete_parser.add_arg("password")
         super(DeleteAccount, self).__init__()
 
     def delete(self) -> Response:
-        args = self.delete_parser.parse_args()
-        password = args.get("password")
-        verification_output = verify_jwt_token()
+        args: dict = self.delete_parser.parse_args()
+        password: str = args.get("password")
+        verification_output: Response | str = verify_jwt_token()
         if type(verification_output) is str:
-            email = verification_output
+            email: str = verification_output
         else:
             return make_response(verification_output, 401)
 
-        user = User.query.filter_by(email=email, password=password).first()
+        user: User = User.query.filter_by(email=email, password=password).first()
 
         if user.is_admin:
             return make_response(

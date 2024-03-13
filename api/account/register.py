@@ -37,7 +37,7 @@ def authenticate_register_credentials(
             at least one special character""",
         }
 
-    user_already_exists = db.session.query(
+    user_already_exists: bool = db.session.query(
         exists().where(User.email == email, User.username == username)
     ).scalar()
 
@@ -47,11 +47,11 @@ def authenticate_register_credentials(
             "details": "User already exists",
         }
 
-    new_user = User(username=username, password=password, email=email)
+    new_user: User = User(username=username, password=password, email=email)
     db.session.add(new_user)
     db.session.commit()
 
-    new_user_library = Library(
+    new_user_library: Library = Library(
         read_books=[], bought_books=[], favourite_books=[], user_id=new_user.id
     )
     db.session.add(new_user_library)
@@ -65,7 +65,7 @@ def authenticate_register_credentials(
 
 class Register(Resource):
     def __init__(self) -> None:
-        self.post_parser = RequestParser()
+        self.post_parser: RequestParser = RequestParser()
         self.post_parser.add_arg("username")
         self.post_parser.add_arg("password")
         self.post_parser.add_arg("email")
@@ -73,10 +73,10 @@ class Register(Resource):
 
     def post(self) -> Response:
         args = self.post_parser.parse_args()
-        username = args.get("username")
-        password = args.get("password")
-        email = args.get("email")
-        registration_output = authenticate_register_credentials(
+        username: str = args.get("username")
+        password: str = args.get("password")
+        email: str = args.get("email")
+        registration_output: dict[str, str | None] = authenticate_register_credentials(
             username=username, password=password, email=email
         )
         if registration_output["message"] == "register_successful":

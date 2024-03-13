@@ -1,6 +1,7 @@
 import datetime
 import os
 
+import flask_restful
 from flasgger import Swagger
 from flask_restful import Api
 from werkzeug import run_simple
@@ -23,16 +24,16 @@ SWAGGER_TEMPLATE = {
     }
 }
 swagger = Swagger(app, template=SWAGGER_TEMPLATE)
-api = Api(app)
+api: flask_restful.Api = Api(app)
 api_add_resources(api)
 
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
 
-host = os.environ.get("host")
-port = os.environ.get("port")
-database = os.environ.get("database")
-user = os.environ.get("user")
-password = os.environ.get("password")
+host: str = os.environ.get("host")
+port: str = os.environ.get("port")
+database: str = os.environ.get("database")
+user: str = os.environ.get("user")
+password: str = os.environ.get("password")
 
 app.config[
     "SQLALCHEMY_DATABASE_URI"

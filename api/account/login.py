@@ -47,10 +47,10 @@ class InvalidLoginAttemptsCache(object):
             logger.exception(e)
 
     @staticmethod
-    def set(email, timebucket, lockout_timestamp=None) -> None:
+    def set(email: str, timebucket: list[float], lockout_timestamp=None) -> None:
         try:
             key: str = InvalidLoginAttemptsCache._key(email)
-            value: dict = InvalidLoginAttemptsCache._value(
+            value: dict[str, list[float] | float] = InvalidLoginAttemptsCache._value(
                 lockout_timestamp, timebucket
             )
             cache.set(key, value)
@@ -58,7 +58,9 @@ class InvalidLoginAttemptsCache(object):
             logger.exception(e)
 
     @staticmethod
-    def invalid_attempt(cache_results, current_datetime, usr) -> str | None:
+    def invalid_attempt(
+        cache_results: dict, current_datetime: datetime.datetime, usr: str
+    ) -> str | None:
         invalid_attempt_timestamps = (
             cache_results["invalid_attempt_timestamps"] if cache_results else []
         )
@@ -95,7 +97,7 @@ def authenticate_login_credentials(email, password) -> dict[str, str | None]:
             at least one special character""",
         }
 
-    user = None
+    user: User | None = None
     try:
         user = User.query.filter_by(email=email, password=password).first()
     except User.DoesNotExist:
@@ -107,7 +109,7 @@ def authenticate_login_credentials(email, password) -> dict[str, str | None]:
                 "message": "already_logged_in",
                 "details": "Login already_logged_in",
             }
-        token = create_access_token(identity=email)
+        token: str = create_access_token(identity=email)
         LOGGED_IN_USER_TOKENS[email] = token
         return {
             "token": token,
@@ -123,16 +125,16 @@ def authenticate_login_credentials(email, password) -> dict[str, str | None]:
 
 class Login(Resource):
     def __init__(self) -> None:
-        self.post_parser = RequestParser()
+        self.post_parser: RequestParser = RequestParser()
         self.post_parser.add_arg("email")
         self.post_parser.add_arg("password")
         super(Login, self).__init__()
 
     def post(self) -> Response:
-        args = self.post_parser.parse_args()
-        email = args.get("email")
-        password = args.get("password")
-        login_output = authenticate_login(email, password)
+        args: dict = self.post_parser.parse_args()
+        email: str = args.get("email")
+        password: str = args.get("password")
+        login_output: dict[str, str | None] = authenticate_login(email, password)
         if login_output["message"] == "login_successful":
             logger.info(f"Zalogowano użytkownika {email}")
             return make_response(
@@ -167,14 +169,16 @@ class Login(Resource):
 
 
 def authenticate_login(email, password) -> dict[str, str | None]:
-    current_datetime = datetime.datetime.now(datetime.timezone.utc)
-    cache_results = InvalidLoginAttemptsCache.get(email)
+    current_datetime: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)
+    cache_results: dict | None = InvalidLoginAttemptsCache.get(email)
+    logger.info(cache_results)
+    logger.info(type(cache_results))
     if cache_results and cache_results.get("lockout_start"):
         try:
-            lockout_start = datetime.datetime.fromtimestamp(
+            lockout_start: datetime.datetime = datetime.datetime.fromtimestamp(
                 cache_results.get("lockout_start"), datetime.timezone.utc
             )
-            locked_out = lockout_start >= (
+            locked_out: bool = lockout_start >= (
                 current_datetime + datetime.timedelta(minutes=-15)
             )
             if not locked_out:
@@ -188,6 +192,8 @@ def authenticate_login(email, password) -> dict[str, str | None]:
                 }
         except Exception as e:
             logger.exception(e)
-    login_data = authenticate_login_credentials(email=email, password=password)
+    login_data: dict[str, str | None] = authenticate_login_credentials(
+        email=email, password=password
+    )
     InvalidLoginAttemptsCache.invalid_attempt(cache_results, current_datetime, email)
     return login_data
