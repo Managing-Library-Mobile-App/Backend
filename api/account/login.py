@@ -175,8 +175,9 @@ def authenticate_login(email, password) -> dict[str, str | None]:
     logger.info(type(cache_results))
     if cache_results and cache_results.get("lockout_start"):
         try:
+            lockout_start_timestamp: float = cache_results.get("lockout_start")
             lockout_start: datetime.datetime = datetime.datetime.fromtimestamp(
-                cache_results.get("lockout_start"), datetime.timezone.utc
+                lockout_start_timestamp, datetime.timezone.utc
             )
             locked_out: bool = lockout_start >= (
                 current_datetime + datetime.timedelta(minutes=-15)
@@ -195,5 +196,8 @@ def authenticate_login(email, password) -> dict[str, str | None]:
     login_data: dict[str, str | None] = authenticate_login_credentials(
         email=email, password=password
     )
-    InvalidLoginAttemptsCache.invalid_attempt(cache_results, current_datetime, email)
+    if cache_results:
+        InvalidLoginAttemptsCache.invalid_attempt(
+            cache_results, current_datetime, email
+        )
     return login_data

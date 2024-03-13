@@ -29,11 +29,11 @@ api_add_resources(api)
 
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
 
-host: str = os.environ.get("host")
-port: str = os.environ.get("port")
-database: str = os.environ.get("database")
-user: str = os.environ.get("user")
-password: str = os.environ.get("password")
+host: str | None = os.environ.get("host")
+port: str | None = os.environ.get("port")
+database: str | None = os.environ.get("database")
+user: str | None = os.environ.get("user")
+password: str | None = os.environ.get("password")
 
 app.config[
     "SQLALCHEMY_DATABASE_URI"
