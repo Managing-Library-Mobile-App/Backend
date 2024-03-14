@@ -35,11 +35,11 @@ def verify_jwt_token() -> Response | str:
         ):
             return email
         raise ValueError
-    except ValueError:
-        return jsonify(
-            msg="Token invalid",
-        )
-    except Exception:
+    except (
+        ValueError,
+        jwt.exceptions.ExpiredSignatureError,
+        jwt.exceptions.DecodeError,
+    ):
         return jsonify(
             msg="Token invalid",
         )

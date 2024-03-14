@@ -32,30 +32,21 @@ class InvalidLoginAttemptsCache(object):
 
     @staticmethod
     def get(email: str) -> Any:
-        try:
-            key: str = InvalidLoginAttemptsCache._key(email)
-            return cache.get(key)
-        except Exception as e:
-            logger.exception(e)
+        key: str = InvalidLoginAttemptsCache._key(email)
+        return cache.get(key)
 
     @staticmethod
     def delete(email: str) -> None:
-        try:
-            cache.get()
-            cache.delete(InvalidLoginAttemptsCache._key(email))
-        except Exception as e:
-            logger.exception(e)
+        cache.get()
+        cache.delete(InvalidLoginAttemptsCache._key(email))
 
     @staticmethod
     def set(email: str, timebucket: list[float], lockout_timestamp=None) -> None:
-        try:
-            key: str = InvalidLoginAttemptsCache._key(email)
-            value: dict[str, list[float] | float] = InvalidLoginAttemptsCache._value(
-                lockout_timestamp, timebucket
-            )
-            cache.set(key, value)
-        except Exception as e:
-            logger.exception(e)
+        key: str = InvalidLoginAttemptsCache._key(email)
+        value: dict[str, list[float] | float] = InvalidLoginAttemptsCache._value(
+            lockout_timestamp, timebucket
+        )
+        cache.set(key, value)
 
     @staticmethod
     def invalid_attempt(
@@ -77,7 +68,6 @@ class InvalidLoginAttemptsCache(object):
             )
             return "locked_user_login_attempts"
         InvalidLoginAttemptsCache.set(usr, invalid_attempt_timestamps)
-        return None
 
 
 def authenticate_login_credentials(email, password) -> dict[str, str | None]:
@@ -174,25 +164,22 @@ def authenticate_login(email, password) -> dict[str, str | None]:
     logger.info(cache_results)
     logger.info(type(cache_results))
     if cache_results and cache_results.get("lockout_start"):
-        try:
-            lockout_start_timestamp: float = cache_results.get("lockout_start")
-            lockout_start: datetime.datetime = datetime.datetime.fromtimestamp(
-                lockout_start_timestamp, datetime.timezone.utc
-            )
-            locked_out: bool = lockout_start >= (
-                current_datetime + datetime.timedelta(minutes=-15)
-            )
-            if not locked_out:
-                InvalidLoginAttemptsCache.delete(email)
-            else:
-                logger.warning(f"locked out user: {email}")
-                return {
-                    "user": None,
-                    "message": "locked_user_login_attempts",
-                    "details": "User locked because of too many unsuccessful attempts",
-                }
-        except Exception as e:
-            logger.exception(e)
+        lockout_start_timestamp: float = cache_results.get("lockout_start")
+        lockout_start: datetime.datetime = datetime.datetime.fromtimestamp(
+            lockout_start_timestamp, datetime.timezone.utc
+        )
+        locked_out: bool = lockout_start >= (
+            current_datetime + datetime.timedelta(minutes=-15)
+        )
+        if not locked_out:
+            InvalidLoginAttemptsCache.delete(email)
+        else:
+            logger.warning(f"locked out user: {email}")
+            return {
+                "user": None,
+                "message": "locked_user_login_attempts",
+                "details": "User locked because of too many unsuccessful attempts",
+            }
     login_data: dict[str, str | None] = authenticate_login_credentials(
         email=email, password=password
     )
