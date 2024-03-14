@@ -18,9 +18,6 @@ class CheckIfLoggedIn(Resource):
         token: str = ""
         if auth:
             token = auth.split(" ")[1]
-        logger.info("TOKEN: " + token)
-        logger.info("LOGGED_IN_USER_TOKENS: " + str(LOGGED_IN_USER_TOKENS))
-        logger.info("BLOCKED_USER_TOKENS: " + str(BLOCKED_USER_TOKENS))
         if token in LOGGED_IN_USER_TOKENS.values():
             return make_response(
                 jsonify(msg="Token valid"),

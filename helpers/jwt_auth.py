@@ -16,7 +16,6 @@ def verify_jwt_token() -> Response | str:
     """
     try:
         data: tuple[dict, dict] | None = verify_jwt_in_request(optional=True)
-        logger.info(data)
         if data:
             jwt_header, jwt_data = data
         else:
@@ -28,7 +27,6 @@ def verify_jwt_token() -> Response | str:
             headers=jwt_header,
         )
         email: str = get_jwt_identity()
-        logger.info(email)
         if email in LOGGED_IN_USER_TOKENS.keys() and (
             email not in BLOCKED_USER_TOKENS.keys()
             or token not in BLOCKED_USER_TOKENS[email]
