@@ -1,7 +1,7 @@
 from flask import Response, make_response, jsonify
 from flask_restful import Resource
 
-from helpers.blocklist import LOGGED_IN_USER_TOKENS, BLOCKED_USER_TOKENS
+from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.request_parser import RequestParser
 
 
@@ -14,8 +14,6 @@ class LoggedInUsers(Resource):
     def get(self) -> Response:
         args: dict = self.get_parser.parse_args()
         secret: str = args.get("secret")
-        print("LOGGED_IN_USER_TOKENS: " + str(LOGGED_IN_USER_TOKENS))
-        print("BLOCKED_USER_TOKENS: " + str(BLOCKED_USER_TOKENS))
         if secret == "admin":
             return make_response(
                 jsonify(

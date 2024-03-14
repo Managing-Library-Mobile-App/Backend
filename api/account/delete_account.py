@@ -35,7 +35,6 @@ class DeleteAccount(Resource):
             )
 
         if user:
-            print(LOGGED_IN_USER_TOKENS)
             LOGGED_IN_USER_TOKENS.pop(email)
             db.session.delete(user)
             db.session.commit()
