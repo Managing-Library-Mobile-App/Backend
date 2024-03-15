@@ -1,10 +1,10 @@
 import datetime
-import os
 
 from flasgger import Swagger
 from flask_restful import Api
 from werkzeug import run_simple
 
+import env
 from helpers.api_add_resources import api_add_resources
 from helpers.init import db, app, dispatcher, jwt, cache, limiter
 
@@ -26,13 +26,13 @@ swagger = Swagger(app, template=SWAGGER_TEMPLATE)
 api = Api(app)
 api_add_resources(api)
 
-app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
+app.config["JWT_SECRET_KEY"] = env.JWT_SECRET_KEY
 
-host = os.environ.get("host")
-port = os.environ.get("port")
-database = os.environ.get("database")
-user = os.environ.get("user")
-password = os.environ.get("password")
+host = env.host
+port = env.port
+database = env.database
+user = env.user
+password = env.password
 
 app.config[
     "SQLALCHEMY_DATABASE_URI"
