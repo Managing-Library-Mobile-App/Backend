@@ -57,17 +57,17 @@ class Library(db.Model):  # type: ignore[name-defined]
         self.user_id = user_id
         db.session.add(self)
         for read_book_id in read_books:
-            book = Book.query.get(read_book_id)
-            if book:
-                self.add_read_book(book)
+            read_book: Book = Book.query.get(read_book_id)
+            if read_book:
+                self.add_read_book(read_book)
         for bought_book_id in bought_books:
-            book = Book.query.get(bought_book_id)
-            if book:
-                self.add_bought_book(book)
+            bought_book: Book = Book.query.get(bought_book_id)
+            if bought_book:
+                self.add_bought_book(bought_book)
         for favourite_book_id in favourite_books:
-            book = Book.query.get(favourite_book_id)
-            if book:
-                self.add_favourite_book(book)
+            favourite_book: Book = Book.query.get(favourite_book_id)
+            if favourite_book:
+                self.add_favourite_book(favourite_book)
 
     def as_dict(self) -> dict:
         """Serializing object to dictionary."""

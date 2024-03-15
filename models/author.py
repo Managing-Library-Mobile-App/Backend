@@ -78,7 +78,7 @@ class Author(db.Model):  # type: ignore[name-defined]
         """
         from .user import User
 
-        fan = db.session.query(User).filter_by(id=fan_id).first()
+        fan: User = db.session.query(User).filter_by(id=fan_id).first()
         if fan:
             self.fans.append(fan)
             self.fans_count += 1
@@ -89,7 +89,7 @@ class Author(db.Model):  # type: ignore[name-defined]
         """
         from .user import User
 
-        fan = db.session.query(User).filter_by(id=fan_id).first()
+        fan: User = db.session.query(User).filter_by(id=fan_id).first()
         if fan:
             self.fans.remove(fan)
             self.fans_count -= 1
@@ -98,7 +98,7 @@ class Author(db.Model):  # type: ignore[name-defined]
         """Add a book to released_books' list"""
         from .book import Book
 
-        book = db.session.query(Book).filter_by(id=book_id).first()
+        book: Book = db.session.query(Book).filter_by(id=book_id).first()
         if book:
             self.released_books.append(book)
             self.released_books_count += 1
@@ -107,7 +107,7 @@ class Author(db.Model):  # type: ignore[name-defined]
         """Remove a book from released_books' list"""
         from .book import Book
 
-        book = db.session.query(Book).filter_by(id=book_id).first()
+        book: Book = db.session.query(Book).filter_by(id=book_id).first()
         if book:
             self.released_books.remove(book)
             self.released_books_count -= 1

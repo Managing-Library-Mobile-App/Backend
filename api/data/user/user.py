@@ -8,19 +8,19 @@ from models import user
 
 class User(Resource):
     def __init__(self) -> None:
-        self.get_parser = RequestParser()
+        self.get_parser: RequestParser = RequestParser()
         self.get_parser.add_arg("id", type=int, required=False)
         super(User, self).__init__()
 
     def get(self) -> Response:
-        args = self.get_parser.parse_args()
-        user_id = args.get("id")
-        verification_output = verify_jwt_token()
+        args: dict = self.get_parser.parse_args()
+        user_id: int = args.get("id")
+        verification_output: Response | str = verify_jwt_token()
         if type(verification_output) is str:
-            email = verification_output
+            email: str = verification_output
         else:
             return make_response(verification_output, 401)
-        current_user = user.User.query.filter_by(email=email).first()
+        current_user: user.User = user.User.query.filter_by(email=email).first()
         if not current_user.is_admin:
             return make_response(
                 jsonify(

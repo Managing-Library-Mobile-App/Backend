@@ -31,14 +31,14 @@ class Opinion(db.Model):  # type: ignore[name-defined]
 
         from .user import User
 
-        user = db.session.query(User).filter_by(id=account_id).first()
+        user: User = db.session.query(User).filter_by(id=account_id).first()
         if user:
             user.opinions_count += 1
             user.score += 1
 
         from .book import Book
 
-        book = db.session.query(Book).filter_by(id=book_id).first()
+        book: Book = db.session.query(Book).filter_by(id=book_id).first()
         if book:
             book.opinions_count += 1
             book.score += stars_count

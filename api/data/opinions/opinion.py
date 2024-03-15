@@ -11,30 +11,30 @@ from models.user import User
 
 class Opinion(Resource):
     def __init__(self) -> None:
-        self.get_parser = RequestParser()
+        self.get_parser: RequestParser = RequestParser()
         self.get_parser.add_arg("id", type=int, required=False)
-        self.post_parser = RequestParser()
+        self.post_parser: RequestParser = RequestParser()
         self.post_parser.add_arg("account_id", type=int)
         self.post_parser.add_arg("book_id", type=int)
         self.post_parser.add_arg("stars_count", type=int)
         self.post_parser.add_arg("comment")
-        self.delete_parser = RequestParser()
+        self.delete_parser: RequestParser = RequestParser()
         self.delete_parser.add_arg("id", type=int)
-        self.patch_parser = RequestParser()
+        self.patch_parser: RequestParser = RequestParser()
         self.patch_parser.add_arg("id", type=int)
         self.patch_parser.add_arg("stars_count", type=int, required=False)
         self.patch_parser.add_arg("comment", type=str, required=False)
         super(Opinion, self).__init__()
 
     def get(self) -> Response:
-        args = self.get_parser.parse_args()
-        opinion_id = args.get("id")
-        verification_output = verify_jwt_token()
+        args: dict = self.get_parser.parse_args()
+        opinion_id: int = args.get("id")
+        verification_output: Response | str = verify_jwt_token()
         if type(verification_output) is str:
-            email = verification_output
+            email: str = verification_output
         else:
             return make_response(verification_output, 401)
-        user = User.query.filter_by(email=email).first()
+        user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return make_response(
                 jsonify(
@@ -67,17 +67,17 @@ class Opinion(Resource):
         )
 
     def post(self) -> Response:
-        args = self.post_parser.parse_args()
-        account_id = args.get("account_id")
-        book_id = args.get("book_id")
-        stars_count = args.get("stars_count")
-        comment = args.get("comment")
-        verification_output = verify_jwt_token()
+        args: dict = self.post_parser.parse_args()
+        account_id: int = args.get("account_id")
+        book_id: int = args.get("book_id")
+        stars_count: int = args.get("stars_count")
+        comment: str = args.get("comment")
+        verification_output: Response | str = verify_jwt_token()
         if type(verification_output) is str:
-            email = verification_output
+            email: str = verification_output
         else:
             return make_response(verification_output, 401)
-        user = User.query.filter_by(email=email).first()
+        user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return make_response(
                 jsonify(
@@ -103,14 +103,14 @@ class Opinion(Resource):
         )
 
     def delete(self) -> Response:
-        args = self.delete_parser.parse_args()
-        opinion_id = args.get("id")
-        verification_output = verify_jwt_token()
+        args: dict = self.delete_parser.parse_args()
+        opinion_id: int = args.get("id")
+        verification_output: Response | str = verify_jwt_token()
         if type(verification_output) is str:
-            email = verification_output
+            email: str = verification_output
         else:
             return make_response(verification_output, 401)
-        user = User.query.filter_by(email=email).first()
+        user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return make_response(
                 jsonify(
@@ -133,16 +133,16 @@ class Opinion(Resource):
         )
 
     def patch(self) -> Response:
-        args = self.patch_parser.parse_args()
-        opinion_id = args.get("id")
-        stars_count = args.get("stars_count")
-        comment = args.get("comment")
-        verification_output = verify_jwt_token()
+        args: dict = self.patch_parser.parse_args()
+        opinion_id: int = args.get("id")
+        stars_count: int = args.get("stars_count")
+        comment: str = args.get("comment")
+        verification_output: Response | str = verify_jwt_token()
         if type(verification_output) is str:
-            email = verification_output
+            email: str = verification_output
         else:
             return make_response(verification_output, 401)
-        user = User.query.filter_by(email=email).first()
+        user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return make_response(
                 jsonify(

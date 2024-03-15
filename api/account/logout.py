@@ -11,12 +11,12 @@ class Logout(Resource):
 
     def post(self) -> Response:
         try:
-            verification_output = verify_jwt_token()
+            verification_output: Response | str = verify_jwt_token()
 
             if type(verification_output) is str:
                 current_user = verification_output
             else:
-                raise ValueError()
+                return make_response(verification_output, 401)
             LOGGED_IN_USER_TOKENS.pop(current_user)
             return make_response(jsonify(message="logged_out"), 200)
         except KeyError:

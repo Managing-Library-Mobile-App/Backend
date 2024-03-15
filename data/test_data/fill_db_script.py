@@ -20,7 +20,7 @@ def fill_db(db: SQLAlchemy):
     logger.info("Filling database")
 
     for author in authors:
-        new_author = Author(
+        new_author: Author = Author(
             name=author["name"],
             genres=author["genres"],
             biography=author["biography"],
@@ -32,7 +32,7 @@ def fill_db(db: SQLAlchemy):
         db.session.commit()
 
     for book in books:
-        new_book = Book(
+        new_book: Book = Book(
             isbn=book["isbn"],
             title=book["title"],
             author_id=book["author_id"],
@@ -46,7 +46,7 @@ def fill_db(db: SQLAlchemy):
         db.session.commit()
 
     for book_announcement in book_announcements:
-        new_book_announcement = BookAnnouncement(
+        new_book_announcement: BookAnnouncement = BookAnnouncement(
             title=book_announcement["title"],
             author=book_announcement["author"],
             publishing_house=book_announcement["publishing_house"],
@@ -59,7 +59,7 @@ def fill_db(db: SQLAlchemy):
         db.session.commit()
 
     for index, user in enumerate(users):
-        new_user = User(
+        new_user: User = User(
             username=user["username"],
             password=user["password"],
             email=user["email"],
@@ -67,7 +67,7 @@ def fill_db(db: SQLAlchemy):
         db.session.add(new_user)
         db.session.commit()
 
-        new_user_library = Library(
+        new_user_library: Library = Library(
             read_books=libraries[index]["read_books"],
             favourite_books=libraries[index]["favourite_books"],
             bought_books=libraries[index]["bought_books"],
@@ -77,7 +77,7 @@ def fill_db(db: SQLAlchemy):
         db.session.commit()
 
     for index, admin in enumerate(admins):
-        new_admin = User(
+        new_admin: User = User(
             username=admin["username"],
             password=admin["password"],
             email=admin["email"],
@@ -86,7 +86,7 @@ def fill_db(db: SQLAlchemy):
         db.session.add(new_admin)
         db.session.commit()
 
-        new_admin_library = Library(
+        new_admin_library: Library = Library(
             read_books=[],
             favourite_books=[],
             bought_books=[],
@@ -96,7 +96,7 @@ def fill_db(db: SQLAlchemy):
         db.session.commit()
 
     for opinion in opinions:
-        new_opinion = Opinion(
+        new_opinion: Opinion = Opinion(
             account_id=opinion["account_id"],
             book_id=opinion["book_id"],
             stars_count=opinion["stars_count"],

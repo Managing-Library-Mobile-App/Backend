@@ -1,3 +1,5 @@
+import datetime
+
 from flask import jsonify, Response, make_response
 from flask_restful import Resource
 
@@ -11,9 +13,9 @@ from models.user import User
 
 class Book(Resource):
     def __init__(self) -> None:
-        self.get_parser = RequestParser()
+        self.get_parser: RequestParser = RequestParser()
         self.get_parser.add_arg("id", type=int, required=False)
-        self.post_parser = RequestParser()
+        self.post_parser: RequestParser = RequestParser()
         self.post_parser.add_arg("isbn", type=int)
         self.post_parser.add_arg("title")
         self.post_parser.add_arg("author_id")
@@ -22,9 +24,9 @@ class Book(Resource):
         self.post_parser.add_arg("genres", type=list)
         self.post_parser.add_arg("picture")
         self.post_parser.add_arg("premiere_date")
-        self.delete_parser = RequestParser()
+        self.delete_parser: RequestParser = RequestParser()
         self.delete_parser.add_arg("id", type=int)
-        self.patch_parser = RequestParser()
+        self.patch_parser: RequestParser = RequestParser()
         self.patch_parser.add_arg("id", type=int)
         self.patch_parser.add_arg("isbn")
         self.patch_parser.add_arg("title")
@@ -37,9 +39,9 @@ class Book(Resource):
         super(Book, self).__init__()
 
     def get(self) -> Response:
-        args = self.get_parser.parse_args()
-        book_id = args.get("id")
-        verification_output = verify_jwt_token()
+        args: dict = self.get_parser.parse_args()
+        book_id: int = args.get("id")
+        verification_output: Response | str = verify_jwt_token()
         if type(verification_output) is str:
             pass
         else:
@@ -58,21 +60,21 @@ class Book(Resource):
         )
 
     def post(self) -> Response:
-        args = self.post_parser.parse_args()
-        isbn = args.get("isbn")
-        title = args.get("title")
-        author_id = args.get("author_id")
-        publishing_house = args.get("publishing_house")
-        description = args.get("description")
-        genres = args.get("genres")
-        picture = args.get("picture")
-        premiere_date = args.get("premiere_date")
-        verification_output = verify_jwt_token()
+        args: dict = self.post_parser.parse_args()
+        isbn: str = args.get("isbn")
+        title: str = args.get("title")
+        author_id: int = args.get("author_id")
+        publishing_house: str = args.get("publishing_house")
+        description: str = args.get("description")
+        genres: list[int] = args.get("genres")
+        picture: str = args.get("picture")
+        premiere_date: datetime.datetime = args.get("premiere_date")
+        verification_output: Response | str = verify_jwt_token()
         if type(verification_output) is str:
-            email = verification_output
+            email: str = verification_output
         else:
             return make_response(verification_output, 401)
-        user = User.query.filter_by(email=email).first()
+        user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return make_response(
                 jsonify(
@@ -102,14 +104,14 @@ class Book(Resource):
         )
 
     def delete(self) -> Response:
-        args = self.delete_parser.parse_args()
-        book_id = args.get("id")
-        verification_output = verify_jwt_token()
+        args: dict = self.delete_parser.parse_args()
+        book_id: int = args.get("id")
+        verification_output: Response | str = verify_jwt_token()
         if type(verification_output) is str:
-            email = verification_output
+            email: str = verification_output
         else:
             return make_response(verification_output, 401)
-        user = User.query.filter_by(email=email).first()
+        user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return make_response(
                 jsonify(
@@ -130,21 +132,21 @@ class Book(Resource):
         )
 
     def patch(self) -> Response:
-        args = self.delete_parser.parse_args()
-        book_id = args.get("id")
-        isbn = args.get("isbn")
-        title = args.get("title")
-        publishing_house = args.get("publishing_house")
-        description = args.get("description")
-        genres = args.get("genres")
-        picture = args.get("picture")
-        premiere_date = args.get("premiere_date")
-        verification_output = verify_jwt_token()
+        args: dict = self.delete_parser.parse_args()
+        book_id: int = args.get("id")
+        isbn: str = args.get("isbn")
+        title: str = args.get("title")
+        publishing_house: str = args.get("publishing_house")
+        description: str = args.get("description")
+        genres: list[int] = args.get("genres")
+        picture: str = args.get("picture")
+        premiere_date: datetime.datetime = args.get("premiere_date")
+        verification_output: Response | str = verify_jwt_token()
         if type(verification_output) is str:
-            email = verification_output
+            email: str = verification_output
         else:
             return make_response(verification_output, 401)
-        user = User.query.filter_by(email=email).first()
+        user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return make_response(
                 jsonify(
@@ -154,7 +156,7 @@ class Book(Resource):
                 404,
             )
 
-        modified_book = book.Book.query.filter_by(id=book_id).first()
+        modified_book: book.Book = book.Book.query.filter_by(id=book_id).first()
 
         if user:
             if isbn:

@@ -11,16 +11,13 @@ class CheckIfLoggedIn(Resource):
         super(CheckIfLoggedIn, self).__init__()
 
     def get(self) -> Response:
-        verification_output = verify_jwt_token()
+        verification_output: Response | str = verify_jwt_token()
         if not type(verification_output) is str:
             return make_response(verification_output, 401)
         auth: str | None = request.headers.get("Authorization")
         token: str = ""
         if auth:
             token = auth.split(" ")[1]
-        logger.info("TOKEN: " + token)
-        logger.info("LOGGED_IN_USER_TOKENS: " + str(LOGGED_IN_USER_TOKENS))
-        logger.info("BLOCKED_USER_TOKENS: " + str(BLOCKED_USER_TOKENS))
         if token in LOGGED_IN_USER_TOKENS.values():
             return make_response(
                 jsonify(msg="Token valid"),

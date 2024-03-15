@@ -168,7 +168,7 @@ books: list[dict[str, Any]] = [
 #  i zrobić z nich enuma, a resztę dać jako 25 - other
 
 
-genres = [
+genres: list[str] = [
     "ANTIQUES & COLLECTIBLES",
     "LITERARY COLLECTIONS",
     "ARCHITECTURE",

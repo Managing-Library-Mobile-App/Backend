@@ -23,9 +23,9 @@ def api_add_resources(api: flask_restful.Api) -> None:
     :raises ValueError: Token invalid
     :raises Exception: Token invalid in unknown way
     """
-    api_without_version = "/api/"
-    account = "account/"
-    data = "data/"
+    api_without_version: str = "/api/"
+    account: str = "account/"
+    data: str = "data/"
 
     # additional
 

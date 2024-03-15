@@ -59,7 +59,7 @@ class Book(db.Model):  # type: ignore[name-defined]
 
         from .author import Author
 
-        author = db.session.query(Author).filter_by(id=author_id).first()
+        author: Author = db.session.query(Author).filter_by(id=author_id).first()
         if author:
             author.released_books_count += 1
             db.session.commit()
