@@ -24,3 +24,4 @@ requests==2.31.0
 Werkzeug==3.0.1
 PyJWT==2.8.0
 setuptools==69.1.1
+isort==5.13.2

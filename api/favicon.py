@@ -1,4 +1,4 @@
-from flask import current_app, Response
+from flask import Response, current_app
 from flask_restful import Resource
 
 

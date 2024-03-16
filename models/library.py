@@ -2,11 +2,9 @@ from sqlalchemy.orm import backref
 
 from helpers.init import db
 from models.book import Book
-from models.many_to_many_tables import (
-    library_books_read,
-    library_books_favourite,
-    library_books_bought,
-)
+from models.many_to_many_tables import (library_books_bought,
+                                        library_books_favourite,
+                                        library_books_read)
 
 
 class Library(db.Model):  # type: ignore[name-defined]

@@ -1,4 +1,4 @@
-from flask import jsonify, Response, make_response
+from flask import Response, jsonify, make_response
 from flask_restful import Resource
 
 from helpers.blocklist import LOGGED_IN_USER_TOKENS

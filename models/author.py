@@ -1,7 +1,7 @@
 from sqlalchemy import ARRAY
 
 from helpers.init import db
-from models.many_to_many_tables import authors_users, authors_released_books
+from models.many_to_many_tables import authors_released_books, authors_users
 
 
 class Author(db.Model):  # type: ignore[name-defined]

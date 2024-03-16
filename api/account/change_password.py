@@ -1,6 +1,6 @@
 import re
 
-from flask import Response, make_response, jsonify
+from flask import Response, jsonify, make_response
 from flask_restful import Resource
 
 from helpers.init import db

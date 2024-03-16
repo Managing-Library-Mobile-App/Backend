@@ -6,17 +6,15 @@ from flasgger import Swagger
 from flask_restful import Api
 from werkzeug import run_simple
 
+from data.test_data.fill_db_script import fill_db
 from helpers.api_add_resources import api_add_resources
-from helpers.init import db, app, dispatcher, jwt, cache, limiter
-
+from helpers.init import app, cache, db, dispatcher, jwt, limiter
 from models.author import Author  # noqa
 from models.book import Book  # noqa
 from models.book_announcement import BookAnnouncement  # noqa
 from models.library import Library  # noqa
 from models.opinion import Opinion  # noqa
 from models.user import User  # noqa
-
-from data.test_data.fill_db_script import fill_db
 
 SWAGGER_TEMPLATE = {
     "securityDefinitions": {

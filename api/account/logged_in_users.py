@@ -1,9 +1,9 @@
 import os
 
-from flask import Response, make_response, jsonify
+import env
+from flask import Response, jsonify, make_response
 from flask_restful import Resource
 
-import env
 from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.request_parser import RequestParser
 

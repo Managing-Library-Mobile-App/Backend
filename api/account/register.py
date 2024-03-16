@@ -1,14 +1,14 @@
 import re
 
 from flask import Response, jsonify, make_response
-from loguru import logger
 from flask_restful import Resource
+from loguru import logger
 from sqlalchemy import exists
 
+from helpers.init import db
 from helpers.request_parser import RequestParser
 from models.library import Library
 from models.user import User
-from helpers.init import db
 
 
 def authenticate_register_credentials(

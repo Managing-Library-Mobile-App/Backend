@@ -6,8 +6,7 @@ from data.test_data.book_announcements import book_announcements
 from data.test_data.books import books
 from data.test_data.libraries import libraries
 from data.test_data.opinions import opinions
-from data.test_data.users import users, admins
-
+from data.test_data.users import admins, users
 from models.author import Author
 from models.book import Book
 from models.book_announcement import BookAnnouncement

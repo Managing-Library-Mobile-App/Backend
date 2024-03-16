@@ -5,6 +5,7 @@ import flask_jwt_extended
 import flask_limiter
 import flask_sqlalchemy
 import werkzeug
+from dotenv import load_dotenv
 from flasgger import Swagger
 from flask import Flask
 from flask_caching import Cache
@@ -13,7 +14,6 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_prometheus_metrics import register_metrics
 from flask_sqlalchemy import SQLAlchemy
-from dotenv import load_dotenv
 from prometheus_client import make_wsgi_app
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 

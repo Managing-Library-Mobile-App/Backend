@@ -60,3 +60,6 @@ black <file_name>
 # TEST COVERAGE
 pytest --cov-config .coveragerc --cov-report term:skip-covered --cov=.
 pytest --cov-config .coveragerc --cov-report html --cov=.
+
+# SORTING IMPORTS
+isort .
