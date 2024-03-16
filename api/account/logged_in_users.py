@@ -1,6 +1,5 @@
 import os
 
-import env
 from flask import Response, jsonify, make_response
 from flask_restful import Resource
 

@@ -19,7 +19,9 @@ To run the app locally, use:
 pip install virtualenv
 virtualenv venv
 pip install -r docker_and_setup/requirements.txt
-python app.py
+python app.py <type_of_db>
+
+type_of_db=prod or type_ofdb=test, and indicates databases for different purposes
 
 When running locally, if the database is not seen from name db (error: sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) could not translate host name "db" to address: Nieznany host.
 ), you have to add the line below to your etc/hosts file:

@@ -44,8 +44,8 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_USER: ${user}
-      POSTGRES_PASSWORD: ${password}
+      POSTGRES_USER: ${user_prod}
+      POSTGRES_PASSWORD: ${password_prod}
     expose:
       - "5432"
     ports:

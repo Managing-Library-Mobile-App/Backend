@@ -1,3 +1,5 @@
+import argparse
+
 import flasgger
 import flask
 import flask_caching
@@ -34,3 +36,9 @@ register_metrics(app, app_version="v0.1.2", app_config="staging")
 dispatcher: werkzeug.middleware.dispatcher.DispatcherMiddleware = DispatcherMiddleware(
     app.wsgi_app, {"/metrics": make_wsgi_app()}
 )
+
+
+def valid_type_of_db(env):
+    if env not in ["prod", "test"]:
+        raise argparse.ArgumentTypeError("Environment must be 'prod' or 'test'")
+    return env
