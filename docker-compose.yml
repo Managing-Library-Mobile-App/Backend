@@ -42,7 +42,7 @@ services:
       timeout: 5s
       retries: 3
     env_file:
-      - env.py
+      - .env
     environment:
       POSTGRES_USER: ${user}
       POSTGRES_PASSWORD: ${password}

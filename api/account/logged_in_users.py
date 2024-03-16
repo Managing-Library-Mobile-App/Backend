@@ -1,3 +1,5 @@
+import os
+
 from flask import Response, make_response, jsonify
 from flask_restful import Resource
 
@@ -15,7 +17,7 @@ class LoggedInUsers(Resource):
     def get(self) -> Response:
         args: dict = self.get_parser.parse_args()
         secret: str = args.get("secret")
-        if secret == env.secret:
+        if secret == os.environ.get("secret"):
             return make_response(
                 jsonify(
                     logged_in_users={

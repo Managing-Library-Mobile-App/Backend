@@ -1,7 +1,7 @@
 static/cert.pem
 static/key.pem
 .coverage
-env.py
+.env
 api/__pycache__/__init__.cpython-311.pyc
 api/__pycache__/available_routes.cpython-311.pyc
 api/__pycache__/available_versions.cpython-311.pyc
