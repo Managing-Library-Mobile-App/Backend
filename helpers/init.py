@@ -1,3 +1,5 @@
+import argparse
+
 import flasgger
 import flask
 import flask_caching
@@ -5,6 +7,7 @@ import flask_jwt_extended
 import flask_limiter
 import flask_sqlalchemy
 import werkzeug
+from dotenv import load_dotenv
 from flasgger import Swagger
 from flask import Flask
 from flask_caching import Cache
@@ -13,7 +16,6 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_prometheus_metrics import register_metrics
 from flask_sqlalchemy import SQLAlchemy
-from dotenv import load_dotenv
 from prometheus_client import make_wsgi_app
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
@@ -34,3 +36,9 @@ register_metrics(app, app_version="v0.1.2", app_config="staging")
 dispatcher: werkzeug.middleware.dispatcher.DispatcherMiddleware = DispatcherMiddleware(
     app.wsgi_app, {"/metrics": make_wsgi_app()}
 )
+
+
+def valid_type_of_db(env):
+    if env not in ["prod", "test"]:
+        raise argparse.ArgumentTypeError("Environment must be 'prod' or 'test'")
+    return env

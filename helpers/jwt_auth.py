@@ -1,8 +1,8 @@
 import os
 
 import jwt
-from flask import jsonify, Response
-from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+from flask import Response, jsonify
+from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 from loguru import logger
 
 from helpers.blocklist import BLOCKED_USER_TOKENS, LOGGED_IN_USER_TOKENS

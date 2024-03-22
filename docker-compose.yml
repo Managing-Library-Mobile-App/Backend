@@ -42,10 +42,10 @@ services:
       timeout: 5s
       retries: 3
     env_file:
-      - env.py
+      - .env
     environment:
-      POSTGRES_USER: ${user}
-      POSTGRES_PASSWORD: ${password}
+      POSTGRES_USER: ${user_prod}
+      POSTGRES_PASSWORD: ${password_prod}
     expose:
       - "5432"
     ports:

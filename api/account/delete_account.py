@@ -1,5 +1,6 @@
-from flask import Response, make_response, jsonify
+from flask import Response, jsonify, make_response
 from flask_restful import Resource
+
 from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token

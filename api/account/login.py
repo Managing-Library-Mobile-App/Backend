@@ -2,15 +2,14 @@ import datetime
 import re
 from typing import Any
 
-from flask import jsonify, Response, make_response
+from flask import Response, jsonify, make_response
 from flask_jwt_extended import create_access_token
-from loguru import logger
 from flask_restful import Resource
+from loguru import logger
 
 from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.init import cache
 from helpers.request_parser import RequestParser
-
 from models.user import User
 
 

@@ -1,13 +1,12 @@
 import datetime
 
-from flask import jsonify, Response, make_response
+from flask import Response, jsonify, make_response
 from flask_restful import Resource
 
+from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
 from helpers.request_parser import RequestParser
 from models import book
-from helpers.init import db
-
 from models.user import User
 
 
