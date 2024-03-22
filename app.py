@@ -34,11 +34,11 @@ parser.add_argument(
 args = parser.parse_args()
 
 
-host: str = os.environ.get("host_" + args.type_of_db)
-port: str = os.environ.get("port_" + args.type_of_db)
+host: str = os.environ.get("host")
+port: str = os.environ.get("port")
 database: str = os.environ.get("database_" + args.type_of_db)
-user: str = os.environ.get("user_" + args.type_of_db)
-password: str = os.environ.get("password_" + args.type_of_db)
+user: str = os.environ.get("user")
+password: str = os.environ.get("password")
 
 app.config[
     "SQLALCHEMY_DATABASE_URI"
