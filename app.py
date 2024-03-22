@@ -33,6 +33,8 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
+if args.type_of_db not in ["prod", "test"]:
+    raise Exception(f"Database {args.type_of_db} is not supported")
 
 host: str = os.environ.get("host")
 port: str = os.environ.get("port")
