@@ -5,6 +5,7 @@ from flask_restful import Resource
 
 from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.request_parser import RequestParser
+from static.responses import create_response, WRONG_SECRET_RESPONSE, LOGGED_IN_USERS_RESPONSE
 
 
 class LoggedInUsers(Resource):
@@ -17,19 +18,11 @@ class LoggedInUsers(Resource):
         args: dict = self.get_parser.parse_args()
         secret: str = args.get("secret")
         if secret == os.environ.get("secret"):
-            return make_response(
-                jsonify(
-                    logged_in_users={
-                        email: LOGGED_IN_USER_TOKENS[email]
-                        for email in LOGGED_IN_USER_TOKENS.keys()
-                    },
-                ),
-                200,
+            return create_response(
+                LOGGED_IN_USERS_RESPONSE,
+                {"logged_in_users": {
+                    email: LOGGED_IN_USER_TOKENS[email]
+                    for email in LOGGED_IN_USER_TOKENS.keys()
+                }},
             )
-        return make_response(
-            jsonify(
-                message="wrong_secret",
-                details="Wrong secret field value. Cannot view logged in users.",
-            ),
-            401,
-        )
+        return create_response(WRONG_SECRET_RESPONSE)

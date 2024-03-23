@@ -2,7 +2,7 @@ import datetime
 import re
 from typing import Any
 
-from flask import Response, jsonify, make_response
+from flask import Response
 from flask_jwt_extended import create_access_token
 from flask_restful import Resource
 from loguru import logger
@@ -11,6 +11,8 @@ from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.init import cache
 from helpers.request_parser import RequestParser
 from models.user import User
+from static.responses import USER_NOT_LOGGED_IN_RESPONSE, create_response, LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE, \
+    PASSWORD_WRONG_FORMAT_RESPONSE, EMAIL_WRONG_FORMAT_RESPONSE, ALREADY_LOGGED_IN_RESPONSE, LOGIN_SUCCESSFUL_RESPONSE
 
 
 class InvalidLoginAttemptsCache(object):
@@ -65,51 +67,29 @@ class InvalidLoginAttemptsCache(object):
             InvalidLoginAttemptsCache.set(
                 usr, invalid_attempt_timestamps, current_datetime.timestamp()
             )
+            # TODO po co ten return skoro nic z tym nie robimy
             return "locked_user_login_attempts"
         InvalidLoginAttemptsCache.set(usr, invalid_attempt_timestamps)
 
 
-def authenticate_login_credentials(email, password) -> dict[str, str | None]:
+def authenticate_login_credentials(email, password) -> (dict[str, Any], int):
     if not re.fullmatch(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b", email):
-        return {
-            "message": "email_wrong_format",
-            "details": "Wrong email format.",
-        }
+        return EMAIL_WRONG_FORMAT_RESPONSE
     if not re.fullmatch(
         r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{10,50}$",
         password,
     ):
-        return {
-            "message": "password_wrong_format",
-            "details": """Wrong password format. Password should have from 10 to 50 characters.
-            It should contain at least one upper letter, at least 1 lower letter, at least 1 number and
-            at least one special character""",
-        }
-
-    user: User | None = None
+        return PASSWORD_WRONG_FORMAT_RESPONSE
     try:
-        user = User.query.filter_by(email=email, password=password).first()
-    except User.DoesNotExist:
-        logger.info("User does not exist")
-    if user:
+        User.query.filter_by(email=email, password=password).first()
         if email in LOGGED_IN_USER_TOKENS.keys():
-            return {
-                "token": LOGGED_IN_USER_TOKENS[email],
-                "message": "already_logged_in",
-                "details": "Login already_logged_in",
-            }
+            return ALREADY_LOGGED_IN_RESPONSE, {"token": LOGGED_IN_USER_TOKENS[email]}
         token: str = create_access_token(identity=email)
         LOGGED_IN_USER_TOKENS[email] = token
-        return {
-            "token": token,
-            "message": "login_successful",
-            "details": "Login successful",
-        }
-    return {
-        "token": None,
-        "message": "authentication_failed",
-        "details": "Wrong email or password",
-    }
+        return LOGIN_SUCCESSFUL_RESPONSE, {"token": token}
+    except User.DoesNotExist:
+        logger.info("User does not exist")
+    return USER_NOT_LOGGED_IN_RESPONSE
 
 
 class Login(Resource):
@@ -123,45 +103,12 @@ class Login(Resource):
         args: dict = self.post_parser.parse_args()
         email: str = args.get("email")
         password: str = args.get("password")
-        login_output: dict[str, str | None] = authenticate_login(email, password)
-        if login_output["message"] == "login_successful":
-            logger.info(f"Zalogowano użytkownika {email}")
-            return make_response(
-                jsonify(
-                    logged_in=True,
-                    token=login_output["token"],
-                    message=login_output["message"],
-                    details=login_output["details"],
-                ),
-                200,
-            )
-        elif login_output["message"] == "already_logged_in":
-            return make_response(
-                jsonify(
-                    token=login_output["token"],
-                    message="user_already_logged_in",
-                    details="User already logged in",
-                ),
-                401,
-            )
-        logger.info(
-            f"Nieudana próba logowania użytkownika. {login_output['message']}, {login_output['details']}"
-        )
-        return make_response(
-            jsonify(
-                token=None,
-                message=login_output["message"],
-                details=login_output["details"],
-            ),
-            401,
-        )
+        return create_response(authenticate_login(email, password))
 
 
 def authenticate_login(email, password) -> dict[str, str | None]:
     current_datetime: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)
     cache_results: dict | None = InvalidLoginAttemptsCache.get(email)
-    logger.info(cache_results)
-    logger.info(type(cache_results))
     if cache_results and cache_results.get("lockout_start"):
         lockout_start_timestamp: float = cache_results.get("lockout_start")
         lockout_start: datetime.datetime = datetime.datetime.fromtimestamp(
@@ -174,14 +121,11 @@ def authenticate_login(email, password) -> dict[str, str | None]:
             InvalidLoginAttemptsCache.delete(email)
         else:
             logger.warning(f"locked out user: {email}")
-            return {
-                "user": None,
-                "message": "locked_user_login_attempts",
-                "details": "User locked because of too many unsuccessful attempts",
-            }
-    login_data: dict[str, str | None] = authenticate_login_credentials(
+            return LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE
+    login_data: (dict[str, Any], int) = authenticate_login_credentials(
         email=email, password=password
     )
+    # TODO czy tu nie powinno być if not logged_in? coś tu chyba nie gra
     if cache_results:
         InvalidLoginAttemptsCache.invalid_attempt(
             cache_results, current_datetime, email

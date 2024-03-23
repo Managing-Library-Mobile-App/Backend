@@ -1,14 +1,13 @@
 import os
 
 import jwt
-from flask import Response, jsonify
+from flask import Response
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
-from loguru import logger
 
 from helpers.blocklist import BLOCKED_USER_TOKENS, LOGGED_IN_USER_TOKENS
 
 
-def verify_jwt_token() -> Response | str:
+def verify_jwt_token() -> None | str:
     """
     Verify JWT Token for endpoint
     :returns: response to show if token is invalid or email if valid
@@ -38,6 +37,4 @@ def verify_jwt_token() -> Response | str:
         jwt.exceptions.ExpiredSignatureError,
         jwt.exceptions.DecodeError,
     ):
-        return jsonify(
-            msg="Token invalid",
-        )
+        return None

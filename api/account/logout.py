@@ -1,8 +1,10 @@
-from flask import Response, jsonify, make_response
+from flask import Response
 from flask_restful import Resource
 
 from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.jwt_auth import verify_jwt_token
+from static.responses import create_response, TOKEN_INVALID_RESPONSE, LOGGED_OUT_RESPONSE, USER_NOT_FOUND_RESPONSE, \
+    USER_NOT_LOGGED_IN_RESPONSE
 
 
 class Logout(Resource):
@@ -11,24 +13,12 @@ class Logout(Resource):
 
     def post(self) -> Response:
         try:
-            verification_output: Response | str = verify_jwt_token()
-
-            if type(verification_output) is str:
-                current_user = verification_output
-            else:
-                return make_response(verification_output, 401)
-            LOGGED_IN_USER_TOKENS.pop(current_user)
-            return make_response(jsonify(message="logged_out"), 200)
+            email: str | None = verify_jwt_token()
+            if not email:
+                return create_response(TOKEN_INVALID_RESPONSE)
+            LOGGED_IN_USER_TOKENS.pop(email)
+            return create_response(LOGGED_OUT_RESPONSE)
         except KeyError:
-            return make_response(
-                jsonify(
-                    already_logged_in_as=None,
-                    message="User logged in with such token not found.",
-                ),
-                401,
-            )
+            return create_response(USER_NOT_FOUND_RESPONSE)
         except AttributeError:
-            return make_response(
-                jsonify(already_logged_in_as=None, message="Could not log out user."),
-                401,
-            )
+            return create_response(USER_NOT_LOGGED_IN_RESPONSE)

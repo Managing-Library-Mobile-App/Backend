@@ -1,12 +1,14 @@
 import re
 
-from flask import Response, jsonify, make_response
+from flask import Response
 from flask_restful import Resource
 
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
 from helpers.request_parser import RequestParser
 from models.user import User
+from static.responses import create_response, PASSWORD_WRONG_FORMAT_RESPONSE, PASSWORD_CHANGED_RESPONSE, \
+    PASSWORD_NOT_CHANGED_RESPONSE, TOKEN_INVALID_RESPONSE
 
 
 class ChangePassword(Resource):
@@ -86,25 +88,15 @@ class ChangePassword(Resource):
         args: dict = self.patch_parser.parse_args()
         current_password: str = args.get("current_password")
         new_password: str = args.get("new_password")
-        verification_output: Response | int = verify_jwt_token()
-        if type(verification_output) is str:
-            email = verification_output
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
 
         if not re.fullmatch(
             r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{10,50}$",
             new_password,
         ):
-            return make_response(
-                jsonify(
-                    message="password_wrong_format",
-                    details="""Wrong password format. Password should have from 10 to 50 characters.
-                It should contain at least one upper letter, at least 1 lower letter, at least 1 number and
-                at least one special character""",
-                ),
-                403,
-            )
+            return create_response(PASSWORD_WRONG_FORMAT_RESPONSE)
 
         user: User = User.query.filter_by(
             email=email, password=current_password
@@ -113,19 +105,5 @@ class ChangePassword(Resource):
             user.password = new_password
             db.session.commit()
 
-            return make_response(
-                jsonify(
-                    password_changed=True,
-                    message="password_changed",
-                    details="Password changed",
-                ),
-                200,
-            )
-        return make_response(
-            jsonify(
-                password_changed=False,
-                message="wrong_password",
-                details="Wrong password",
-            ),
-            401,
-        )
+            return create_response(PASSWORD_CHANGED_RESPONSE)
+        return create_response(PASSWORD_NOT_CHANGED_RESPONSE)
