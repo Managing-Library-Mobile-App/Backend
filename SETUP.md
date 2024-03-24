@@ -21,7 +21,7 @@ virtualenv venv
 pip install -r docker_and_setup/requirements.txt
 python app.py <type_of_db>
 
-type_of_db=prod or type_ofdb=test, and indicates databases for different purposes
+type_of_db= prod or api_tests or e2e_tests, and indicates databases for different purposes
 
 When running locally, if the database is not seen from name db (error: sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) could not translate host name "db" to address: Nieznany host.
 ), you have to add the line below to your etc/hosts file:
@@ -29,11 +29,20 @@ When running locally, if the database is not seen from name db (error: sqlalchem
 
 Check if your server/database has the same attributes as in the .env file
 
-# DOCKER SETUP
+### ON WINDOWS
+# DOCKER SETUP FOR PRODUCTION
 To run the app using docker, use:
-docker-compose build
-docker-compose up
+$env:DB_TYPE="prod"; docker-compose up --build
 
+# DOCKER SETUP FOR E2E TESTS
+To run the app using docker, use:
+$env:DB_TYPE="e2e_tests"; docker-compose up --build
+
+# DOCKER SETUP FOR API TESTS
+To run the app using docker, use:
+$env:DB_TYPE="api_tests"; docker-compose up --build
+
+## ON LINUX USE DB_TYPE=prod
 
 # APP USAGE
 You can access the api using an address: http://192.168:100.7:5000
