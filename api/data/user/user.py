@@ -2,9 +2,10 @@ from flask import Response
 from flask_restful import Resource
 
 from helpers.jwt_auth import verify_jwt_token
-from helpers.request_parser import RequestParser
+from helpers.request_response import RequestParser
 from models import user
-from static.responses import create_response, TOKEN_INVALID_RESPONSE, INSUFFICIENT_PERMISSIONS_RESPONSE, \
+from helpers.request_response import create_response
+from static.responses import TOKEN_INVALID_RESPONSE, INSUFFICIENT_PERMISSIONS_RESPONSE, \
     USER_OBJECTS_LIST_RESPONSE, USER_OBJECT_RESPONSE
 
 

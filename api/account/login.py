@@ -9,7 +9,7 @@ from loguru import logger
 
 from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.init import cache
-from helpers.request_parser import RequestParser
+from helpers.request_response import RequestParser
 from models.user import User
 from static.responses import USER_NOT_LOGGED_IN_RESPONSE, create_response, LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE, \
     PASSWORD_WRONG_FORMAT_RESPONSE, EMAIL_WRONG_FORMAT_RESPONSE, ALREADY_LOGGED_IN_RESPONSE, LOGIN_SUCCESSFUL_RESPONSE

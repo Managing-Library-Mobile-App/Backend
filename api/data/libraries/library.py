@@ -3,7 +3,7 @@ from flask_restful import Resource
 
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
-from helpers.request_parser import RequestParser
+from helpers.request_response import RequestParser
 from models import library
 from models.user import User
 from static.responses import TOKEN_INVALID_RESPONSE, create_response, INSUFFICIENT_PERMISSIONS_RESPONSE, \

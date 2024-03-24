@@ -4,9 +4,10 @@ from flask_restful import Resource
 from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
-from helpers.request_parser import RequestParser
+from helpers.request_response import RequestParser
 from models.user import User
-from static.responses import create_response, TOKEN_INVALID_RESPONSE, CANNOT_DELETE_ADMIN_RESPONSE, \
+from helpers.request_response import create_response
+from static.responses import TOKEN_INVALID_RESPONSE, CANNOT_DELETE_ADMIN_RESPONSE, \
     USER_DELETED_RESPONSE, USER_DOES_NOT_EXIST_RESPONSE, INVALID_PASSWORD_RESPONSE
 
 

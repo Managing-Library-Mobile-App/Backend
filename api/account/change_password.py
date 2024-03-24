@@ -5,9 +5,10 @@ from flask_restful import Resource
 
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
-from helpers.request_parser import RequestParser
+from helpers.request_response import RequestParser
 from models.user import User
-from static.responses import create_response, PASSWORD_WRONG_FORMAT_RESPONSE, PASSWORD_CHANGED_RESPONSE, \
+from helpers.request_response import create_response
+from static.responses import PASSWORD_WRONG_FORMAT_RESPONSE, PASSWORD_CHANGED_RESPONSE, \
     PASSWORD_NOT_CHANGED_RESPONSE, TOKEN_INVALID_RESPONSE
 
 

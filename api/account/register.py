@@ -5,7 +5,7 @@ from flask_restful import Resource
 from sqlalchemy import exists
 
 from helpers.init import db
-from helpers.request_parser import RequestParser
+from helpers.request_response import RequestParser
 from models.library import Library
 from models.user import User
 from static.responses import (EMAIL_WRONG_FORMAT_RESPONSE,

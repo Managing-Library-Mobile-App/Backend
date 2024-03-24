@@ -4,8 +4,9 @@ from flask import Response
 from flask_restful import Resource
 
 from helpers.blocklist import LOGGED_IN_USER_TOKENS
-from helpers.request_parser import RequestParser
-from static.responses import create_response, WRONG_SECRET_RESPONSE, LOGGED_IN_USERS_RESPONSE
+from helpers.request_response import RequestParser
+from helpers.request_response import create_response
+from static.responses import WRONG_SECRET_RESPONSE, LOGGED_IN_USERS_RESPONSE
 
 
 class LoggedInUsers(Resource):

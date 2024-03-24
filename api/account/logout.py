@@ -3,7 +3,8 @@ from flask_restful import Resource
 
 from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.jwt_auth import verify_jwt_token
-from static.responses import create_response, TOKEN_INVALID_RESPONSE, LOGGED_OUT_RESPONSE, USER_NOT_FOUND_RESPONSE, \
+from helpers.request_response import create_response
+from static.responses import TOKEN_INVALID_RESPONSE, LOGGED_OUT_RESPONSE, USER_NOT_FOUND_RESPONSE, \
     USER_NOT_LOGGED_IN_RESPONSE
 
 
