@@ -10,4 +10,4 @@ def api_add_resources(api: flask_restful.Api) -> None:
     :raises ValueError: Token invalid
     :raises Exception: Token invalid in unknown way
     """
-    [api.add_resource(URL, RESOURCES[URL]) for URL in RESOURCES.keys()]
+    [api.add_resource(RESOURCES[URL], URL) for URL in RESOURCES.keys()]
