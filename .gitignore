@@ -36,3 +36,10 @@ models/__pycache__/library.cpython-311.pyc
 models/__pycache__/many_to_many_tables.cpython-311.pyc
 models/__pycache__/opinion.cpython-311.pyc
 models/__pycache__/user.cpython-311.pyc
+/.idea/.gitignore
+/.idea/Backend.iml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/vcs.xml
