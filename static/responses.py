@@ -6,8 +6,9 @@ from flask import make_response, jsonify, Response
 def create_response(static_response: (dict[str, Any], int),
                     dynamic_response_data: dict[str, Any] = None) -> Response:
     response_body = static_response[0]
-    for key, value in dynamic_response_data.items():
-        response_body[key] = value
+    if dynamic_response_data:
+        for key, value in dynamic_response_data.items():
+            response_body[key] = value
     status_code = static_response[1]
     return make_response(
         jsonify(response_body), status_code
@@ -65,6 +66,7 @@ NOT_LOGGED_OUT_RESPONSE: (dict[str, str], int) = {
 }, 200
 USER_NOT_LOGGED_IN_RESPONSE: (dict[str, str], int) = {
     "message": "authentication_failed",
+    "details": "Authentication failed. Wrong email or password",
 }, 401
 LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE: (dict[str, str], int) = {
     "message": "locked_user_login_attempts",
@@ -78,7 +80,7 @@ EMAIL_WRONG_FORMAT_RESPONSE: (dict[str, str], int) = {
 }, 401
 USER_NOT_FOUND_RESPONSE: (dict[str, str], int) = {
     "message": "user_not_found",
-    "details": "User logged in with such token not found."
+    "details": "User logged in with such token not found"
 }, 401
 USER_ALREADY_EXISTS_RESPONSE: (dict[str, str], int) = {
     "message": "user_already_exists",
@@ -94,16 +96,20 @@ INSUFFICIENT_PERMISSIONS_RESPONSE: (dict[str, str], int) = {
 }, 404
 OBJECT_CREATED_RESPONSE: (dict[str, str], int) = {
     "message": "object_created",
-    "details": "Object created."
+    "details": "Object created"
 }, 200
 OBJECT_DELETED_RESPONSE: (dict[str, str], int) = {
     "message": "object_deleted",
-    "details": "Object deleted."
+    "details": "Object deleted"
 }, 200
 OBJECT_MODIFIED_RESPONSE: (dict[str, str], int) = {
     "message": "object_modified",
-    "details": "Object modified."
+    "details": "Object modified"
 }, 200
+INVALID_PASSWORD_RESPONSE: (dict[str, str], int) = {
+    "message": "invalid_password",
+    "details": "Invalid password"
+}, 401
 
 # Mutable
 USER_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {
@@ -147,7 +153,7 @@ LOGGED_IN_USERS_RESPONSE: (dict[str, Any], int) = {
 }, 200
 ALREADY_LOGGED_IN_RESPONSE: (dict[str, Any], int) = {
     "message": "already_logged_in",
-    "details": "Login already_logged_in",
+    "details": "Already logged in",
     "token": None  # Mutable
 }, 401
 LOGIN_SUCCESSFUL_RESPONSE: (dict[str, Any], int) = {
