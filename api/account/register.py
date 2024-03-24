@@ -5,13 +5,13 @@ from flask_restful import Resource
 from sqlalchemy import exists
 
 from helpers.init import db
-from helpers.request_response import RequestParser
+from helpers.request_response import RequestParser, create_response
 from models.library import Library
 from models.user import User
 from static.responses import (EMAIL_WRONG_FORMAT_RESPONSE,
                               PASSWORD_WRONG_FORMAT_RESPONSE,
                               USER_ALREADY_EXISTS_RESPONSE,
-                              REGISTER_SUCCESSFUL_RESPONSE, create_response)
+                              REGISTER_SUCCESSFUL_RESPONSE)
 
 
 class Register(Resource):
