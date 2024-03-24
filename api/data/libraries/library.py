@@ -1,4 +1,4 @@
-from flask import Response, jsonify, make_response
+from flask import Response
 from flask_restful import Resource
 
 from helpers.init import db
@@ -6,6 +6,9 @@ from helpers.jwt_auth import verify_jwt_token
 from helpers.request_parser import RequestParser
 from models import library
 from models.user import User
+from static.responses import TOKEN_INVALID_RESPONSE, create_response, INSUFFICIENT_PERMISSIONS_RESPONSE, \
+    OBJECT_MODIFIED_RESPONSE, OBJECT_DELETED_RESPONSE, OBJECT_CREATED_RESPONSE, LIBRARY_OBJECT_RESPONSE, \
+    LIBRARY_OBJECTS_LIST_RESPONSE
 
 
 class Library(Resource):
@@ -29,11 +32,9 @@ class Library(Resource):
     def get(self) -> Response:
         args: dict = self.get_parser.parse_args()
         library_id: int = args.get("id")
-        verification_output: Response | str = verify_jwt_token()
-        if type(verification_output) is str:
-            email: str = verification_output
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
         user: User = User.query.filter_by(email=email).first()
         if library_id:
             library_object: library.Library = library.Library.query.filter_by(
@@ -41,30 +42,14 @@ class Library(Resource):
             ).first()
             if not user.is_admin:
                 if not user.id == library_object.user_id:
-                    return make_response(
-                        jsonify(
-                            message="insufficient_permissions",
-                            details="Insufficient permissions. Requires admin or being library's owner",
-                        ),
-                        404,
-                    )
-                return make_response(
-                    jsonify(library_object.as_dict()),
-                    200,
-                )
+                    return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
+                return create_response(LIBRARY_OBJECT_RESPONSE, library_object.as_dict())
         if not user.is_admin:
-            return make_response(
-                jsonify(
-                    message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin or being library's owner",
-                ),
-                404,
-            )
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
         library_objects: list[library.Library] = library.Library.query.all()
-        return make_response(
-            jsonify(*[library_object.as_dict() for library_object in library_objects]),
-            200,
-        )
+        return create_response(
+            LIBRARY_OBJECTS_LIST_RESPONSE,
+            {"libraries": [library_object.as_dict() for library_object in library_objects]})
 
     def post(self) -> Response:
         args: dict = self.post_parser.parse_args()
@@ -72,20 +57,12 @@ class Library(Resource):
         bought_books: list[int] = args.get("bought_books")
         favourite_books: list[int] = args.get("favourite_books")
         user_id: int = args.get("user_id")
-        verification_output: Response | str = verify_jwt_token()
-        if type(verification_output) is str:
-            email: str = verification_output
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
-            return make_response(
-                jsonify(
-                    message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin status.",
-                ),
-                404,
-            )
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
 
         # TODO A CO JEŚLI USER O TAKIM ID NIE ISTNIEJE?
         library_object: library.Library = library.Library(
@@ -97,28 +74,17 @@ class Library(Resource):
         db.session.add(library_object)
         db.session.commit()
 
-        return make_response(
-            jsonify(message="library_created", details="Library created."),
-            200,
-        )
+        return create_response(OBJECT_CREATED_RESPONSE)
 
     def delete(self) -> Response:
         args: dict = self.delete_parser.parse_args()
         library_id: int = args.get("id")
-        verification_output: Response | str = verify_jwt_token()
-        if type(verification_output) is str:
-            email: str = verification_output
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
-            return make_response(
-                jsonify(
-                    message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin status.",
-                ),
-                404,
-            )
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
 
         library_object: library.Library = library.Library.query.filter_by(
             id=library_id
@@ -127,10 +93,7 @@ class Library(Resource):
         db.session.delete(library_object)
         db.session.commit()
 
-        return make_response(
-            jsonify(message="library_deleted", details="Library deleted."),
-            200,
-        )
+        return create_response(OBJECT_DELETED_RESPONSE)
 
     def patch(self) -> Response:
         args: dict = self.delete_parser.parse_args()
@@ -138,20 +101,12 @@ class Library(Resource):
         read_books: list[int] = args.get("read_books")
         bought_books: list[int] = args.get("bought_books")
         favourite_books: list[int] = args.get("favourite_books")
-        verification_output: Response | str = verify_jwt_token()
-        if type(verification_output) is str:
-            email: str = verification_output
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
-            return make_response(
-                jsonify(
-                    message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin status.",
-                ),
-                404,
-            )
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
 
         modified_library: library.Library = library.Library.query.filter_by(
             id=library_id
@@ -166,7 +121,4 @@ class Library(Resource):
                 modified_library.favourite_books = favourite_books
             db.session.commit()
 
-        return make_response(
-            jsonify(message="library_modified", details="Library modified."),
-            200,
-        )
+        return create_response(OBJECT_MODIFIED_RESPONSE)

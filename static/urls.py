@@ -1,0 +1,14 @@
+BASE_URL = 'http://127.0.0.1:8000'
+FAVICON_URL = '/favicon.ico'
+OPINION_URL = "/api/data/opinion"
+LIBRARY_URL = "/api/data/library"
+BOOK_ANNOUNCEMENT_URL = "/api/data/book_announcement"
+BOOK_URL = "/api/data/book"
+AUTHOR_URL = "/api/data/author"
+CHECK_IF_LOGGED_IN_URL = "/api/account/check_if_logged_in"
+LOGGED_IN_USERS_URL = "/api/account/logged_in_users"
+LOGOUT_URL = "/api/account/logout"
+DELETE_ACCOUNT_URL = "/api/account/delete_account"
+CHANGE_PASSWORD_URL = "/api/account/change_password"
+REGISTER_URL = "/api/account/register"
+LOGIN_URL = "/api/account/login"

@@ -1,4 +1,4 @@
-from flask import Response, jsonify, make_response
+from flask import Response
 from flask_restful import Resource
 
 from helpers.init import db
@@ -6,6 +6,9 @@ from helpers.jwt_auth import verify_jwt_token
 from helpers.request_parser import RequestParser
 from models import opinion
 from models.user import User
+from static.responses import create_response, TOKEN_INVALID_RESPONSE, INSUFFICIENT_PERMISSIONS_RESPONSE, \
+    OBJECT_CREATED_RESPONSE, OBJECT_DELETED_RESPONSE, OBJECT_MODIFIED_RESPONSE, OPINION_OBJECT_RESPONSE, \
+    OPINION_OBJECTS_LIST_RESPONSE
 
 
 class Opinion(Resource):
@@ -28,42 +31,23 @@ class Opinion(Resource):
     def get(self) -> Response:
         args: dict = self.get_parser.parse_args()
         opinion_id: int = args.get("id")
-        verification_output: Response | str = verify_jwt_token()
-        if type(verification_output) is str:
-            email: str = verification_output
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
-            return make_response(
-                jsonify(
-                    message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin or being opinion's owner",
-                ),
-                404,
-            )
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
 
         if opinion_id:
             opinion_object: opinion.Opinion = opinion.Opinion.query.filter_by(
                 id=opinion_id
             ).first()
             if not user.id == opinion_object.user_id:
-                return make_response(
-                    jsonify(
-                        message="insufficient_permissions",
-                        details="Insufficient permissions. Requires admin or being library's owner",
-                    ),
-                    404,
-                )
-            return make_response(
-                jsonify(opinion_object.as_dict()),
-                200,
-            )
+                return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
+            return create_response(OPINION_OBJECT_RESPONSE, opinion_object.as_dict())
         opinion_objects: list[opinion.Opinion] = opinion.Opinion.query.all()
-        return make_response(
-            jsonify(*[opinion_object.as_dict() for opinion_object in opinion_objects]),
-            200,
-        )
+        return create_response(OPINION_OBJECTS_LIST_RESPONSE,
+                               {"opinions": [opinion_object.as_dict() for opinion_object in opinion_objects]})
 
     def post(self) -> Response:
         args: dict = self.post_parser.parse_args()
@@ -71,20 +55,12 @@ class Opinion(Resource):
         book_id: int = args.get("book_id")
         stars_count: int = args.get("stars_count")
         comment: str = args.get("comment")
-        verification_output: Response | str = verify_jwt_token()
-        if type(verification_output) is str:
-            email: str = verification_output
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
-            return make_response(
-                jsonify(
-                    message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin status.",
-                ),
-                404,
-            )
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
 
         # TODO A CO JEŚLI USER O TAKIM ID LUB KSIĄŻKA NIE ISTNIEJE?
         opinion_object: opinion.Opinion = opinion.Opinion(
@@ -96,28 +72,17 @@ class Opinion(Resource):
         db.session.add(opinion_object)
         db.session.commit()
 
-        return make_response(
-            jsonify(message="opinion_created", details="Opinion created."),
-            200,
-        )
+        return create_response(OBJECT_CREATED_RESPONSE)
 
     def delete(self) -> Response:
         args: dict = self.delete_parser.parse_args()
         opinion_id: int = args.get("id")
-        verification_output: Response | str = verify_jwt_token()
-        if type(verification_output) is str:
-            email: str = verification_output
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
-            return make_response(
-                jsonify(
-                    message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin status.",
-                ),
-                404,
-            )
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
 
         opinion_object: opinion.Opinion = opinion.Opinion.query.filter_by(
             id=opinion_id
@@ -126,30 +91,19 @@ class Opinion(Resource):
         db.session.delete(opinion_object)
         db.session.commit()
 
-        return make_response(
-            jsonify(message="opinion_deleted", details="Opinion deleted."),
-            200,
-        )
+        return create_response(OBJECT_DELETED_RESPONSE)
 
     def patch(self) -> Response:
         args: dict = self.patch_parser.parse_args()
         opinion_id: int = args.get("id")
         stars_count: int = args.get("stars_count")
         comment: str = args.get("comment")
-        verification_output: Response | str = verify_jwt_token()
-        if type(verification_output) is str:
-            email: str = verification_output
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
-            return make_response(
-                jsonify(
-                    message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin status.",
-                ),
-                404,
-            )
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
 
         modified_opinion = opinion.Opinion.query.filter_by(id=opinion_id).first()
 
@@ -160,7 +114,4 @@ class Opinion(Resource):
                 modified_opinion.comment = comment
             db.session.commit()
 
-        return make_response(
-            jsonify(message="opinion_modified", details="Opinion modified."),
-            200,
-        )
+        return create_response(OBJECT_MODIFIED_RESPONSE)

@@ -1,4 +1,4 @@
-from flask import Response, jsonify, make_response
+from flask import Response
 from flask_restful import Resource
 
 from helpers.blocklist import LOGGED_IN_USER_TOKENS
@@ -6,6 +6,8 @@ from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
 from helpers.request_parser import RequestParser
 from models.user import User
+from static.responses import create_response, TOKEN_INVALID_RESPONSE, CANNOT_DELETE_ADMIN_RESPONSE, \
+    USER_DELETED_RESPONSE, USER_DOES_NOT_EXIST_RESPONSE, INVALID_PASSWORD_RESPONSE
 
 
 class DeleteAccount(Resource):
@@ -17,41 +19,17 @@ class DeleteAccount(Resource):
     def delete(self) -> Response:
         args: dict = self.delete_parser.parse_args()
         password: str = args.get("password")
-        verification_output: Response | str = verify_jwt_token()
-        if type(verification_output) is str:
-            email: str = verification_output
-        else:
-            return make_response(verification_output, 401)
-
-        user: User = User.query.filter_by(email=email, password=password).first()
-
-        if user.is_admin:
-            return make_response(
-                jsonify(
-                    password_changed=False,
-                    message="cannot_delete_admin",
-                    details="Admin account cannot be deleted",
-                ),
-                404,
-            )
-
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
+        user: User = User.query.filter_by(email=email).first()
+        if password != user.password:
+            return create_response(INVALID_PASSWORD_RESPONSE)
         if user:
+            if user.is_admin:
+                return create_response(CANNOT_DELETE_ADMIN_RESPONSE)
             LOGGED_IN_USER_TOKENS.pop(email)
             db.session.delete(user)
             db.session.commit()
-            return make_response(
-                jsonify(
-                    password_changed=True,
-                    message="user_deleted",
-                    details="User deleted successfully",
-                ),
-                200,
-            )
-        return make_response(
-            jsonify(
-                password_changed=False,
-                message="user_does_not_exist",
-                details="User does not exist",
-            ),
-            404,
-        )
+            return create_response(USER_DELETED_RESPONSE)
+        return create_response(USER_DOES_NOT_EXIST_RESPONSE)

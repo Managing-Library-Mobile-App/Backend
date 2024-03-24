@@ -1,6 +1,6 @@
 import datetime
 
-from flask import Response, jsonify, make_response
+from flask import Response
 from flask_restful import Resource
 
 from helpers.init import db
@@ -8,6 +8,9 @@ from helpers.jwt_auth import verify_jwt_token
 from helpers.request_parser import RequestParser
 from models import book_announcement
 from models.user import User
+from static.responses import create_response, TOKEN_INVALID_RESPONSE, INSUFFICIENT_PERMISSIONS_RESPONSE, \
+    OBJECT_MODIFIED_RESPONSE, OBJECT_DELETED_RESPONSE, OBJECT_CREATED_RESPONSE, BOOK_ANNOUNCEMENT_OBJECT_RESPONSE, \
+    BOOK_ANNOUNCEMENT_OBJECTS_LIST_RESPONSE
 
 
 class BookAnnouncement(Resource):
@@ -38,30 +41,22 @@ class BookAnnouncement(Resource):
     def get(self) -> Response:
         args: dict = self.get_parser.parse_args()
         book_announcement_id: int = args.get("id")
-        verification_output: Response | str = verify_jwt_token()
-        if type(verification_output) is str:
-            pass
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
         if book_announcement_id:
             book_announcement_object: book_announcement.BookAnnouncement = (
                 book_announcement.BookAnnouncement.query.filter_by(
                     id=book_announcement_id
                 ).first()
             )
-            return make_response(
-                jsonify(book_announcement_object.as_dict()),
-                200,
-            )
+            return create_response(BOOK_ANNOUNCEMENT_OBJECT_RESPONSE, book_announcement_object.as_dict())
         book_announcement_objects: list[
             book_announcement.BookAnnouncement
         ] = book_announcement.BookAnnouncement.query.all()
-        return make_response(
-            jsonify(
-                *[book_object.as_dict() for book_object in book_announcement_objects]
-            ),
-            200,
-        )
+        return create_response(
+            BOOK_ANNOUNCEMENT_OBJECTS_LIST_RESPONSE,
+            {"book_announcements": [book_object.as_dict() for book_object in book_announcement_objects]})
 
     def post(self) -> Response:
         args: dict = self.post_parser.parse_args()
@@ -72,20 +67,12 @@ class BookAnnouncement(Resource):
         genres: list[int] = args.get("genres")
         picture: str = args.get("picture")
         premiere_date: datetime.datetime = args.get("premiere_date")
-        verification_output = verify_jwt_token()
-        if type(verification_output) is str:
-            email: str = verification_output
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
-            return make_response(
-                jsonify(
-                    message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin status.",
-                ),
-                404,
-            )
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
 
         # TODO A CO JEŚLI AUTOR O TAKIM ID NIE ISTNIEJE?
         book_announcement_object: book_announcement.BookAnnouncement = (
@@ -102,31 +89,17 @@ class BookAnnouncement(Resource):
         db.session.add(book_announcement_object)
         db.session.commit()
 
-        return make_response(
-            jsonify(
-                message="book_announcement_created",
-                details="Book Announcement created.",
-            ),
-            200,
-        )
+        return create_response(OBJECT_CREATED_RESPONSE)
 
     def delete(self) -> Response:
         args: dict = self.delete_parser.parse_args()
         book_announcement_id: int = args.get("id")
-        verification_output: Response | str = verify_jwt_token()
-        if type(verification_output) is str:
-            email: str = verification_output
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
-            return make_response(
-                jsonify(
-                    message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin status.",
-                ),
-                404,
-            )
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
 
         opinion_object: book_announcement.BookAnnouncement = (
             book_announcement.BookAnnouncement.query.filter_by(
@@ -137,13 +110,7 @@ class BookAnnouncement(Resource):
         db.session.delete(opinion_object)
         db.session.commit()
 
-        return make_response(
-            jsonify(
-                message="book_announcement_deleted",
-                details="Book announcement deleted.",
-            ),
-            200,
-        )
+        return create_response(OBJECT_DELETED_RESPONSE)
 
     def patch(self) -> Response:
         args: dict = self.delete_parser.parse_args()
@@ -154,20 +121,12 @@ class BookAnnouncement(Resource):
         genres: list[int] = args.get("genres")
         picture: str = args.get("picture")
         premiere_date: datetime.datetime = args.get("premiere_date")
-        verification_output: Response | str = verify_jwt_token()
-        if type(verification_output) is str:
-            email: str = verification_output
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
-            return make_response(
-                jsonify(
-                    message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin status.",
-                ),
-                404,
-            )
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
 
         modified_book: book_announcement.BookAnnouncement = (
             book_announcement.BookAnnouncement.query.filter_by(
@@ -190,10 +149,4 @@ class BookAnnouncement(Resource):
                 modified_book.premiere_date = premiere_date
             db.session.commit()
 
-        return make_response(
-            jsonify(
-                message="book_announcement_modified",
-                details="Book announcement modified.",
-            ),
-            200,
-        )
+        return create_response(OBJECT_MODIFIED_RESPONSE)

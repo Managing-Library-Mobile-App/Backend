@@ -1,4 +1,4 @@
-from flask import Response, jsonify, make_response
+from flask import Response
 from flask_restful import Resource
 
 from helpers.init import db
@@ -6,6 +6,9 @@ from helpers.jwt_auth import verify_jwt_token
 from helpers.request_parser import RequestParser
 from models import author
 from models.user import User
+from static.responses import create_response, TOKEN_INVALID_RESPONSE, INSUFFICIENT_PERMISSIONS_RESPONSE, \
+    OBJECT_MODIFIED_RESPONSE, OBJECT_DELETED_RESPONSE, OBJECT_CREATED_RESPONSE, AUTHOR_OBJECT_RESPONSE, \
+    AUTHOR_OBJECTS_LIST_RESPONSE
 
 
 class Author(Resource):
@@ -36,24 +39,17 @@ class Author(Resource):
     def get(self) -> Response:
         args: dict = self.get_parser.parse_args()
         author_id: int = args.get("id")
-        verification_output: Response | str = verify_jwt_token()
-        if type(verification_output) is str:
-            pass
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
         if author_id:
             author_object: author.Author = author.Author.query.filter_by(
                 id=author_id
             ).first()
-            return make_response(
-                jsonify(author_object.as_dict()),
-                200,
-            )
+            return create_response(AUTHOR_OBJECT_RESPONSE, author_object.as_dict())
         author_objects: list[author.Author] = author.Author.query.all()
-        return make_response(
-            jsonify(*[author_object.as_dict() for author_object in author_objects]),
-            200,
-        )
+        return create_response(AUTHOR_OBJECTS_LIST_RESPONSE,
+                               {"authors": [author_object.as_dict() for author_object in author_objects]})
 
     def post(self) -> Response:
         args: dict = self.post_parser.parse_args()
@@ -63,20 +59,12 @@ class Author(Resource):
         picture: str = args.get("picture")
         fans: list[int] = args.get("fans")
         released_books: list[int] = args.get("released_books")
-        verification_output: Response | str = verify_jwt_token()
-        if type(verification_output) is str:
-            email = verification_output
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
-            return make_response(
-                jsonify(
-                    message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin status.",
-                ),
-                404,
-            )
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
 
         # TODO A CO JEŚLI FANS LUB RELEASED_BOOKS O TAKICH ID NIE ISTNIEJE?
         author_object: author.Author = author.Author(
@@ -90,28 +78,17 @@ class Author(Resource):
         db.session.add(author_object)
         db.session.commit()
 
-        return make_response(
-            jsonify(message="author_created", details="Author created."),
-            200,
-        )
+        return create_response(OBJECT_CREATED_RESPONSE)
 
     def delete(self) -> Response:
         args: dict = self.delete_parser.parse_args()
         author_id: int = args.get("id")
-        verification_output: Response | str = verify_jwt_token()
-        if type(verification_output) is str:
-            email: str = verification_output
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
-            return make_response(
-                jsonify(
-                    message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin status.",
-                ),
-                404,
-            )
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
 
         author_object: author.Author = author.Author.query.filter_by(
             id=author_id
@@ -120,10 +97,7 @@ class Author(Resource):
         db.session.delete(author_object)
         db.session.commit()
 
-        return make_response(
-            jsonify(message="author_deleted", details="Author deleted."),
-            200,
-        )
+        return create_response(OBJECT_DELETED_RESPONSE)
 
     def patch(self) -> Response:
         args: dict = self.delete_parser.parse_args()
@@ -132,20 +106,13 @@ class Author(Resource):
         genres: list[str] = args.get("genres")
         biography: str = args.get("biography")
         picture: str = args.get("picture")
-        verification_output: Response | str = verify_jwt_token()
-        if type(verification_output) is str:
-            email: str = verification_output
-        else:
-            return make_response(verification_output, 401)
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE)
+        # TODO what if the user does not exist? user.is_admin would give error
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
-            return make_response(
-                jsonify(
-                    message="insufficient_permissions",
-                    details="Insufficient permissions. Requires admin status.",
-                ),
-                404,
-            )
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
 
         modified_author: author.Author = author.Author.query.filter_by(
             id=author_id
@@ -162,7 +129,4 @@ class Author(Resource):
                 modified_author.picture = picture
             db.session.commit()
 
-        return make_response(
-            jsonify(message="author_modified", details="Author modified."),
-            200,
-        )
+        return create_response(OBJECT_MODIFIED_RESPONSE)
