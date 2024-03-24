@@ -7,7 +7,7 @@ from helpers.jwt_auth import verify_jwt_token
 from helpers.request_parser import RequestParser
 from models.user import User
 from static.responses import create_response, TOKEN_INVALID_RESPONSE, CANNOT_DELETE_ADMIN_RESPONSE, \
-    USER_DELETED_RESPONSE, USER_DOES_NOT_EXIST_RESPONSE
+    USER_DELETED_RESPONSE, USER_DOES_NOT_EXIST_RESPONSE, INVALID_PASSWORD_RESPONSE
 
 
 class DeleteAccount(Resource):
@@ -22,13 +22,12 @@ class DeleteAccount(Resource):
         email: str | None = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE)
-
-        user: User = User.query.filter_by(email=email, password=password).first()
-
-        if user.is_admin:
-            return create_response(CANNOT_DELETE_ADMIN_RESPONSE)
-
+        user: User = User.query.filter_by(email=email).first()
+        if password != user.password:
+            return create_response(INVALID_PASSWORD_RESPONSE)
         if user:
+            if user.is_admin:
+                return create_response(CANNOT_DELETE_ADMIN_RESPONSE)
             LOGGED_IN_USER_TOKENS.pop(email)
             db.session.delete(user)
             db.session.commit()
