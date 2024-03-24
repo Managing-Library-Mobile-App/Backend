@@ -23,8 +23,8 @@ api/data/books/__pycache__/book.cpython-311.pyc
 api/data/other/__pycache__/__init__.cpython-311.pyc
 api/data/other/__pycache__/library.cpython-311.pyc
 api/data/other/__pycache__/opinion.cpython-311.pyc
-data/test_data/__pycache__/__init__.cpython-311.pyc
-data/test_data/__pycache__/fill_db_script.cpython-311.pyc
+test_data/__pycache__/__init__.cpython-311.pyc
+test_data/__pycache__/fill_db_script.cpython-311.pyc
 helpers/__pycache__/__init__.cpython-311.pyc
 helpers/__pycache__/api_add_resources.cpython-311.pyc
 helpers/__pycache__/init.cpython-311.pyc
