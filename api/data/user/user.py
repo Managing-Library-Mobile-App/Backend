@@ -22,6 +22,11 @@ class User(Resource):
             return create_response(TOKEN_INVALID_RESPONSE)
         current_user: user.User = user.User.query.filter_by(email=email).first()
         if not current_user.is_admin:
+            if not user_id:
+                user_object: user.User = user.User.query.filter_by(email=email).first()
+                return create_response(USER_OBJECT_RESPONSE,
+                                       {"user": user_object.as_dict()}
+                                       )
             return INSUFFICIENT_PERMISSIONS_RESPONSE
 
         if user_id:
