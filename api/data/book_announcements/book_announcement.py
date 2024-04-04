@@ -11,7 +11,7 @@ from models.user import User
 from helpers.request_response import create_response
 from static.responses import TOKEN_INVALID_RESPONSE, INSUFFICIENT_PERMISSIONS_RESPONSE, \
     OBJECT_MODIFIED_RESPONSE, OBJECT_DELETED_RESPONSE, OBJECT_CREATED_RESPONSE, BOOK_ANNOUNCEMENT_OBJECT_RESPONSE, \
-    BOOK_ANNOUNCEMENT_OBJECTS_LIST_RESPONSE
+    BOOK_ANNOUNCEMENT_OBJECTS_LIST_RESPONSE, OBJECT_NOT_FOUND_RESPONSE
 
 
 class BookAnnouncement(Resource):
@@ -51,6 +51,8 @@ class BookAnnouncement(Resource):
                     id=book_announcement_id
                 ).first()
             )
+            if not book_announcement_object:
+                return create_response(OBJECT_NOT_FOUND_RESPONSE)
             return create_response(BOOK_ANNOUNCEMENT_OBJECT_RESPONSE, book_announcement_object.as_dict())
         book_announcement_objects: list[
             book_announcement.BookAnnouncement
