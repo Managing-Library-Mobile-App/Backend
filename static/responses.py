@@ -78,7 +78,11 @@ REGISTER_SUCCESSFUL_RESPONSE: (dict[str, str], int) = {
 }, 200
 INSUFFICIENT_PERMISSIONS_RESPONSE: (dict[str, str], int) = {
     "message": "insufficient_permissions",
-    "details": "Insufficient permissions. Requires admin or access to the object",
+    "details": "Insufficient permissions.",
+}, 404
+OBJECT_NOT_FOUND_RESPONSE: (dict[str, str], int) = {
+    "message": "object_not_found",
+    "details": "Object does not exist",
 }, 404
 OBJECT_CREATED_RESPONSE: (dict[str, str], int) = {
     "message": "object_created",
