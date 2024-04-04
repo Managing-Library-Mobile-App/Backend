@@ -96,7 +96,7 @@ def fill_db(db: SQLAlchemy):
 
     for opinion in opinions:
         new_opinion: Opinion = Opinion(
-            account_id=opinion["account_id"],
+            user_id=opinion["user_id"],
             book_id=opinion["book_id"],
             stars_count=opinion["stars_count"],
             comment=opinion["comment"],
