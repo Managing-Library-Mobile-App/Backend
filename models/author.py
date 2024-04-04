@@ -51,10 +51,17 @@ class Author(db.Model):  # type: ignore[name-defined]
         self.genres = genres
         self.biography = biography
         self.picture = picture
+        from .user import User
         for fan_id in fans:
-            self.add_fan(fan_id)
-        for released_book_id in released_books:
-            self.add_released_book(released_book_id)
+            self.fans.append(db.session.query(User).filter_by(id=fan_id).first())
+
+        from .book import Book
+        for book_id in released_books:
+            self.released_books.append(
+                db.session.query(Book).filter_by(id=book_id).first()
+            )
+        self.fans_count = len(fans)
+        self.released_books_count = len(released_books)
 
     def as_dict(self) -> dict:
         """Serializing object to dictionary."""
