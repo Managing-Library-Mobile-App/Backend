@@ -6,7 +6,7 @@ from helpers.request_response import RequestParser
 from models import user
 from helpers.request_response import create_response
 from static.responses import TOKEN_INVALID_RESPONSE, INSUFFICIENT_PERMISSIONS_RESPONSE, \
-    USER_OBJECTS_LIST_RESPONSE, USER_OBJECT_RESPONSE
+    USER_OBJECTS_LIST_RESPONSE, USER_OBJECT_RESPONSE, OBJECT_NOT_FOUND_RESPONSE
 
 
 class User(Resource):
@@ -22,11 +22,13 @@ class User(Resource):
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE)
         current_user: user.User = user.User.query.filter_by(email=email).first()
-        if not current_user.is_admin:
-            return INSUFFICIENT_PERMISSIONS_RESPONSE
 
         if user_id:
             user_object: user.User = user.User.query.filter_by(id=user_id).first()
+            if not user_object:
+                return create_response(OBJECT_NOT_FOUND_RESPONSE)
+            if not current_user.is_admin and not current_user.id == user_object.id:
+                return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
             return create_response(USER_OBJECT_RESPONSE,
                                    {"user": user_object.as_dict()}
                                    )
