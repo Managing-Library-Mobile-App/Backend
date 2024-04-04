@@ -11,7 +11,7 @@ from models.user import User
 from helpers.request_response import create_response
 from static.responses import TOKEN_INVALID_RESPONSE, INSUFFICIENT_PERMISSIONS_RESPONSE, \
     OBJECT_MODIFIED_RESPONSE, OBJECT_DELETED_RESPONSE, OBJECT_CREATED_RESPONSE, BOOK_OBJECT_RESPONSE, \
-    BOOK_OBJECTS_LIST_RESPONSE
+    BOOK_OBJECTS_LIST_RESPONSE, OBJECT_NOT_FOUND_RESPONSE
 
 
 class Book(Resource):
@@ -50,6 +50,8 @@ class Book(Resource):
 
         if book_id:
             book_object: book.Book = book.Book.query.filter_by(id=book_id).first()
+            if not book_object:
+                return create_response(OBJECT_NOT_FOUND_RESPONSE)
             return create_response(BOOK_OBJECT_RESPONSE, book_object.as_dict()
                                    )
         book_objects: list[book.Book] = book.Book.query.all()
@@ -101,7 +103,8 @@ class Book(Resource):
             return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
 
         opinion_object: book.Book = book.Book.query.filter_by(id=book_id).first()
-
+        if not opinion_object:
+            return create_response(OBJECT_NOT_FOUND_RESPONSE)
         db.session.delete(opinion_object)
         db.session.commit()
 

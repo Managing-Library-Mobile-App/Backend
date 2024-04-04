@@ -9,7 +9,7 @@ from models.user import User
 from helpers.request_response import create_response
 from static.responses import TOKEN_INVALID_RESPONSE, INSUFFICIENT_PERMISSIONS_RESPONSE, \
     OBJECT_CREATED_RESPONSE, OBJECT_DELETED_RESPONSE, OBJECT_MODIFIED_RESPONSE, OPINION_OBJECT_RESPONSE, \
-    OPINION_OBJECTS_LIST_RESPONSE
+    OPINION_OBJECTS_LIST_RESPONSE, OBJECT_NOT_FOUND_RESPONSE
 
 
 class Opinion(Resource):
@@ -17,7 +17,7 @@ class Opinion(Resource):
         self.get_parser: RequestParser = RequestParser()
         self.get_parser.add_arg("id", type=int, required=False)
         self.post_parser: RequestParser = RequestParser()
-        self.post_parser.add_arg("account_id", type=int)
+        self.post_parser.add_arg("user_id", type=int)
         self.post_parser.add_arg("book_id", type=int)
         self.post_parser.add_arg("stars_count", type=int)
         self.post_parser.add_arg("comment")
@@ -36,14 +36,13 @@ class Opinion(Resource):
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE)
         user: User = User.query.filter_by(email=email).first()
-        if not user.is_admin:
-            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
-
         if opinion_id:
             opinion_object: opinion.Opinion = opinion.Opinion.query.filter_by(
                 id=opinion_id
             ).first()
-            if not user.id == opinion_object.user_id:
+            if not opinion_object:
+                return create_response(OBJECT_NOT_FOUND_RESPONSE)
+            if not user.id == opinion_object.user_id and not user.is_admin:
                 return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
             return create_response(OPINION_OBJECT_RESPONSE, opinion_object.as_dict())
         opinion_objects: list[opinion.Opinion] = opinion.Opinion.query.all()
@@ -52,7 +51,7 @@ class Opinion(Resource):
 
     def post(self) -> Response:
         args: dict = self.post_parser.parse_args()
-        account_id: int = args.get("account_id")
+        user_id: int = args.get("user_id")
         book_id: int = args.get("book_id")
         stars_count: int = args.get("stars_count")
         comment: str = args.get("comment")
@@ -65,7 +64,7 @@ class Opinion(Resource):
 
         # TODO A CO JEŚLI USER O TAKIM ID LUB KSIĄŻKA NIE ISTNIEJE?
         opinion_object: opinion.Opinion = opinion.Opinion(
-            account_id=account_id,
+            user_id=user_id,
             book_id=book_id,
             stars_count=stars_count,
             comment=comment,

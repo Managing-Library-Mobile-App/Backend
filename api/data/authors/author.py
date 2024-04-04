@@ -9,7 +9,7 @@ from models.user import User
 from helpers.request_response import create_response
 from static.responses import TOKEN_INVALID_RESPONSE, INSUFFICIENT_PERMISSIONS_RESPONSE, \
     OBJECT_MODIFIED_RESPONSE, OBJECT_DELETED_RESPONSE, OBJECT_CREATED_RESPONSE, AUTHOR_OBJECT_RESPONSE, \
-    AUTHOR_OBJECTS_LIST_RESPONSE
+    AUTHOR_OBJECTS_LIST_RESPONSE, OBJECT_NOT_FOUND_RESPONSE
 
 
 class Author(Resource):
@@ -47,6 +47,8 @@ class Author(Resource):
             author_object: author.Author = author.Author.query.filter_by(
                 id=author_id
             ).first()
+            if not author_object:
+                return create_response(OBJECT_NOT_FOUND_RESPONSE)
             return create_response(AUTHOR_OBJECT_RESPONSE, author_object.as_dict())
         author_objects: list[author.Author] = author.Author.query.all()
         return create_response(AUTHOR_OBJECTS_LIST_RESPONSE,
