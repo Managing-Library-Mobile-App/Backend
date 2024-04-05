@@ -11,8 +11,14 @@ from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.init import cache
 from helpers.request_response import RequestParser, create_response
 from models.user import User
-from static.responses import USER_NOT_LOGGED_IN_RESPONSE, LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE, \
-    PASSWORD_WRONG_FORMAT_RESPONSE, EMAIL_WRONG_FORMAT_RESPONSE, ALREADY_LOGGED_IN_RESPONSE, LOGIN_SUCCESSFUL_RESPONSE
+from static.responses import (
+    USER_NOT_LOGGED_IN_RESPONSE,
+    LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE,
+    PASSWORD_WRONG_FORMAT_RESPONSE,
+    EMAIL_WRONG_FORMAT_RESPONSE,
+    ALREADY_LOGGED_IN_RESPONSE,
+    LOGIN_SUCCESSFUL_RESPONSE,
+)
 
 
 class InvalidLoginAttemptsCache(object):
@@ -24,7 +30,7 @@ class InvalidLoginAttemptsCache(object):
 
     @staticmethod
     def _value(
-            lockout_timestamp: float, timestamps: list[float]
+        lockout_timestamp: float, timestamps: list[float]
     ) -> dict[str, list[float] | float]:
         return {
             "lockout_start": lockout_timestamp,
@@ -51,7 +57,7 @@ class InvalidLoginAttemptsCache(object):
 
     @staticmethod
     def invalid_attempt(
-            cache_results: dict, current_datetime: datetime.datetime, email: str
+        cache_results: dict, current_datetime: datetime.datetime, email: str
     ) -> bool:
         invalid_attempt_timestamps = (
             cache_results["invalid_attempt_timestamps"] if cache_results else []
@@ -59,7 +65,8 @@ class InvalidLoginAttemptsCache(object):
         invalid_attempt_timestamps = [
             timestamp
             for timestamp in invalid_attempt_timestamps
-            if timestamp > (current_datetime + datetime.timedelta(minutes=-15)).timestamp()
+            if timestamp
+            > (current_datetime + datetime.timedelta(minutes=-15)).timestamp()
         ]
         invalid_attempt_timestamps.append(current_datetime.timestamp())
         if len(invalid_attempt_timestamps) >= 5:
@@ -72,22 +79,34 @@ class InvalidLoginAttemptsCache(object):
         return False
 
 
-def authenticate_login_credentials(email, password) -> (dict[str, Any], int):
+def authenticate_login_credentials(
+    email: str, password: str, language: str
+) -> (dict[str, Any], int):
     if not re.fullmatch(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b", email):
-        return create_response(EMAIL_WRONG_FORMAT_RESPONSE)
+        return create_response(EMAIL_WRONG_FORMAT_RESPONSE, language=language)
     if not re.fullmatch(
-            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{10,50}$",
-            password,
+        r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{10,50}$",
+        password,
     ):
-        return create_response(PASSWORD_WRONG_FORMAT_RESPONSE)
+        return create_response(PASSWORD_WRONG_FORMAT_RESPONSE, language=language)
     user = User.query.filter_by(email=email, password=password).first()
     if user:
         if email in LOGGED_IN_USER_TOKENS.keys():
-            return create_response(ALREADY_LOGGED_IN_RESPONSE, {"token": LOGGED_IN_USER_TOKENS[email]})
+            return create_response(
+                ALREADY_LOGGED_IN_RESPONSE,
+                {"token": LOGGED_IN_USER_TOKENS[email]},
+                language=language,
+                not_translated={"token"},
+            )
         token: str = create_access_token(identity=email)
         LOGGED_IN_USER_TOKENS[email] = token
-        return create_response(LOGIN_SUCCESSFUL_RESPONSE, {"token": token})
-    return create_response(USER_NOT_LOGGED_IN_RESPONSE)
+        return create_response(
+            LOGIN_SUCCESSFUL_RESPONSE,
+            {"token": token},
+            language=language,
+            not_translated={"token"},
+        )
+    return create_response(USER_NOT_LOGGED_IN_RESPONSE, language=language)
 
 
 class Login(Resource):
@@ -95,13 +114,17 @@ class Login(Resource):
         self.post_parser: RequestParser = RequestParser()
         self.post_parser.add_arg("email")
         self.post_parser.add_arg("password")
+        self.post_parser.add_arg("language", required=False)
         super(Login, self).__init__()
 
     def post(self) -> Response:
         args: dict = self.post_parser.parse_args()
         email: str = args.get("email")
         password: str = args.get("password")
-        current_datetime: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)
+        language: str = args.get("language")
+        current_datetime: datetime.datetime = datetime.datetime.now(
+            datetime.timezone.utc
+        )
         cache_results: dict | None = InvalidLoginAttemptsCache.get(email)
         if cache_results and cache_results.get("lockout_start"):
             lockout_start_timestamp: float = cache_results.get("lockout_start")
@@ -109,16 +132,22 @@ class Login(Resource):
                 lockout_start_timestamp, datetime.timezone.utc
             )
             locked_out: bool = lockout_start >= (
-                    current_datetime + datetime.timedelta(minutes=-15)
+                current_datetime + datetime.timedelta(minutes=-15)
             )
             if not locked_out:
                 InvalidLoginAttemptsCache.delete(email)
             else:
                 logger.warning(f"locked out user: {email}")
-                return create_response(LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE)
+                return create_response(
+                    LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE, language=language
+                )
         login_data: (dict[str, Any], int) = authenticate_login_credentials(
-            email=email, password=password
+            email=email, password=password, language=language
         )
-        if InvalidLoginAttemptsCache.invalid_attempt(cache_results, current_datetime, email):
-            return create_response(LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE)
+        if InvalidLoginAttemptsCache.invalid_attempt(
+            cache_results, current_datetime, email
+        ):
+            return create_response(
+                LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE, language=language
+            )
         return login_data

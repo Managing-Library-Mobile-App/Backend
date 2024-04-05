@@ -2,12 +2,15 @@ from typing import Any
 
 
 # Static
-PASSWORD_WRONG_FORMAT_RESPONSE: (dict[str, Any], int) = {
-    "message": "password_wrong_format",
-    "details": """Wrong password format. Password should have from 10 to 50 characters.
+PASSWORD_WRONG_FORMAT_RESPONSE: (dict[str, Any], int) = (
+    {
+        "message": "password_wrong_format",
+        "details": """Wrong password format. Password should have from 10 to 50 characters.
                 It should contain at least one upper letter, at least 1 lower letter, at least 1 number and
-                at least one special character"""
-}, 403
+                at least one special character""",
+    },
+    403,
+)
 PASSWORD_CHANGED_RESPONSE: (dict[str, str], int) = {
     "message": "password_changed",
     "details": "Password changed",
@@ -19,11 +22,11 @@ PASSWORD_NOT_CHANGED_RESPONSE: (dict[str, str], int) = {
 }, 401
 TOKEN_INVALID_RESPONSE: (dict[str, str], int) = {
     "message": "token_invalid",
-    "details": "Token invalid"
+    "details": "Token invalid",
 }, 401
 TOKEN_VALID_RESPONSE: (dict[str, str], int) = {
     "message": "token_valid",
-    "details": "Token valid"
+    "details": "Token valid",
 }, 200
 CANNOT_DELETE_ADMIN_RESPONSE: (dict[str, str], int) = {
     "message": "cannot_delete_admin",
@@ -44,11 +47,11 @@ WRONG_SECRET_RESPONSE: (dict[str, str], int) = {
 }, 401
 LOGGED_OUT_RESPONSE: (dict[str, str], int) = {
     "message": "logged_out",
-    "details": "Logged out"
+    "details": "Logged out",
 }, 200
 NOT_LOGGED_OUT_RESPONSE: (dict[str, str], int) = {
     "message": "not_logged_out",
-    "details": "Could not log out. User was not logged in."
+    "details": "Could not log out. User was not logged in.",
 }, 200
 USER_NOT_LOGGED_IN_RESPONSE: (dict[str, str], int) = {
     "message": "authentication_failed",
@@ -61,12 +64,12 @@ LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE: (dict[str, str], int) = {
 EMAIL_WRONG_FORMAT_RESPONSE: (dict[str, str], int) = {
     "message": "username_wrong_format",
     "details": "Wrong username format. It should be from 10 to 50 characters "
-               "and it can only contain upper letters, lower letters, "
-               "numbers and signs: - and _",
+    "and it can only contain upper letters, lower letters, "
+    "numbers and signs: - and _",
 }, 401
 USER_NOT_FOUND_RESPONSE: (dict[str, str], int) = {
     "message": "user_not_found",
-    "details": "User logged in with such token not found"
+    "details": "User logged in with such token not found",
 }, 401
 USER_ALREADY_EXISTS_RESPONSE: (dict[str, str], int) = {
     "message": "user_already_exists",
@@ -86,68 +89,53 @@ OBJECT_NOT_FOUND_RESPONSE: (dict[str, str], int) = {
 }, 404
 OBJECT_CREATED_RESPONSE: (dict[str, str], int) = {
     "message": "object_created",
-    "details": "Object created"
+    "details": "Object created",
 }, 200
 OBJECT_DELETED_RESPONSE: (dict[str, str], int) = {
     "message": "object_deleted",
-    "details": "Object deleted"
+    "details": "Object deleted",
 }, 200
 OBJECT_MODIFIED_RESPONSE: (dict[str, str], int) = {
     "message": "object_modified",
-    "details": "Object modified"
+    "details": "Object modified",
 }, 200
 INVALID_PASSWORD_RESPONSE: (dict[str, str], int) = {
     "message": "invalid_password",
-    "details": "Invalid password"
+    "details": "Invalid password",
 }, 401
 
 # Mutable
-USER_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {
-    "users": None  # Mutable
-}, 200
-USER_OBJECT_RESPONSE: (dict[str, Any], int) = {
-    "user": None  # Mutable
-}, 200
+USER_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {"users": None}, 200  # Mutable
+USER_OBJECT_RESPONSE: (dict[str, Any], int) = {"user": None}, 200  # Mutable
 OPINION_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {
     "opinions": None  # Mutable
 }, 200
-OPINION_OBJECT_RESPONSE: (dict[str, Any], int) = {
-    "opinion": None  # Mutable
-}, 200
+OPINION_OBJECT_RESPONSE: (dict[str, Any], int) = {"opinion": None}, 200  # Mutable
 LIBRARY_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {
     "libraries": None  # Mutable
 }, 200
-LIBRARY_OBJECT_RESPONSE: (dict[str, Any], int) = {
-    "library": None  # Mutable
-}, 200
-BOOK_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {
-    "books": None  # Mutable
-}, 200
-BOOK_OBJECT_RESPONSE: (dict[str, Any], int) = {
-    "book": None  # Mutable
-}, 200
+LIBRARY_OBJECT_RESPONSE: (dict[str, Any], int) = {"library": None}, 200  # Mutable
+BOOK_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {"books": None}, 200  # Mutable
+BOOK_OBJECT_RESPONSE: (dict[str, Any], int) = {"book": None}, 200  # Mutable
+GENRES_LIST_RESPONSE: (dict[str, Any], int) = {"genres": None}, 200  # Mutable
 BOOK_ANNOUNCEMENT_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {
     "book_announcements": None  # Mutable
 }, 200
 BOOK_ANNOUNCEMENT_OBJECT_RESPONSE: (dict[str, Any], int) = {
     "book_announcement": None  # Mutable
 }, 200
-AUTHOR_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {
-    "authors": None  # Mutable
-}, 200
-AUTHOR_OBJECT_RESPONSE: (dict[str, Any], int) = {
-    "author": None  # Mutable
-}, 200
+AUTHOR_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {"authors": None}, 200  # Mutable
+AUTHOR_OBJECT_RESPONSE: (dict[str, Any], int) = {"author": None}, 200  # Mutable
 LOGGED_IN_USERS_RESPONSE: (dict[str, Any], int) = {
     "logged_in_users": None  # Mutable
 }, 200
 ALREADY_LOGGED_IN_RESPONSE: (dict[str, Any], int) = {
     "message": "already_logged_in",
     "details": "Already logged in",
-    "token": None  # Mutable
+    "token": None,  # Mutable
 }, 401
 LOGIN_SUCCESSFUL_RESPONSE: (dict[str, Any], int) = {
     "message": "login_successful",
     "details": "Login successful",
-    "token": None  # Mutable
+    "token": None,  # Mutable
 }, 200

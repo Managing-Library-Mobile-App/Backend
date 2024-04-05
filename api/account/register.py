@@ -8,10 +8,12 @@ from helpers.init import db
 from helpers.request_response import RequestParser, create_response
 from models.library import Library
 from models.user import User
-from static.responses import (EMAIL_WRONG_FORMAT_RESPONSE,
-                              PASSWORD_WRONG_FORMAT_RESPONSE,
-                              USER_ALREADY_EXISTS_RESPONSE,
-                              REGISTER_SUCCESSFUL_RESPONSE)
+from static.responses import (
+    EMAIL_WRONG_FORMAT_RESPONSE,
+    PASSWORD_WRONG_FORMAT_RESPONSE,
+    USER_ALREADY_EXISTS_RESPONSE,
+    REGISTER_SUCCESSFUL_RESPONSE,
+)
 
 
 class Register(Resource):
@@ -20,6 +22,7 @@ class Register(Resource):
         self.post_parser.add_arg("username")
         self.post_parser.add_arg("password")
         self.post_parser.add_arg("email")
+        self.post_parser.add_arg("language", required=False)
         super(Register, self).__init__()
 
     def post(self) -> Response:
@@ -27,22 +30,25 @@ class Register(Resource):
         username: str = args.get("username")
         password: str = args.get("password")
         email: str = args.get("email")
-        if not re.fullmatch(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b", email):
-            return create_response(EMAIL_WRONG_FORMAT_RESPONSE)
-        if not re.fullmatch(r"^[a-zA-Z0-9_-]{10,50}$", username):
-            return create_response(EMAIL_WRONG_FORMAT_RESPONSE)
+        language: str = args.get("language")
         if not re.fullmatch(
-                r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{10,50}$",
-                password,
+            r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b", email
         ):
-            return create_response(PASSWORD_WRONG_FORMAT_RESPONSE)
+            return create_response(EMAIL_WRONG_FORMAT_RESPONSE, language=language)
+        if not re.fullmatch(r"^[a-zA-Z0-9_-]{10,50}$", username):
+            return create_response(EMAIL_WRONG_FORMAT_RESPONSE, language=language)
+        if not re.fullmatch(
+            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{10,50}$",
+            password,
+        ):
+            return create_response(PASSWORD_WRONG_FORMAT_RESPONSE, language=language)
 
         user_already_exists: bool = db.session.query(
             exists().where(User.email == email, User.username == username)
         ).scalar()
 
         if user_already_exists:
-            return create_response(USER_ALREADY_EXISTS_RESPONSE)
+            return create_response(USER_ALREADY_EXISTS_RESPONSE, language=language)
 
         new_user: User = User(username=username, password=password, email=email)
         db.session.add(new_user)
@@ -53,4 +59,4 @@ class Register(Resource):
         db.session.add(new_user_library)
         db.session.commit()
 
-        return create_response(REGISTER_SUCCESSFUL_RESPONSE)
+        return create_response(REGISTER_SUCCESSFUL_RESPONSE, language=language)
