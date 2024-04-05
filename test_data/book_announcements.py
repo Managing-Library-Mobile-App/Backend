@@ -7,7 +7,7 @@ book_announcements: list[dict[str, Any]] = [
         "author": 1,
         "publishing_house": "Adams House",
         "description": "The great britain is an amazing great britain that was a great britain...",
-        "genres": ["Action"],
+        "genres": ["Action", "Thriller"],
         "picture": "https://picsum.photos/id/24/4855/1803",
         "premiere_date": datetime.strptime("2024-01-21", "%Y-%m-%d"),
     },

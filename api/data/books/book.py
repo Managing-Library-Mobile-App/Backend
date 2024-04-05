@@ -2,22 +2,31 @@ import datetime
 
 from flask import Response
 from flask_restful import Resource
+from sqlalchemy import and_
 
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
 from helpers.request_response import RequestParser
+from helpers.request_response import create_response
 from models import book
 from models.user import User
-from helpers.request_response import create_response
-from static.responses import TOKEN_INVALID_RESPONSE, INSUFFICIENT_PERMISSIONS_RESPONSE, \
-    OBJECT_MODIFIED_RESPONSE, OBJECT_DELETED_RESPONSE, OBJECT_CREATED_RESPONSE, BOOK_OBJECT_RESPONSE, \
-    BOOK_OBJECTS_LIST_RESPONSE, OBJECT_NOT_FOUND_RESPONSE
+from static.responses import (
+    TOKEN_INVALID_RESPONSE,
+    INSUFFICIENT_PERMISSIONS_RESPONSE,
+    OBJECT_MODIFIED_RESPONSE,
+    OBJECT_DELETED_RESPONSE,
+    OBJECT_CREATED_RESPONSE,
+    BOOK_OBJECT_RESPONSE,
+    BOOK_OBJECTS_LIST_RESPONSE,
+    OBJECT_NOT_FOUND_RESPONSE,
+)
 
 
 class Book(Resource):
     def __init__(self) -> None:
         self.get_parser: RequestParser = RequestParser()
         self.get_parser.add_arg("id", type=int, required=False)
+        self.get_parser.add_arg("genres", type=list, required=False)
         self.post_parser: RequestParser = RequestParser()
         self.post_parser.add_arg("isbn", type=int)
         self.post_parser.add_arg("title")
@@ -44,6 +53,13 @@ class Book(Resource):
     def get(self) -> Response:
         args: dict = self.get_parser.parse_args()
         book_id: int = args.get("id")
+        genres: list = args.get("genres")
+
+        filters_list = []
+        filers_dict = {}
+        if genres:
+            filters_list = [book.Book.genres.any(genres) for genres in genres]
+
         email: str | None = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE)
@@ -52,12 +68,14 @@ class Book(Resource):
             book_object: book.Book = book.Book.query.filter_by(id=book_id).first()
             if not book_object:
                 return create_response(OBJECT_NOT_FOUND_RESPONSE)
-            return create_response(BOOK_OBJECT_RESPONSE, book_object.as_dict()
-                                   )
-        book_objects: list[book.Book] = book.Book.query.all()
+            return create_response(BOOK_OBJECT_RESPONSE, book_object.as_dict())
+        book_objects: list[book.Book] = book.Book.query.filter(
+            and_(*filters_list), **filers_dict
+        ).all()
         return create_response(
             BOOK_OBJECTS_LIST_RESPONSE,
-            {"books": [book_object.as_dict() for book_object in book_objects]})
+            {"books": [book_object.as_dict() for book_object in book_objects]},
+        )
 
     def post(self) -> Response:
         args: dict = self.post_parser.parse_args()
