@@ -7,9 +7,16 @@ from helpers.request_response import RequestParser
 from models import opinion
 from models.user import User
 from helpers.request_response import create_response
-from static.responses import TOKEN_INVALID_RESPONSE, INSUFFICIENT_PERMISSIONS_RESPONSE, \
-    OBJECT_CREATED_RESPONSE, OBJECT_DELETED_RESPONSE, OBJECT_MODIFIED_RESPONSE, OPINION_OBJECT_RESPONSE, \
-    OPINION_OBJECTS_LIST_RESPONSE, OBJECT_NOT_FOUND_RESPONSE
+from static.responses import (
+    TOKEN_INVALID_RESPONSE,
+    INSUFFICIENT_PERMISSIONS_RESPONSE,
+    OBJECT_CREATED_RESPONSE,
+    OBJECT_DELETED_RESPONSE,
+    OBJECT_MODIFIED_RESPONSE,
+    OPINION_OBJECT_RESPONSE,
+    OPINION_OBJECTS_LIST_RESPONSE,
+    OBJECT_NOT_FOUND_RESPONSE,
+)
 
 
 class Opinion(Resource):
@@ -48,11 +55,22 @@ class Opinion(Resource):
             if not opinion_object:
                 return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
             if not user.id == opinion_object.user_id and not user.is_admin:
-                return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
-            return create_response(OPINION_OBJECT_RESPONSE, opinion_object.as_dict(), language=language)
+                return create_response(
+                    INSUFFICIENT_PERMISSIONS_RESPONSE, language=language
+                )
+            return create_response(
+                OPINION_OBJECT_RESPONSE, opinion_object.as_dict(), language=language
+            )
         opinion_objects: list[opinion.Opinion] = opinion.Opinion.query.all()
-        return create_response(OPINION_OBJECTS_LIST_RESPONSE,
-                               {"opinions": [opinion_object.as_dict() for opinion_object in opinion_objects]}, language=language)
+        return create_response(
+            OPINION_OBJECTS_LIST_RESPONSE,
+            {
+                "opinions": [
+                    opinion_object.as_dict() for opinion_object in opinion_objects
+                ]
+            },
+            language=language,
+        )
 
     def post(self) -> Response:
         args: dict = self.post_parser.parse_args()
