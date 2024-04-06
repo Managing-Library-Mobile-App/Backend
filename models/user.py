@@ -10,9 +10,10 @@ class User(db.Model):  # type: ignore[name-defined]
     email = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(50), nullable=False)
     # TODO pobranie biblioteki dla usera
-    library_id = db.relationship(
+    library = db.relationship(
         "Library",
         backref="library",
+        lazy='dynamic',
         cascade="all, delete",
         passive_deletes=True,
     )
@@ -38,7 +39,7 @@ class User(db.Model):  # type: ignore[name-defined]
     is_admin = db.Column(db.Boolean, default=False)
 
     def __init__(
-        self, username: str, email: str, password: str, is_admin=False
+            self, username: str, email: str, password: str, is_admin=False
     ) -> None:
         """Initializing an object of the class.
         :param is_admin: used for authentication
@@ -55,7 +56,7 @@ class User(db.Model):  # type: ignore[name-defined]
             "username": self.username,
             "email": self.email,
             "password": self.password,
-            "library_id": self.library_id,
+            "library": self.library.first().as_dict() if self.library else None,
             "score": self.score,
             "opinions_count": self.opinions_count,
             "opinions": [opinion.id for opinion in self.opinions],  # type: ignore

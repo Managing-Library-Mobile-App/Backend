@@ -45,6 +45,10 @@ WRONG_SECRET_RESPONSE: (dict[str, str], int) = {
     "message": "wrong_secret",
     "details": "Wrong secret field value. Cannot view logged in users.",
 }, 401
+WRONG_LOGIN_PARAMS_COMBINATION: (dict[str, str], int) = {
+    "message": "wrong_login_params_combination",
+    "details": "Cannot pass both user_id and get_self",
+}, 401
 LOGGED_OUT_RESPONSE: (dict[str, str], int) = {
     "message": "logged_out",
     "details": "Logged out",

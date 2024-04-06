@@ -1,3 +1,4 @@
+from api.data.user.user import User
 from static.urls import *
 from api.account.change_password import ChangePassword
 from api.account.check_if_logged_in import CheckIfLoggedIn
@@ -20,6 +21,7 @@ RESOURCES = {
     BOOK_ANNOUNCEMENT_URL:  BookAnnouncement,
     BOOK_URL:  Book,
     AUTHOR_URL:  Author,
+    USER_URL:  User,
     CHECK_IF_LOGGED_IN_URL:  CheckIfLoggedIn,
     LOGGED_IN_USERS_URL:  LoggedInUsers,
     LOGOUT_URL:  Logout,
