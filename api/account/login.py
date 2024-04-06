@@ -122,32 +122,33 @@ class Login(Resource):
         email: str = args.get("email")
         password: str = args.get("password")
         language: str = args.get("language")
-        current_datetime: datetime.datetime = datetime.datetime.now(
-            datetime.timezone.utc
-        )
-        cache_results: dict | None = InvalidLoginAttemptsCache.get(email)
-        if cache_results and cache_results.get("lockout_start"):
-            lockout_start_timestamp: float = cache_results.get("lockout_start")
-            lockout_start: datetime.datetime = datetime.datetime.fromtimestamp(
-                lockout_start_timestamp, datetime.timezone.utc
-            )
-            locked_out: bool = lockout_start >= (
-                current_datetime + datetime.timedelta(minutes=-15)
-            )
-            if not locked_out:
-                InvalidLoginAttemptsCache.delete(email)
-            else:
-                logger.warning(f"locked out user: {email}")
-                return create_response(
-                    LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE, language=language
-                )
+        # current_datetime: datetime.datetime = datetime.datetime.now(
+        #     datetime.timezone.utc
+        # )
+        # cache_results: dict | None = InvalidLoginAttemptsCache.get(email)
+        # if cache_results and cache_results.get("lockout_start"):
+        #     lockout_start_timestamp: float = cache_results.get("lockout_start")
+        #     lockout_start: datetime.datetime = datetime.datetime.fromtimestamp(
+        #         lockout_start_timestamp, datetime.timezone.utc
+        #     )
+        #     locked_out: bool = lockout_start >= (
+        #         current_datetime + datetime.timedelta(minutes=-15)
+        #     )
+        #     if not locked_out:
+        #         InvalidLoginAttemptsCache.delete(email)
+        #     else:
+        #         logger.warning(f"locked out user: {email}")
+        #         return create_response(
+        #             LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE, language=language
+        #         )
         login_data: (dict[str, Any], int) = authenticate_login_credentials(
             email=email, password=password, language=language
         )
-        if InvalidLoginAttemptsCache.invalid_attempt(
-            cache_results, current_datetime, email
-        ):
-            return create_response(
-                LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE, language=language
-            )
+        # if InvalidLoginAttemptsCache.invalid_attempt(
+        #     cache_results, current_datetime, email
+        # ):
+        #     return create_response(
+        #         LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE, language=language
+        #     )
+        # TODO odkomentować i naprawić to że nawet prawidłowe logowanie blokuje brute force
         return login_data
