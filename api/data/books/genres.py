@@ -6,11 +6,11 @@ from helpers.request_response import create_response, RequestParser
 from static.responses import TOKEN_INVALID_RESPONSE, GENRES_LIST_RESPONSE
 
 
-class Book(Resource):
+class Genres(Resource):
     def __init__(self) -> None:
         self.get_parser: RequestParser = RequestParser()
         self.get_parser.add_arg("language", required=False)
-        super(Book, self).__init__()
+        super(Genres, self).__init__()
 
     def get(self) -> Response:
         args: dict = self.get_parser.parse_args()

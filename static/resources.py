@@ -1,3 +1,4 @@
+from api.data.books.genres import Genres
 from api.data.user.user import User
 from static.urls import *
 from api.account.change_password import ChangePassword
@@ -15,18 +16,19 @@ from api.data.opinions.opinion import Opinion
 from api.favicon import Favicon
 
 RESOURCES = {
-    FAVICON_URL:  Favicon,
-    OPINION_URL:  Opinion,
-    LIBRARY_URL:  Library,
-    BOOK_ANNOUNCEMENT_URL:  BookAnnouncement,
-    BOOK_URL:  Book,
-    AUTHOR_URL:  Author,
-    USER_URL:  User,
-    CHECK_IF_LOGGED_IN_URL:  CheckIfLoggedIn,
-    LOGGED_IN_USERS_URL:  LoggedInUsers,
-    LOGOUT_URL:  Logout,
-    DELETE_ACCOUNT_URL:  DeleteAccount,
-    CHANGE_PASSWORD_URL:  ChangePassword,
-    REGISTER_URL:  Register,
-    LOGIN_URL:  Login
+    FAVICON_URL: Favicon,
+    OPINION_URL: Opinion,
+    LIBRARY_URL: Library,
+    BOOK_ANNOUNCEMENT_URL: BookAnnouncement,
+    BOOK_URL: Book,
+    AUTHOR_URL: Author,
+    USER_URL: User,
+    CHECK_IF_LOGGED_IN_URL: CheckIfLoggedIn,
+    LOGGED_IN_USERS_URL: LoggedInUsers,
+    LOGOUT_URL: Logout,
+    DELETE_ACCOUNT_URL: DeleteAccount,
+    CHANGE_PASSWORD_URL: ChangePassword,
+    REGISTER_URL: Register,
+    LOGIN_URL: Login,
+    GENRES_URL: Genres,
 }

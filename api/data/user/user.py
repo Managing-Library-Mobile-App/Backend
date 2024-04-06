@@ -5,9 +5,14 @@ from helpers.jwt_auth import verify_jwt_token
 from helpers.request_response import RequestParser
 from models import user
 from helpers.request_response import create_response
-from static.responses import create_response, TOKEN_INVALID_RESPONSE, INSUFFICIENT_PERMISSIONS_RESPONSE, \
-    USER_OBJECTS_LIST_RESPONSE, USER_OBJECT_RESPONSE, WRONG_LOGIN_PARAMS_COMBINATION,
+from static.responses import (
+    TOKEN_INVALID_RESPONSE,
+    INSUFFICIENT_PERMISSIONS_RESPONSE,
+    USER_OBJECTS_LIST_RESPONSE,
+    USER_OBJECT_RESPONSE,
+    WRONG_LOGIN_PARAMS_COMBINATION,
     OBJECT_NOT_FOUND_RESPONSE,
+)
 
 
 class User(Resource):
@@ -32,9 +37,9 @@ class User(Resource):
             return create_response(WRONG_LOGIN_PARAMS_COMBINATION)
         if get_self:
             user_object: user.User = user.User.query.filter_by(email=email).first()
-            return create_response(USER_OBJECT_RESPONSE,
-                                   {"user": user_object.as_dict()}
-                                   )
+            return create_response(
+                USER_OBJECT_RESPONSE, {"user": user_object.as_dict()}
+            )
         if not current_user.is_admin:
             return INSUFFICIENT_PERMISSIONS_RESPONSE
 

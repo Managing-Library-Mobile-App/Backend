@@ -1,5 +1,5 @@
-BASE_URL = 'http://127.0.0.1:8000'
-FAVICON_URL = '/favicon.ico'
+BASE_URL = "http://127.0.0.1:8000"
+FAVICON_URL = "/favicon.ico"
 OPINION_URL = "/api/data/opinion"
 LIBRARY_URL = "/api/data/library"
 BOOK_ANNOUNCEMENT_URL = "/api/data/book_announcement"
@@ -13,3 +13,4 @@ CHANGE_PASSWORD_URL = "/api/account/change_password"
 REGISTER_URL = "/api/account/register"
 LOGIN_URL = "/api/account/login"
 USER_URL = "/api/data/user"
+GENRES_URL = "/api/data/genres"
