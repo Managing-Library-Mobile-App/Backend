@@ -13,8 +13,7 @@ class User(db.Model):  # type: ignore[name-defined]
     library = db.relationship(
         "Library",
         backref="library",
-        lazy='dynamic',
-        cascade="all, delete",
+        lazy="dynamic",
         passive_deletes=True,
     )
     score = db.Column(db.Integer, default=0)
@@ -29,7 +28,6 @@ class User(db.Model):  # type: ignore[name-defined]
         secondary=authors_users,
         lazy="subquery",
         back_populates="fans",
-        cascade="all, delete",
     )
     followed_authors_count = db.Column(db.Integer, default=0)
     # TODO możliwość ustawienia zdjęcia profilowego, jak to się ma do przechowywania linków?
@@ -39,7 +37,7 @@ class User(db.Model):  # type: ignore[name-defined]
     is_admin = db.Column(db.Boolean, default=False)
 
     def __init__(
-            self, username: str, email: str, password: str, is_admin=False
+        self, username: str, email: str, password: str, is_admin=False
     ) -> None:
         """Initializing an object of the class.
         :param is_admin: used for authentication
