@@ -1,8 +1,7 @@
-from flask import Response
+from flask import Response, request
 from flask_restful import Resource
 
 from helpers.jwt_auth import verify_jwt_token
-from helpers.request_response import RequestParser
 from models import user
 from helpers.request_response import create_response
 from static.responses import (
@@ -17,18 +16,13 @@ from static.responses import (
 
 class User(Resource):
     def __init__(self) -> None:
-        self.get_parser: RequestParser = RequestParser()
-        self.get_parser.add_arg("id", type=int, required=False)
-        self.get_parser.add_arg("language", required=False)
-        self.get_parser.add_arg("get_self", type=bool, required=False)
         super(User, self).__init__()
 
     def get(self) -> Response:
         not_translated: set[str] = {"username", "email", "password"}
-        args: dict = self.get_parser.parse_args()
-        user_id: int = args.get("id")
-        language: str = args.get("language")
-        get_self: bool = args.get("get_self")
+        user_id = request.args.get("id")
+        language: str = request.args.get("language")
+        get_self: bool = bool(request.args.get("get_self"))
         email: str | None = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
