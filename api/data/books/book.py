@@ -51,9 +51,14 @@ class Book(Resource):
         super(Book, self).__init__()
 
     def get(self) -> Response:
-        book_id: str = request.args.get("id")
-        genres: list = request.args.getlist("genres")
         language: str = request.args.get("language")
+        book_id: str = request.args.get("id")
+        if book_id:
+            try:
+                book_id: int = int(book_id)
+            except ValueError:
+                return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
+        genres: list = request.args.getlist("genres")
         not_translated: set[str] = {"isbn", "title", "publishing_house", "picture"}
         filters_list = []
         filers_dict = {}

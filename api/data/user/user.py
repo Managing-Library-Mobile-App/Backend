@@ -20,8 +20,13 @@ class User(Resource):
 
     def get(self) -> Response:
         not_translated: set[str] = {"username", "email", "password"}
-        user_id = request.args.get("id")
         language: str = request.args.get("language")
+        user_id: str = request.args.get("id")
+        if user_id:
+            try:
+                user_id: int = int(user_id)
+            except ValueError:
+                return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
         get_self: bool = bool(request.args.get("get_self"))
         email: str | None = verify_jwt_token()
         if not email:
