@@ -8,7 +8,7 @@ books: list[dict[str, Any]] = [
         "author_id": 1,
         "publishing_house": "Jans House",
         "description": "The Great Britain is a great britain book which...",
-        "genres": ["Action"],
+        "genres": ["Action", "Adventure", "Fantasy"],
         "picture": "https://picsum.photos/id/1084/4579/3271",
         "premiere_date": datetime.strptime("2022-01-21", "%Y-%m-%d"),
     },

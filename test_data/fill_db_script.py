@@ -1,12 +1,12 @@
 from flask_sqlalchemy import SQLAlchemy
 from loguru import logger
 
-from data.test_data.authors import authors
-from data.test_data.book_announcements import book_announcements
-from data.test_data.books import books
-from data.test_data.libraries import libraries
-from data.test_data.opinions import opinions
-from data.test_data.users import admins, users
+from test_data.authors import authors
+from test_data.book_announcements import book_announcements
+from test_data.books import books
+from test_data.libraries import libraries
+from test_data.opinions import opinions
+from test_data.users import admins, users
 from models.author import Author
 from models.book import Book
 from models.book_announcement import BookAnnouncement
@@ -96,7 +96,7 @@ def fill_db(db: SQLAlchemy):
 
     for opinion in opinions:
         new_opinion: Opinion = Opinion(
-            account_id=opinion["account_id"],
+            user_id=opinion["user_id"],
             book_id=opinion["book_id"],
             stars_count=opinion["stars_count"],
             comment=opinion["comment"],

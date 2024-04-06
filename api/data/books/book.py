@@ -2,21 +2,32 @@ import datetime
 
 from flask import Response
 from flask_restful import Resource
+from sqlalchemy import and_
 
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
-from helpers.request_parser import RequestParser
+from helpers.request_response import RequestParser
+from helpers.request_response import create_response
 from models import book
 from models.user import User
-from static.responses import create_response, TOKEN_INVALID_RESPONSE, INSUFFICIENT_PERMISSIONS_RESPONSE, \
-    OBJECT_MODIFIED_RESPONSE, OBJECT_DELETED_RESPONSE, OBJECT_CREATED_RESPONSE, BOOK_OBJECT_RESPONSE, \
-    BOOK_OBJECTS_LIST_RESPONSE
+from static.responses import (
+    TOKEN_INVALID_RESPONSE,
+    INSUFFICIENT_PERMISSIONS_RESPONSE,
+    OBJECT_MODIFIED_RESPONSE,
+    OBJECT_DELETED_RESPONSE,
+    OBJECT_CREATED_RESPONSE,
+    BOOK_OBJECT_RESPONSE,
+    BOOK_OBJECTS_LIST_RESPONSE,
+    OBJECT_NOT_FOUND_RESPONSE,
+)
 
 
 class Book(Resource):
     def __init__(self) -> None:
         self.get_parser: RequestParser = RequestParser()
         self.get_parser.add_arg("id", type=int, required=False)
+        self.get_parser.add_arg("genres", type=list, required=False)
+        self.get_parser.add_arg("language", required=False)
         self.post_parser: RequestParser = RequestParser()
         self.post_parser.add_arg("isbn", type=int)
         self.post_parser.add_arg("title")
@@ -26,8 +37,10 @@ class Book(Resource):
         self.post_parser.add_arg("genres", type=list)
         self.post_parser.add_arg("picture")
         self.post_parser.add_arg("premiere_date")
+        self.post_parser.add_arg("language", required=False)
         self.delete_parser: RequestParser = RequestParser()
         self.delete_parser.add_arg("id", type=int)
+        self.delete_parser.add_arg("language", required=False)
         self.patch_parser: RequestParser = RequestParser()
         self.patch_parser.add_arg("id", type=int)
         self.patch_parser.add_arg("isbn")
@@ -38,23 +51,43 @@ class Book(Resource):
         self.patch_parser.add_arg("genres", type=list)
         self.patch_parser.add_arg("picture")
         self.patch_parser.add_arg("premiere_date")
+        self.patch_parser.add_arg("language", required=False)
         super(Book, self).__init__()
 
     def get(self) -> Response:
         args: dict = self.get_parser.parse_args()
         book_id: int = args.get("id")
+        genres: list = args.get("genres")
+        language: str = args.get("language")
+        not_translated: set[str] = {"isbn", "title", "publishing_house", "picture"}
+        filters_list = []
+        filers_dict = {}
+        if genres:
+            filters_list = [book.Book.genres.any(genres) for genres in genres]
+
         email: str | None = verify_jwt_token()
         if not email:
-            return create_response(TOKEN_INVALID_RESPONSE)
+            return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
         if book_id:
             book_object: book.Book = book.Book.query.filter_by(id=book_id).first()
-            return create_response(BOOK_OBJECT_RESPONSE, book_object.as_dict()
-                                   )
-        book_objects: list[book.Book] = book.Book.query.all()
+            if not book_object:
+                return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
+            return create_response(
+                BOOK_OBJECT_RESPONSE,
+                book_object.as_dict(),
+                language=language,
+                not_translated=not_translated,
+            )
+        book_objects: list[book.Book] = book.Book.query.filter(
+            and_(*filters_list), **filers_dict
+        ).all()
         return create_response(
             BOOK_OBJECTS_LIST_RESPONSE,
-            {"books": [book_object.as_dict() for book_object in book_objects]})
+            {"books": [book_object.as_dict() for book_object in book_objects]},
+            language=language,
+            not_translated=not_translated,
+        )
 
     def post(self) -> Response:
         args: dict = self.post_parser.parse_args()
@@ -66,12 +99,13 @@ class Book(Resource):
         genres: list[int] = args.get("genres")
         picture: str = args.get("picture")
         premiere_date: datetime.datetime = args.get("premiere_date")
+        language: str = args.get("language")
         email: str | None = verify_jwt_token()
         if not email:
-            return create_response(TOKEN_INVALID_RESPONSE)
+            return create_response(TOKEN_INVALID_RESPONSE, language=language)
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
-            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
         # TODO A CO JEŚLI AUTOR O TAKIM ID NIE ISTNIEJE?
         book_object: book.Book = book.Book(
@@ -87,24 +121,26 @@ class Book(Resource):
         db.session.add(book_object)
         db.session.commit()
 
-        return create_response(OBJECT_CREATED_RESPONSE)
+        return create_response(OBJECT_CREATED_RESPONSE, language=language)
 
     def delete(self) -> Response:
         args: dict = self.delete_parser.parse_args()
         book_id: int = args.get("id")
+        language: str = args.get("language")
         email: str | None = verify_jwt_token()
         if not email:
-            return create_response(TOKEN_INVALID_RESPONSE)
+            return create_response(TOKEN_INVALID_RESPONSE, language=language)
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
-            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
         opinion_object: book.Book = book.Book.query.filter_by(id=book_id).first()
-
+        if not opinion_object:
+            return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
         db.session.delete(opinion_object)
         db.session.commit()
 
-        return create_response(OBJECT_DELETED_RESPONSE)
+        return create_response(OBJECT_DELETED_RESPONSE, language=language)
 
     def patch(self) -> Response:
         args: dict = self.delete_parser.parse_args()
@@ -116,12 +152,13 @@ class Book(Resource):
         genres: list[int] = args.get("genres")
         picture: str = args.get("picture")
         premiere_date: datetime.datetime = args.get("premiere_date")
+        language: str = args.get("language")
         email: str | None = verify_jwt_token()
         if not email:
-            return create_response(TOKEN_INVALID_RESPONSE)
+            return create_response(TOKEN_INVALID_RESPONSE, language=language)
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
-            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE)
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
         modified_book: book.Book = book.Book.query.filter_by(id=book_id).first()
 
@@ -142,4 +179,4 @@ class Book(Resource):
                 modified_book.premiere_date = premiere_date
             db.session.commit()
 
-        return create_response(OBJECT_MODIFIED_RESPONSE)
+        return create_response(OBJECT_MODIFIED_RESPONSE, language=language)

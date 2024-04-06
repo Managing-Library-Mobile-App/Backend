@@ -2,14 +2,16 @@ import datetime
 import os
 
 import argparse
+
 import flask_restful
 from flasgger import Swagger
 from flask_restful import Api
+from loguru import logger
 from werkzeug import run_simple
 
-from data.test_data.fill_db_script import fill_db
+from test_data.fill_db_script import fill_db
 from helpers.api_add_resources import api_add_resources
-from helpers.init import app, cache, db, dispatcher, jwt, limiter, valid_type_of_db
+from helpers.init import app, cache, db, dispatcher, jwt, limiter
 from models.author import Author  # noqa
 from models.book import Book  # noqa
 from models.book_announcement import BookAnnouncement  # noqa
@@ -29,16 +31,13 @@ api_add_resources(api)
 
 parser = argparse.ArgumentParser(description="Description of your script")
 parser.add_argument(
-    "type_of_db", type=valid_type_of_db, help="Type of db. Options: 'prod' or 'test'"
+    "type_of_db", type=str, help="Type of db. Currently used: 'api_tests' or 'e2e_tests' or 'prod'"
 )
 args = parser.parse_args()
 
-if args.type_of_db not in ["prod", "test"]:
-    raise Exception(f"Database {args.type_of_db} is not supported")
-
 host: str = os.environ.get("host")
 port: str = os.environ.get("port")
-database: str = os.environ.get("database_" + args.type_of_db)
+database: str = args.type_of_db
 user: str = os.environ.get("user")
 password: str = os.environ.get("password")
 
@@ -69,14 +68,14 @@ if __name__ == "__main__":
         )
         conn.autocommit = True
         cur = conn.cursor()
-        cur.execute("CREATE DATABASE test")
+        cur.execute(f"CREATE DATABASE {database}")
+        logger.info(f"CREATED DATABASE {database}")
         cur.close()
         conn.close()
     except psycopg2.errors.DuplicateDatabase:
         pass
 
-    # Database setup
-    # TODO Delete later when delivering later versions
+    # TODO Delete fill i drop all later when delivering later versions
     with app.app_context():
         db.drop_all()
         db.create_all()
@@ -88,6 +87,4 @@ if __name__ == "__main__":
         application=dispatcher,
         ssl_context=("static/cert.pem", "static/key.pem"),
     )
-    # TODO Są dziwne problemy że jak odpalimy aplikację na 192...
-    #  i potem na localhost to się sypie?
     application_start_date = datetime.datetime.now().strftime("%m-%d-%Y %H-%M-%S")

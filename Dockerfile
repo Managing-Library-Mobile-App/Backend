@@ -3,4 +3,6 @@ WORKDIR /app
 COPY . /app
 RUN pip install -r requirements.txt
 EXPOSE 5000
-CMD ["python", "app.py", "prod"]
+ARG DB_TYPE
+ENV DB_TYPE_ENV=$DB_TYPE
+CMD python app.py $DB_TYPE_ENV

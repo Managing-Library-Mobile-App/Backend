@@ -25,7 +25,11 @@ services:
       - prometheus
 
   flask:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - DB_TYPE
     ports:
       - "5000:5000"
     depends_on:
@@ -40,12 +44,12 @@ services:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 5s
-      retries: 3
+      retries: 10
     env_file:
       - .env
     environment:
-      POSTGRES_USER: ${user_prod}
-      POSTGRES_PASSWORD: ${password_prod}
+      POSTGRES_USER: ${user}
+      POSTGRES_PASSWORD: ${password}
     expose:
       - "5432"
     ports:
