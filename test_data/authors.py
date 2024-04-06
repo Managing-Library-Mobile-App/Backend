@@ -20,7 +20,7 @@ authors: list[dict[str, Any]] = [
     },
     {
         "name": "Ania Franinska",
-        "genres": [1],
+        "genres": ["Action"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever
