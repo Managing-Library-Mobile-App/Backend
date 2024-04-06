@@ -77,7 +77,7 @@ USER_ALREADY_EXISTS_RESPONSE: (dict[str, str], int) = {
 }, 401
 REGISTER_SUCCESSFUL_RESPONSE: (dict[str, str], int) = {
     "message": "register_successful",
-    "details": "Register successful",
+    "details": "Registered successfully",
 }, 200
 INSUFFICIENT_PERMISSIONS_RESPONSE: (dict[str, str], int) = {
     "message": "insufficient_permissions",

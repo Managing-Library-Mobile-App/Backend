@@ -37,6 +37,8 @@ def create_response(
     if language:
         if not_translated is None:
             not_translated = {"message"}
+        else:
+            not_translated.add("message")
         for key, value in response_body.items():
             if key not in not_translated:
                 if isinstance(value, dict):
