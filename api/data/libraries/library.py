@@ -1,4 +1,4 @@
-from flask import Response
+from flask import Response, request
 from flask_restful import Resource
 
 from helpers.init import db
@@ -19,9 +19,6 @@ from static.responses import (
 
 class Library(Resource):
     def __init__(self) -> None:
-        self.get_parser: RequestParser = RequestParser()
-        self.get_parser.add_arg("id", type=int, required=False)
-        self.get_parser.add_arg("language", required=False)
         self.post_parser: RequestParser = RequestParser()
         self.post_parser.add_arg("read_books", type=list, required=False)
         self.post_parser.add_arg("bought_books", type=list, required=False)
@@ -40,9 +37,8 @@ class Library(Resource):
         super(Library, self).__init__()
 
     def get(self) -> Response:
-        args: dict = self.get_parser.parse_args()
-        library_id: int = args.get("id")
-        language: str = args.get("language")
+        library_id: str = request.args.get("id")
+        language: str = request.args.get("language")
         email: str | None = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)

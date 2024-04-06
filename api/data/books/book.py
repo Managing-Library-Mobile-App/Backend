@@ -1,6 +1,6 @@
 import datetime
 
-from flask import Response
+from flask import Response, request
 from flask_restful import Resource
 from sqlalchemy import and_
 
@@ -24,10 +24,6 @@ from static.responses import (
 
 class Book(Resource):
     def __init__(self) -> None:
-        self.get_parser: RequestParser = RequestParser()
-        self.get_parser.add_arg("id", type=int, required=False)
-        self.get_parser.add_arg("genres", type=list, required=False)
-        self.get_parser.add_arg("language", required=False)
         self.post_parser: RequestParser = RequestParser()
         self.post_parser.add_arg("isbn", type=int)
         self.post_parser.add_arg("title")
@@ -55,10 +51,9 @@ class Book(Resource):
         super(Book, self).__init__()
 
     def get(self) -> Response:
-        args: dict = self.get_parser.parse_args()
-        book_id: int = args.get("id")
-        genres: list = args.get("genres")
-        language: str = args.get("language")
+        book_id: str = request.args.get("id")
+        genres: list = request.args.getlist("genres")
+        language: str = request.args.get("language")
         not_translated: set[str] = {"isbn", "title", "publishing_house", "picture"}
         filters_list = []
         filers_dict = {}

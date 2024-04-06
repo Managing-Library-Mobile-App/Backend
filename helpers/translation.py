@@ -22,11 +22,13 @@ def translate_any_to_known(text_to_translate: str, language: str) -> str:
     translator_google = Translator()
     detected_language: Detected = translator_google.detect(text_to_translate)
     if detected_language.confidence < 0.6:
-        raise ValueError(
-            "Can't translate, the probability is too low:"
-            + str(detected_language.confidence * 100)
-            + "%"
-        )
+        # raise ValueError(
+        #     "Can't translate, the probability is too low:"
+        #     + str(detected_language.confidence * 100)
+        #     + "%"
+        #     + text_to_translate
+        # )
+        return text_to_translate
     if detected_language.lang == language:
         return text_to_translate
     return translator_google.translate(
