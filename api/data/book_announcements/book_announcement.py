@@ -1,6 +1,6 @@
 import datetime
 
-from flask import Response
+from flask import Response, request
 from flask_restful import Resource
 
 from helpers.init import db
@@ -23,9 +23,6 @@ from static.responses import (
 
 class BookAnnouncement(Resource):
     def __init__(self) -> None:
-        self.get_parser: RequestParser = RequestParser()
-        self.get_parser.add_arg("id", type=int, required=False)
-        self.get_parser.add_arg("language", required=False)
         self.post_parser: RequestParser = RequestParser()
         self.post_parser.add_arg("title")
         self.post_parser.add_arg("author")
@@ -52,9 +49,8 @@ class BookAnnouncement(Resource):
 
     def get(self) -> Response:
         not_translated = {"title", "publishing_house", "picture"}
-        args: dict = self.get_parser.parse_args()
-        book_announcement_id: int = args.get("id")
-        language: str = args.get("language")
+        book_announcement_id: str = request.args.get("id")
+        language: str = request.args.get("language")
         email: str | None = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)

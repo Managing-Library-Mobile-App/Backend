@@ -35,6 +35,7 @@ class DeleteAccount(Resource):
             return create_response(INVALID_PASSWORD_RESPONSE, language=language)
         if user:
             if user.is_admin:
+                db.session.delete(user)
                 return create_response(CANNOT_DELETE_ADMIN_RESPONSE, language=language)
             LOGGED_IN_USER_TOKENS.pop(email)
             db.session.delete(user)
