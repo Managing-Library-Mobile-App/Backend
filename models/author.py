@@ -20,7 +20,6 @@ class Author(db.Model):  # type: ignore[name-defined]
         secondary=authors_users,
         lazy="subquery",
         back_populates="followed_authors",
-        cascade="all, delete",
     )
     released_books_count = db.Column(db.Integer, default=0)
     # TODO pobranie listy książek
@@ -52,10 +51,12 @@ class Author(db.Model):  # type: ignore[name-defined]
         self.biography = biography
         self.picture = picture
         from .user import User
+
         for fan_id in fans:
             self.fans.append(db.session.query(User).filter_by(id=fan_id).first())
 
         from .book import Book
+
         for book_id in released_books:
             self.released_books.append(
                 db.session.query(Book).filter_by(id=book_id).first()

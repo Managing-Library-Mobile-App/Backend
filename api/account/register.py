@@ -13,6 +13,7 @@ from static.responses import (
     PASSWORD_WRONG_FORMAT_RESPONSE,
     USER_ALREADY_EXISTS_RESPONSE,
     REGISTER_SUCCESSFUL_RESPONSE,
+    USERNAME_WRONG_FORMAT_RESPONSE,
 )
 
 
@@ -36,7 +37,7 @@ class Register(Resource):
         ):
             return create_response(EMAIL_WRONG_FORMAT_RESPONSE, language=language)
         if not re.fullmatch(r"^[a-zA-Z0-9_-]{10,50}$", username):
-            return create_response(EMAIL_WRONG_FORMAT_RESPONSE, language=language)
+            return create_response(USERNAME_WRONG_FORMAT_RESPONSE, language=language)
         if not re.fullmatch(
             r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{10,50}$",
             password,

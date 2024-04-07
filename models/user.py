@@ -12,15 +12,16 @@ class User(db.Model):  # type: ignore[name-defined]
     # TODO pobranie biblioteki dla usera
     library = db.relationship(
         "Library",
-        backref="library",
+        backref="user",
         lazy="dynamic",
         passive_deletes=True,
+        cascade="all, delete",
     )
     score = db.Column(db.Integer, default=0)
     opinions_count = db.Column(db.Integer, default=0)
     # TODO listy opinii raczej nie pobieramy
     opinions = db.relationship(
-        "Opinion", backref="opinion", cascade="all, delete", passive_deletes=True
+        "Opinion", backref="UserOpinion", cascade="all, delete", passive_deletes=True
     )
     # TODO pobranie listy autorów
     followed_authors = db.relationship(
@@ -30,7 +31,6 @@ class User(db.Model):  # type: ignore[name-defined]
         back_populates="fans",
     )
     followed_authors_count = db.Column(db.Integer, default=0)
-    # TODO możliwość ustawienia zdjęcia profilowego, jak to się ma do przechowywania linków?
     profile_picture = db.Column(
         db.String(200), default="https://www.gravatar.com/avatar/?d=mp"
     )

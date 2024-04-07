@@ -3,7 +3,6 @@ import datetime
 from sqlalchemy import ARRAY
 
 from helpers.init import db
-from models.many_to_many_tables import books_opinions
 
 
 class Book(db.Model):  # type: ignore[name-defined]
@@ -31,9 +30,8 @@ class Book(db.Model):  # type: ignore[name-defined]
     # TODO pobranie listy opinii dla książki
     opinions = db.relationship(
         "Opinion",
-        secondary=books_opinions,
+        backref="BookOpinion",
         lazy="subquery",
-        backref=db.backref("books_opinions"),
         cascade="all, delete",
     )
 

@@ -107,12 +107,14 @@ class Opinion(Resource):
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
         user: User = User.query.filter_by(email=email).first()
-        if not user.is_admin:
-            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
         opinion_object: opinion.Opinion = opinion.Opinion.query.filter_by(
             id=opinion_id
         ).first()
+        if not opinion_object:
+            return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
+        if not user.is_admin and user.id != opinion_object.user_id:
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
         db.session.delete(opinion_object)
         db.session.commit()
