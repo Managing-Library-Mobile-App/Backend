@@ -31,7 +31,7 @@ TOKEN_VALID_RESPONSE: (dict[str, str], int) = {
 CANNOT_DELETE_ADMIN_RESPONSE: (dict[str, str], int) = {
     "message": "cannot_delete_admin",
     "details": "Admin account cannot be deleted",
-}, 404
+}, 401
 
 USER_DELETED_RESPONSE: (dict[str, str], int) = {
     "message": "user_deleted",
@@ -78,7 +78,7 @@ EMAIL_WRONG_FORMAT_RESPONSE: (dict[str, str], int) = {
 USER_NOT_FOUND_RESPONSE: (dict[str, str], int) = {
     "message": "user_not_found",
     "details": "User logged in with such token not found",
-}, 401
+}, 404
 USER_ALREADY_EXISTS_RESPONSE: (dict[str, str], int) = {
     "message": "user_already_exists",
     "details": "User already exists",
@@ -126,12 +126,12 @@ LIBRARY_OBJECT_RESPONSE: (dict[str, Any], int) = {"library": None}, 200  # Mutab
 BOOK_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {"books": None}, 200  # Mutable
 BOOK_OBJECT_RESPONSE: (dict[str, Any], int) = {"book": None}, 200  # Mutable
 GENRES_LIST_RESPONSE: (dict[str, Any], int) = {"genres": None}, 200  # Mutable
-BOOK_ANNOUNCEMENT_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {
-    "book_announcements": None  # Mutable
-}, 200
-BOOK_ANNOUNCEMENT_OBJECT_RESPONSE: (dict[str, Any], int) = {
-    "book_announcement": None  # Mutable
-}, 200
+# BOOK_ANNOUNCEMENT_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {
+#     "book_announcements": None  # Mutable
+# }, 200
+# BOOK_ANNOUNCEMENT_OBJECT_RESPONSE: (dict[str, Any], int) = {
+#     "book_announcement": None  # Mutable
+# }, 200
 AUTHOR_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {"authors": None}, 200  # Mutable
 AUTHOR_OBJECT_RESPONSE: (dict[str, Any], int) = {"author": None}, 200  # Mutable
 LOGGED_IN_USERS_RESPONSE: (dict[str, Any], int) = {
@@ -141,7 +141,7 @@ ALREADY_LOGGED_IN_RESPONSE: (dict[str, Any], int) = {
     "message": "already_logged_in",
     "details": "Already logged in",
     "token": None,  # Mutable
-}, 401
+}, 200
 LOGIN_SUCCESSFUL_RESPONSE: (dict[str, Any], int) = {
     "message": "login_successful",
     "details": "Login successful",
