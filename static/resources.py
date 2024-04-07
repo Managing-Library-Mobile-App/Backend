@@ -9,7 +9,6 @@ from api.account.login import Login
 from api.account.logout import Logout
 from api.account.register import Register
 from api.data.authors.author import Author
-from api.data.book_announcements.book_announcement import BookAnnouncement
 from api.data.books.book import Book
 from api.data.libraries.library import Library
 from api.data.opinions.opinion import Opinion
@@ -19,7 +18,6 @@ RESOURCES = {
     FAVICON_URL: Favicon,
     OPINION_URL: Opinion,
     LIBRARY_URL: Library,
-    BOOK_ANNOUNCEMENT_URL: BookAnnouncement,
     BOOK_URL: Book,
     AUTHOR_URL: Author,
     USER_URL: User,

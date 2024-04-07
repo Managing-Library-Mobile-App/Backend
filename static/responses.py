@@ -126,12 +126,12 @@ LIBRARY_OBJECT_RESPONSE: (dict[str, Any], int) = {"library": None}, 200  # Mutab
 BOOK_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {"books": None}, 200  # Mutable
 BOOK_OBJECT_RESPONSE: (dict[str, Any], int) = {"book": None}, 200  # Mutable
 GENRES_LIST_RESPONSE: (dict[str, Any], int) = {"genres": None}, 200  # Mutable
-BOOK_ANNOUNCEMENT_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {
-    "book_announcements": None  # Mutable
-}, 200
-BOOK_ANNOUNCEMENT_OBJECT_RESPONSE: (dict[str, Any], int) = {
-    "book_announcement": None  # Mutable
-}, 200
+# BOOK_ANNOUNCEMENT_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {
+#     "book_announcements": None  # Mutable
+# }, 200
+# BOOK_ANNOUNCEMENT_OBJECT_RESPONSE: (dict[str, Any], int) = {
+#     "book_announcement": None  # Mutable
+# }, 200
 AUTHOR_OBJECTS_LIST_RESPONSE: (dict[str, Any], int) = {"authors": None}, 200  # Mutable
 AUTHOR_OBJECT_RESPONSE: (dict[str, Any], int) = {"author": None}, 200  # Mutable
 LOGGED_IN_USERS_RESPONSE: (dict[str, Any], int) = {

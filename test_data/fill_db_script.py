@@ -2,14 +2,12 @@ from flask_sqlalchemy import SQLAlchemy
 from loguru import logger
 
 from test_data.authors import authors
-from test_data.book_announcements import book_announcements
 from test_data.books import books
 from test_data.libraries import libraries
 from test_data.opinions import opinions
 from test_data.users import admins, users
 from models.author import Author
 from models.book import Book
-from models.book_announcement import BookAnnouncement
 from models.library import Library
 from models.opinion import Opinion
 from models.user import User
@@ -44,18 +42,18 @@ def fill_db(db: SQLAlchemy):
         db.session.add(new_book)
         db.session.commit()
 
-    for book_announcement in book_announcements:
-        new_book_announcement: BookAnnouncement = BookAnnouncement(
-            title=book_announcement["title"],
-            author=book_announcement["author"],
-            publishing_house=book_announcement["publishing_house"],
-            description=book_announcement["description"],
-            genres=book_announcement["genres"],
-            picture=book_announcement["picture"],
-            premiere_date=book_announcement["premiere_date"],
-        )
-        db.session.add(new_book_announcement)
-        db.session.commit()
+    # for book_announcement in book_announcements:
+    #     new_book_announcement: BookAnnouncement = BookAnnouncement(
+    #         title=book_announcement["title"],
+    #         author=book_announcement["author"],
+    #         publishing_house=book_announcement["publishing_house"],
+    #         description=book_announcement["description"],
+    #         genres=book_announcement["genres"],
+    #         picture=book_announcement["picture"],
+    #         premiere_date=book_announcement["premiere_date"],
+    #     )
+    #     db.session.add(new_book_announcement)
+    #     db.session.commit()
 
     for index, user in enumerate(users):
         new_user: User = User(

@@ -14,7 +14,6 @@ from helpers.api_add_resources import api_add_resources
 from helpers.init import app, cache, db, dispatcher, jwt, limiter
 from models.author import Author  # noqa
 from models.book import Book  # noqa
-from models.book_announcement import BookAnnouncement  # noqa
 from models.library import Library  # noqa
 from models.opinion import Opinion  # noqa
 from models.user import User  # noqa
@@ -31,7 +30,9 @@ api_add_resources(api)
 
 parser = argparse.ArgumentParser(description="Description of your script")
 parser.add_argument(
-    "type_of_db", type=str, help="Type of db. Currently used: 'api_tests' or 'e2e_tests' or 'prod'"
+    "type_of_db",
+    type=str,
+    help="Type of db. Currently used: 'api_tests' or 'e2e_tests' or 'prod'",
 )
 args = parser.parse_args()
 
