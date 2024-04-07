@@ -20,7 +20,6 @@ class Library(db.Model):  # type: ignore[name-defined]
         db.Integer,
         db.ForeignKey("user.id", ondelete="CASCADE"),
         nullable=False,
-        unique=True,
     )
     # TODO pobranie listy książek przeczytanych
     read_books = db.relationship(
@@ -28,7 +27,6 @@ class Library(db.Model):  # type: ignore[name-defined]
         secondary=library_books_read,
         lazy="subquery",
         backref=backref("library_books_read"),
-        cascade="all, delete",
     )
     # TODO pobranie listy książek ulubionych
     favourite_books = db.relationship(
@@ -36,7 +34,6 @@ class Library(db.Model):  # type: ignore[name-defined]
         secondary=library_books_favourite,
         lazy="subquery",
         backref=backref("library_books_favourite"),
-        cascade="all, delete",
     )
     # TODO pobranie listy książek kupionych
     bought_books = db.relationship(
@@ -44,7 +41,6 @@ class Library(db.Model):  # type: ignore[name-defined]
         secondary=library_books_bought,
         lazy="subquery",
         backref=backref("library_books_bought"),
-        cascade="all, delete",
     )
 
     def __init__(

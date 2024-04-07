@@ -49,8 +49,13 @@ class BookAnnouncement(Resource):
 
     def get(self) -> Response:
         not_translated = {"title", "publishing_house", "picture"}
-        book_announcement_id: str = request.args.get("id")
         language: str = request.args.get("language")
+        book_announcement_id: str = request.args.get("id")
+        if book_announcement_id:
+            try:
+                book_announcement_id: int = int(book_announcement_id)
+            except ValueError:
+                return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
         email: str | None = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)

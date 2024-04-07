@@ -46,8 +46,13 @@ class Author(Resource):
 
     def get(self) -> Response:
         not_translated: set[str] = {"name", "picture"}
-        author_id: str = request.args.get("id")
         language: str = request.args.get("language")
+        author_id: str = request.args.get("id")
+        if author_id:
+            try:
+                author_id: int = int(author_id)
+            except ValueError:
+                return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
         email: str | None = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)

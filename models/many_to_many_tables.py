@@ -32,22 +32,6 @@ authors_released_books = db.Table(
     ),
 )
 
-books_opinions = db.Table(
-    "books_opinions",
-    db.Column(
-        "opinion_id",
-        db.Integer,
-        db.ForeignKey("opinion.id", ondelete="CASCADE"),
-        primary_key=True,
-    ),
-    db.Column(
-        "book_id",
-        db.Integer,
-        db.ForeignKey("book.id", ondelete="CASCADE"),
-        primary_key=True,
-    ),
-)
-
 
 library_books_favourite = db.Table(
     "favourite_books",

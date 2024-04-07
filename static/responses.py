@@ -65,11 +65,15 @@ LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE: (dict[str, str], int) = {
     "message": "locked_user_login_attempts",
     "details": "User locked because of too many unsuccessful attempts",
 }, 401
-EMAIL_WRONG_FORMAT_RESPONSE: (dict[str, str], int) = {
+USERNAME_WRONG_FORMAT_RESPONSE: (dict[str, str], int) = {
     "message": "username_wrong_format",
     "details": "Wrong username format. It should be from 10 to 50 characters "
     "and it can only contain upper letters, lower letters, "
     "numbers and signs: - and _",
+}, 401
+EMAIL_WRONG_FORMAT_RESPONSE: (dict[str, str], int) = {
+    "message": "email_wrong_format",
+    "details": "Wrong email format.",
 }, 401
 USER_NOT_FOUND_RESPONSE: (dict[str, str], int) = {
     "message": "user_not_found",

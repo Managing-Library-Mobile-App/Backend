@@ -38,8 +38,13 @@ class Opinion(Resource):
         super(Opinion, self).__init__()
 
     def get(self) -> Response:
-        opinion_id: str = request.args.get("id")
         language: str = request.args.get("language")
+        opinion_id: str = request.args.get("id")
+        if opinion_id:
+            try:
+                opinion_id: int = int(opinion_id)
+            except ValueError:
+                return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
         email: str | None = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
@@ -102,12 +107,14 @@ class Opinion(Resource):
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
         user: User = User.query.filter_by(email=email).first()
-        if not user.is_admin:
-            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
         opinion_object: opinion.Opinion = opinion.Opinion.query.filter_by(
             id=opinion_id
         ).first()
+        if not opinion_object:
+            return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
+        if not user.is_admin and user.id != opinion_object.user_id:
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
         db.session.delete(opinion_object)
         db.session.commit()
