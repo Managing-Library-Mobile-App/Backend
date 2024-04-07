@@ -80,14 +80,24 @@ class InvalidLoginAttemptsCache(object):
 
 
 def authenticate_login_credentials(
-    email: str, password: str, language: str
+    email: str,
+    password: str,
+    language: str,
+    cache_results: dict | None,
+    current_datetime: datetime.datetime,
 ) -> (dict[str, Any], int):
     if not re.fullmatch(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b", email):
+        InvalidLoginAttemptsCache.invalid_attempt(
+            cache_results, current_datetime, email
+        )
         return create_response(EMAIL_WRONG_FORMAT_RESPONSE, language=language)
     if not re.fullmatch(
         r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{10,50}$",
         password,
     ):
+        InvalidLoginAttemptsCache.invalid_attempt(
+            cache_results, current_datetime, email
+        )
         return create_response(PASSWORD_WRONG_FORMAT_RESPONSE, language=language)
     user = User.query.filter_by(email=email, password=password).first()
     if user:
@@ -106,6 +116,7 @@ def authenticate_login_credentials(
             language=language,
             not_translated={"token"},
         )
+    InvalidLoginAttemptsCache.invalid_attempt(cache_results, current_datetime, email)
     return create_response(USER_NOT_LOGGED_IN_RESPONSE, language=language)
 
 
@@ -122,33 +133,30 @@ class Login(Resource):
         email: str = args.get("email")
         password: str = args.get("password")
         language: str = args.get("language")
-        # current_datetime: datetime.datetime = datetime.datetime.now(
-        #     datetime.timezone.utc
-        # )
-        # cache_results: dict | None = InvalidLoginAttemptsCache.get(email)
-        # if cache_results and cache_results.get("lockout_start"):
-        #     lockout_start_timestamp: float = cache_results.get("lockout_start")
-        #     lockout_start: datetime.datetime = datetime.datetime.fromtimestamp(
-        #         lockout_start_timestamp, datetime.timezone.utc
-        #     )
-        #     locked_out: bool = lockout_start >= (
-        #         current_datetime + datetime.timedelta(minutes=-15)
-        #     )
-        #     if not locked_out:
-        #         InvalidLoginAttemptsCache.delete(email)
-        #     else:
-        #         logger.warning(f"locked out user: {email}")
-        #         return create_response(
-        #             LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE, language=language
-        #         )
-        login_data: (dict[str, Any], int) = authenticate_login_credentials(
-            email=email, password=password, language=language
+        current_datetime: datetime.datetime = datetime.datetime.now(
+            datetime.timezone.utc
         )
-        # if InvalidLoginAttemptsCache.invalid_attempt(
-        #     cache_results, current_datetime, email
-        # ):
-        #     return create_response(
-        #         LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE, language=language
-        #     )
-        # TODO odkomentować i naprawić to że nawet prawidłowe logowanie blokuje brute force
+        cache_results: dict | None = InvalidLoginAttemptsCache.get(email)
+        if cache_results and cache_results.get("lockout_start"):
+            lockout_start_timestamp: float = cache_results.get("lockout_start")
+            lockout_start: datetime.datetime = datetime.datetime.fromtimestamp(
+                lockout_start_timestamp, datetime.timezone.utc
+            )
+            locked_out: bool = lockout_start >= (
+                current_datetime + datetime.timedelta(minutes=-15)
+            )
+            if not locked_out:
+                InvalidLoginAttemptsCache.delete(email)
+            else:
+                logger.warning(f"locked out user: {email}")
+                return create_response(
+                    LOCKED_USER_LOGIN_ATTEMPTS_RESPONSE, language=language
+                )
+        login_data: (dict[str, Any], int) = authenticate_login_credentials(
+            email=email,
+            password=password,
+            language=language,
+            cache_results=cache_results,
+            current_datetime=current_datetime,
+        )
         return login_data
