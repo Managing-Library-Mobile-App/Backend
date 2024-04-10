@@ -4,6 +4,7 @@ from loguru import logger
 from test_data.authors import authors
 from test_data.books import books
 from test_data.libraries import libraries
+from test_data.new_books import new_books
 from test_data.opinions import opinions
 from test_data.users import admins, users
 from models.author import Author
@@ -29,6 +30,20 @@ def fill_db(db: SQLAlchemy):
         db.session.commit()
 
     for book in books:
+        new_book: Book = Book(
+            isbn=book["isbn"],
+            title=book["title"],
+            author_id=book["author_id"],
+            publishing_house=book["publishing_house"],
+            description=book["description"],
+            genres=book["genres"],
+            picture=book["picture"],
+            premiere_date=book["premiere_date"],
+        )
+        db.session.add(new_book)
+        db.session.commit()
+
+    for book in new_books:
         new_book: Book = Book(
             isbn=book["isbn"],
             title=book["title"],

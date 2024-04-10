@@ -10,7 +10,7 @@ books: list[dict[str, Any]] = [
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Action", "Adventure", "Fantasy"],
         "picture": "https://picsum.photos/id/1084/4579/3271",
-        "premiere_date": datetime.strptime("2022-01-21", "%Y-%m-%d"),
+        "premiere_date": datetime.strptime("2024-02-21", "%Y-%m-%d"),
     },
     {
         "isbn": "01010101010102",

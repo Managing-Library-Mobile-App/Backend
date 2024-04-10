@@ -1,4 +1,5 @@
 from api.data.books.genres import Genres
+from api.data.books.new_book import NewBook
 from api.data.user.user import User
 from static.urls import *
 from api.account.change_password import ChangePassword
@@ -29,4 +30,5 @@ RESOURCES = {
     REGISTER_URL: Register,
     LOGIN_URL: Login,
     GENRES_URL: Genres,
+    NEW_BOOK_URL: NewBook,
 }

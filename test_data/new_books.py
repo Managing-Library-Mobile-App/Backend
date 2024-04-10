@@ -1,0 +1,55 @@
+from datetime import datetime
+from typing import Any
+
+new_books: list[dict[str, Any]] = [
+    {
+        "isbn": "1234567891234",
+        "title": "The Great Britain",
+        "author_id": 1,
+        "publishing_house": "Adams House",
+        "description": "The great britain is an amazing great britain that was a great britain...",
+        "genres": ["Action", "Thriller"],
+        "picture": "https://picsum.photos/id/24/4855/1803",
+        "premiere_date": datetime.strptime("2024-01-21", "%Y-%m-%d"),
+    },
+    {
+        "isbn": "1234567891235",
+        "title": "Potop",
+        "author_id": 1,
+        "publishing_house": "Jans House",
+        "description": "The great britain is an amazing great britain that was a great britain...",
+        "genres": ["Action"],
+        "picture": "https://picsum.photos/id/237/200/300",
+        "premiere_date": datetime.strptime("2024-10-21", "%Y-%m-%d"),
+    },
+    {
+        "isbn": "1234567891236",
+        "title": "The Great America",
+        "author_id": 1,
+        "publishing_house": "Adams House",
+        "description": "The great britain is an amazing great britain that was a great britain...",
+        "genres": ["Thriller"],
+        "picture": "https://picsum.photos/id/237/200/300",
+        "premiere_date": datetime.strptime("2025-01-21", "%Y-%m-%d"),
+    },
+    {
+        "isbn": "1234567891237",
+        "title": "The Great Poland",
+        "author_id": 2,
+        "publishing_house": "Jans House",
+        "description": "The great britain is an amazing great britain that was a great britain...",
+        "genres": ["Thriller"],
+        "picture": "https://picsum.photos/id/40/4106/2806",
+        "premiere_date": datetime.strptime("2026-01-21", "%Y-%m-%d"),
+    },
+    {
+        "isbn": "1234567891238",
+        "title": "The Great Great Far",
+        "author_id": 3,
+        "publishing_house": "Gothams House",
+        "description": "The great britain is an amazing great britain that was a great britain...",
+        "genres": ["Fantasy"],
+        "picture": "https://picsum.photos/id/237/200/300",
+        "premiere_date": datetime.strptime("2024-10-25", "%Y-%m-%d"),
+    },
+]
