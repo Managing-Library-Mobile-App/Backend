@@ -108,7 +108,7 @@ def authenticate_login_credentials(
                 language=language,
                 not_translated={"token"},
             )
-        token: str = create_access_token(identity=email)
+        token: str = create_access_token(identity=email, expires_delta=False)
         LOGGED_IN_USER_TOKENS[email] = token
         return create_response(
             LOGIN_SUCCESSFUL_RESPONSE,
