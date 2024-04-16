@@ -1,10 +1,7 @@
-from typing import Any
-
 from flask import make_response, jsonify, Response
 from flask_restful import reqparse
 
 from helpers.translation import (
-    translate_any_to_known,
     translate_dict_to_known,
     translate_list_to_known,
 )
@@ -25,37 +22,30 @@ class RequestParser(reqparse.RequestParser):
 
 
 def create_response(
-    static_response: (dict[str, Any], int),
-    dynamic_response_data: dict[str, Any] = None,
+    static_response: (dict | list, int),
+    dynamic_response_data: dict | list = None,
     language: str = None,
     not_translated: set[str] = None,
 ) -> Response:
-    response_body = static_response[0]
-    if dynamic_response_data:
+    if not_translated is None:
+        not_translated = {"message"}
+    else:
+        not_translated.add("message")
+
+    response_body: dict | list = static_response[0]
+    if isinstance(dynamic_response_data, dict):
         for key, value in dynamic_response_data.items():
             response_body[key] = value
+    elif isinstance(dynamic_response_data, list):
+        response_body = dynamic_response_data
     if language:
-        if not_translated is None:
-            not_translated = {"message"}
+        if isinstance(response_body, dict):
+            response_body = translate_dict_to_known(
+                response_body, language, not_translated
+            )
         else:
-            not_translated.add("message")
-        for key, value in response_body.items():
-            if key not in not_translated:
-                if isinstance(value, dict):
-                    response_body[key] = translate_dict_to_known(
-                        value, language, not_translated
-                    )
-                elif (
-                    isinstance(value, list)
-                    or isinstance(value, tuple)
-                    or isinstance(value, set)
-                ):
-                    response_body[key] = translate_list_to_known(
-                        response_body[key], language, not_translated
-                    )
-                elif isinstance(value, str):
-                    response_body[key] = translate_any_to_known(
-                        response_body[key], language
-                    )
+            response_body = translate_list_to_known(
+                response_body, language, not_translated
+            )
     status_code = static_response[1]
     return make_response(jsonify(response_body), status_code)

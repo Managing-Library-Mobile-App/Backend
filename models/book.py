@@ -3,6 +3,7 @@ import datetime
 from sqlalchemy import ARRAY
 
 from helpers.init import db
+from models import author
 
 
 class Book(db.Model):  # type: ignore[name-defined]
@@ -24,8 +25,8 @@ class Book(db.Model):  # type: ignore[name-defined]
     picture = db.Column(
         db.String(1000), default="https://demofree.sirv.com/nope-not-here.jpg?w=150"
     )
-    premiere_date = db.Column(db.DateTime, nullable=False)
-    score = db.Column(db.Integer, default=0)
+    premiere_date = db.Column(db.Date, nullable=False)
+    score = db.Column(db.Float, default=0)
     opinions_count = db.Column(db.Integer, default=0)
     # TODO pobranie listy opinii dla książki
     opinions = db.relationship(
@@ -75,6 +76,9 @@ class Book(db.Model):  # type: ignore[name-defined]
             "isbn": self.isbn,
             "title": self.title,
             "author_id": self.author_id,
+            "author_name": author.Author.query.filter_by(id=self.author_id)
+            .first()
+            .name,
             "publishing_house": self.publishing_house,
             "description": self.description,
             "genres": self.genres,

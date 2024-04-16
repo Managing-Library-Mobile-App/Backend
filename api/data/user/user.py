@@ -7,10 +7,9 @@ from helpers.request_response import create_response
 from static.responses import (
     TOKEN_INVALID_RESPONSE,
     INSUFFICIENT_PERMISSIONS_RESPONSE,
-    USER_OBJECTS_LIST_RESPONSE,
-    USER_OBJECT_RESPONSE,
-    WRONG_LOGIN_PARAMS_COMBINATION,
     OBJECT_NOT_FOUND_RESPONSE,
+    USERS_RESPONSE,
+    PARAM_NOT_INT_RESPONSE,
 )
 
 
@@ -19,48 +18,43 @@ class User(Resource):
         super(User, self).__init__()
 
     def get(self) -> Response:
-        not_translated: set[str] = {"username", "email", "password"}
-        language: str = request.args.get("language")
-        user_id: str = request.args.get("id")
+        language: str = request.args.get("language")  # optional
+        user_id: str = request.args.get("id")  # optional
+        username: str = request.args.get("username")  # optional
+        get_self: bool = bool(request.args.get("get_self"))  # optional
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE, language=language)
+
         if user_id:
             try:
                 user_id: int = int(user_id)
             except ValueError:
-                return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
-        get_self: bool = bool(request.args.get("get_self"))
-        email: str | None = verify_jwt_token()
-        if not email:
-            return create_response(TOKEN_INVALID_RESPONSE, language=language)
-        current_user: user.User = user.User.query.filter_by(email=email).first()
-        if get_self and user_id:
-            return create_response(WRONG_LOGIN_PARAMS_COMBINATION)
-        if get_self:
-            user_object: user.User = user.User.query.filter_by(email=email).first()
-            return create_response(
-                USER_OBJECT_RESPONSE, {"user": user_object.as_dict()}
-            )
-        if not current_user.is_admin:
-            return INSUFFICIENT_PERMISSIONS_RESPONSE
+                return create_response(PARAM_NOT_INT_RESPONSE, language=language)
 
+        filters_list = []
+        if username:
+            filters_list.append(user.User.username.ilike(f"%{username}%"))
+        if get_self:
+            filters_list.append(user.User.email == email)
         if user_id:
-            user_object: user.User = user.User.query.filter_by(id=user_id).first()
-            if not user_object:
-                return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
-            if not current_user.is_admin and not current_user.id == user_object.id:
-                return create_response(
-                    INSUFFICIENT_PERMISSIONS_RESPONSE, language=language
-                )
-            return create_response(
-                USER_OBJECT_RESPONSE,
-                {"user": user_object.as_dict()},
-                language=language,
-                not_translated=not_translated,
-            )
-        else:
-            user_objects: list[user.User] = user.User.query.all()
-            return create_response(
-                USER_OBJECTS_LIST_RESPONSE,
-                {"users": [user_object.as_dict() for user_object in user_objects]},
-                language=language,
-                not_translated=not_translated,
-            )
+            filters_list.append(user.User.id == user_id)
+
+        user_objects: list[user.User] = user.User.query.filter(*filters_list).all()
+
+        current_user: user.User = user.User.query.filter_by(email=email).first()
+        if not current_user.is_admin and not (
+            len(user_objects) == 1 and current_user.id == user_objects[0].id
+        ):
+            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
+
+        return create_response(
+            USERS_RESPONSE,
+            [user_object.as_dict() for user_object in user_objects]
+            if len(user_objects) > 1
+            else user_objects[0].as_dict()
+            if len(user_objects) == 1
+            else [],
+            language=language,
+            not_translated={"username", "email", "password"},
+        )
