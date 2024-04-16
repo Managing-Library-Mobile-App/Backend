@@ -2,7 +2,6 @@ import datetime
 
 from flask import Response, request
 from flask_restful import Resource
-from sqlalchemy import and_
 
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
@@ -16,9 +15,10 @@ from static.responses import (
     OBJECT_MODIFIED_RESPONSE,
     OBJECT_DELETED_RESPONSE,
     OBJECT_CREATED_RESPONSE,
-    BOOK_OBJECT_RESPONSE,
-    BOOK_OBJECTS_LIST_RESPONSE,
+    BOOKS_RESPONSE,
     OBJECT_NOT_FOUND_RESPONSE,
+    WRONG_DATE_FORMAT_RESPONSE,
+    PARAM_NOT_INT_RESPONSE,
 )
 
 
@@ -34,9 +34,11 @@ class Book(Resource):
         self.post_parser.add_arg("picture")
         self.post_parser.add_arg("premiere_date")
         self.post_parser.add_arg("language", required=False)
+
         self.delete_parser: RequestParser = RequestParser()
         self.delete_parser.add_arg("id", type=int)
         self.delete_parser.add_arg("language", required=False)
+
         self.patch_parser: RequestParser = RequestParser()
         self.patch_parser.add_arg("id", type=int)
         self.patch_parser.add_arg("isbn")
@@ -52,41 +54,63 @@ class Book(Resource):
 
     def get(self) -> Response:
         language: str = request.args.get("language")
-        book_id: str = request.args.get("id")
-        if book_id:
-            try:
-                book_id: int = int(book_id)
-            except ValueError:
-                return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
+        id: str = request.args.get("id")
+        title: str = request.args.get("title")
+        author_id: str = request.args.get("author_id")
+        date_from: str | datetime.date = request.args.get("date_from")
+        date_to: str | datetime.date = request.args.get("date_to")
+        minimum_score: str | int = request.args.get("minimum_score")
         genres: list = request.args.getlist("genres")
-        not_translated: set[str] = {"isbn", "title", "publishing_house", "picture"}
-        filters_list = []
-        filers_dict = {}
-        if genres:
-            filters_list = [book.Book.genres.any(genres) for genres in genres]
-
-        email: str | None = verify_jwt_token()
-        if not email:
+        if not verify_jwt_token():
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
-        if book_id:
-            book_object: book.Book = book.Book.query.filter_by(id=book_id).first()
-            if not book_object:
-                return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
-            return create_response(
-                BOOK_OBJECT_RESPONSE,
-                book_object.as_dict(),
-                language=language,
-                not_translated=not_translated,
-            )
-        book_objects: list[book.Book] = book.Book.query.filter(
-            and_(*filters_list), **filers_dict
-        ).all()
+        if author_id:
+            try:
+                author_id: int = int(author_id)
+            except ValueError:
+                return create_response(PARAM_NOT_INT_RESPONSE, language=language)
+        if date_from:
+            try:
+                date_from = datetime.datetime.strptime(date_from, "%d-%m-%Y").date()
+            except ValueError:
+                return create_response(WRONG_DATE_FORMAT_RESPONSE, language=language)
+        if date_to:
+            try:
+                date_to = datetime.datetime.strptime(date_to, "%d-%m-%Y").date()
+            except ValueError:
+                return create_response(WRONG_DATE_FORMAT_RESPONSE, language=language)
+        if minimum_score:
+            try:
+                minimum_score: int = int(minimum_score)
+            except ValueError:
+                return create_response(PARAM_NOT_INT_RESPONSE, language=language)
+
+        filters_list = []
+        if genres:
+            filters_list.extend([book.Book.genres.any(genres) for genres in genres])
+        if title:
+            filters_list.append(book.Book.title.contains(title))
+        if author_id:
+            filters_list.append(book.Book.author_id == author_id)
+        if date_from:
+            filters_list.append(book.Book.premiere_date >= date_from)
+        if date_to:
+            filters_list.append(book.Book.premiere_date <= date_to)
+        if minimum_score:
+            filters_list.append(book.Book.score >= minimum_score)
+        if id:
+            filters_list.append(book.Book.id == id)
+
+        book_objects: list[book.Book] = book.Book.query.filter(*filters_list).all()
         return create_response(
-            BOOK_OBJECTS_LIST_RESPONSE,
-            {"books": [book_object.as_dict() for book_object in book_objects]},
+            BOOKS_RESPONSE,
+            [book_object.as_dict() for book_object in book_objects]
+            if len(book_objects) > 1
+            else book_objects[0].as_dict()
+            if len(book_objects) == 1
+            else [],
             language=language,
-            not_translated=not_translated,
+            not_translated={"isbn", "title", "publishing_house", "picture"},
         )
 
     def post(self) -> Response:

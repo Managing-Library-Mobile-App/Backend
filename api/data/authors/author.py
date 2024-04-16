@@ -4,18 +4,21 @@ from flask_restful import Resource
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
 from helpers.request_response import RequestParser
-from models import author
-from models.user import User
 from helpers.request_response import create_response
+from models import author, book
+from models.user import User
 from static.responses import (
     TOKEN_INVALID_RESPONSE,
     INSUFFICIENT_PERMISSIONS_RESPONSE,
     OBJECT_MODIFIED_RESPONSE,
     OBJECT_DELETED_RESPONSE,
     OBJECT_CREATED_RESPONSE,
-    AUTHOR_OBJECT_RESPONSE,
-    AUTHOR_OBJECTS_LIST_RESPONSE,
-    OBJECT_NOT_FOUND_RESPONSE,
+    AUTHORS_RESPONSE,
+    PARAM_NOT_INT_RESPONSE,
+    USER_DOES_NOT_EXIST_RESPONSE,
+    FAN_DOES_NOT_EXIST_RESPONSE,
+    AUTHOR_DOES_NOT_EXIST_RESPONSE,
+    BOOK_DOES_NOT_EXIST_RESPONSE,
 )
 
 
@@ -45,35 +48,40 @@ class Author(Resource):
         super(Author, self).__init__()
 
     def get(self) -> Response:
-        not_translated: set[str] = {"name", "picture"}
         language: str = request.args.get("language")
         author_id: str = request.args.get("id")
+        name: str = request.args.get("name")
+        genres: list = request.args.getlist("genres")
+        if not verify_jwt_token():
+            return create_response(TOKEN_INVALID_RESPONSE, language=language)
+
         if author_id:
             try:
                 author_id: int = int(author_id)
             except ValueError:
-                return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
-        email: str | None = verify_jwt_token()
-        if not email:
-            return create_response(TOKEN_INVALID_RESPONSE, language=language)
+                return create_response(PARAM_NOT_INT_RESPONSE, language=language)
+
+        filters_list = []
+        if genres:
+            filters_list = [author.Author.genres.any(genres) for genres in genres]
+        if name:
+            filters_list.append(author.Author.name.ilike(f"%{name}%"))
         if author_id:
-            author_object: author.Author = author.Author.query.filter_by(
-                id=author_id
-            ).first()
-            if not author_object:
-                return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
-            return create_response(
-                AUTHOR_OBJECT_RESPONSE,
-                author_object.as_dict(),
-                language=language,
-                not_translated=not_translated,
-            )
-        author_objects: list[author.Author] = author.Author.query.all()
+            filters_list.append(author.Author.id == author_id)
+
+        author_objects: list[author.Author] = author.Author.query.filter(
+            *filters_list
+        ).all()
+
         return create_response(
-            AUTHOR_OBJECTS_LIST_RESPONSE,
-            {"authors": [author_object.as_dict() for author_object in author_objects]},
+            AUTHORS_RESPONSE,
+            [author_object.as_dict() for author_object in author_objects]
+            if len(author_objects) > 1
+            else author_objects[0].as_dict()
+            if len(author_objects) == 1
+            else [],
             language=language,
-            not_translated=not_translated,
+            not_translated={"name", "picture"},
         )
 
     def post(self) -> Response:
@@ -92,7 +100,12 @@ class Author(Resource):
         if not user.is_admin:
             return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
-        # TODO A CO JEŚLI FANS LUB RELEASED_BOOKS O TAKICH ID NIE ISTNIEJE?
+        for fan in fans:
+            if not User.query.filter_by(id=fan).first():
+                return create_response(FAN_DOES_NOT_EXIST_RESPONSE, language=language)
+        for released_book in released_books:
+            if not book.Book.query.filter_by(id=released_book).first():
+                return create_response(BOOK_DOES_NOT_EXIST_RESPONSE, language=language)
         author_object: author.Author = author.Author(
             name=name,
             genres=genres,
@@ -121,6 +134,9 @@ class Author(Resource):
             id=author_id
         ).first()
 
+        if not author_object:
+            return create_response(AUTHOR_DOES_NOT_EXIST_RESPONSE, language=language)
+
         db.session.delete(author_object)
         db.session.commit()
 
@@ -137,10 +153,14 @@ class Author(Resource):
         email: str | None = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
-        # TODO what if the user does not exist? user.is_admin would give error
         user: User = User.query.filter_by(email=email).first()
-        if not user.is_admin:
-            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
+        if user:
+            if not user.is_admin:
+                return create_response(
+                    INSUFFICIENT_PERMISSIONS_RESPONSE, language=language
+                )
+        else:
+            return create_response(USER_DOES_NOT_EXIST_RESPONSE, language=language)
 
         modified_author: author.Author = author.Author.query.filter_by(
             id=author_id

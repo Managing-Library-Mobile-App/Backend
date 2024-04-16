@@ -10,10 +10,8 @@ from static.responses import (
     TOKEN_INVALID_RESPONSE,
     INSUFFICIENT_PERMISSIONS_RESPONSE,
     OBJECT_MODIFIED_RESPONSE,
-    OBJECT_DELETED_RESPONSE,
-    LIBRARY_OBJECT_RESPONSE,
-    LIBRARY_OBJECTS_LIST_RESPONSE,
-    OBJECT_NOT_FOUND_RESPONSE,
+    LIBRARIES_RESPONSE,
+    PARAM_NOT_INT_RESPONSE,
 )
 
 
@@ -25,9 +23,11 @@ class Library(Resource):
         self.post_parser.add_arg("favourite_books", type=list, required=False)
         self.post_parser.add_arg("user_id", type=int)
         self.post_parser.add_arg("language", required=False)
+
         self.delete_parser: RequestParser = RequestParser()
         self.delete_parser.add_arg("id", type=int)
         self.delete_parser.add_arg("language", required=False)
+
         self.patch_parser: RequestParser = RequestParser()
         self.patch_parser.add_arg("id", type=int)
         self.patch_parser.add_arg("read_books", type=list, required=False)
@@ -39,39 +39,31 @@ class Library(Resource):
     def get(self) -> Response:
         language: str = request.args.get("language")
         library_id: str = request.args.get("id")
+        email: str | None = verify_jwt_token()
+        if not email:
+            return create_response(TOKEN_INVALID_RESPONSE, language=language)
+
         if library_id:
             try:
                 library_id: int = int(library_id)
             except ValueError:
-                return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
-        email: str | None = verify_jwt_token()
-        if not email:
-            return create_response(TOKEN_INVALID_RESPONSE, language=language)
-        user: User = User.query.filter_by(email=email).first()
+                return create_response(PARAM_NOT_INT_RESPONSE, language=language)
+
+        filters_list = []
         if library_id:
-            library_object: library.Library = library.Library.query.filter_by(
-                id=library_id
-            ).first()
-            if not library_object:
-                return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
-            if not user.is_admin:
-                if not user.id == library_object.user_id:
-                    return create_response(
-                        INSUFFICIENT_PERMISSIONS_RESPONSE, language=language
-                    )
-            return create_response(
-                LIBRARY_OBJECT_RESPONSE, library_object.as_dict(), language=language
-            )
-        if not user.is_admin:
-            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
-        library_objects: list[library.Library] = library.Library.query.all()
+            filters_list.append(library.Library.id == library_id)
+
+        library_objects: list[library.Library] = library.Library.query.filter(
+            *filters_list
+        ).all()
+
         return create_response(
-            LIBRARY_OBJECTS_LIST_RESPONSE,
-            {
-                "libraries": [
-                    library_object.as_dict() for library_object in library_objects
-                ]
-            },
+            LIBRARIES_RESPONSE,
+            [library_object.as_dict() for library_object in library_objects]
+            if len(library_objects) > 1
+            else library_objects[0].as_dict()
+            if len(library_objects) == 1
+            else [],
             language=language,
         )
 

@@ -19,10 +19,8 @@ class LoggedInUsers(Resource):
             return create_response(
                 LOGGED_IN_USERS_RESPONSE,
                 {
-                    "logged_in_users": {
-                        email: LOGGED_IN_USER_TOKENS[email]
-                        for email in LOGGED_IN_USER_TOKENS.keys()
-                    }
+                    email: LOGGED_IN_USER_TOKENS[email]
+                    for email in LOGGED_IN_USER_TOKENS.keys()
                 },
                 language=language,
                 not_translated={"logged_in_users"},

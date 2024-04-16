@@ -40,8 +40,9 @@ class Opinion(db.Model):  # type: ignore[name-defined]
 
         book: Book = db.session.query(Book).filter_by(id=book_id).first()
         if book:
+            score = book.score * book.opinions_count + stars_count
             book.opinions_count += 1
-            book.score += stars_count
+            book.score = score / book.opinions_count
             db.session.commit()
 
     def as_dict(self) -> dict:

@@ -61,8 +61,8 @@ def translate_dict_to_known(
 
 
 def translate_list_to_known(
-    list_to_translate: dict, language: str, not_translated: set[str] = None
-) -> dict:
+    list_to_translate: list, language: str, not_translated: set[str] = None
+) -> list:
     for index, value in enumerate(list_to_translate):
         if isinstance(value, dict):
             list_to_translate[index] = translate_dict_to_known(
@@ -104,10 +104,8 @@ def translate_list_to_known(
 #
 # def translate_english_to_polish(text_to_translate: str) -> str:
 #     translated_text = argos_en_pl.translate(text_to_translate)
-#     print(translated_text)
 
 
-# print("A")
 # for i in range(0, 10):
 #     translate_english_to_polish("beach please")
 #     translate_english_to_polish("welcome here bro")

@@ -8,8 +8,12 @@ from helpers.jwt_auth import verify_jwt_token
 from helpers.request_response import RequestParser
 from models.user import User
 from helpers.request_response import create_response
-from static.responses import PASSWORD_WRONG_FORMAT_RESPONSE, PASSWORD_CHANGED_RESPONSE, \
-    PASSWORD_NOT_CHANGED_RESPONSE, TOKEN_INVALID_RESPONSE
+from static.responses import (
+    PASSWORD_WRONG_FORMAT_RESPONSE,
+    PASSWORD_CHANGED_RESPONSE,
+    PASSWORD_NOT_CHANGED_RESPONSE,
+    TOKEN_INVALID_RESPONSE,
+)
 
 
 class ChangePassword(Resource):
@@ -107,6 +111,5 @@ class ChangePassword(Resource):
         if user:
             user.password = new_password
             db.session.commit()
-
             return create_response(PASSWORD_CHANGED_RESPONSE, language=language)
         return create_response(PASSWORD_NOT_CHANGED_RESPONSE, language=language)
