@@ -44,13 +44,11 @@ class Library(Resource):
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
-        filters_list = []
+        library_query = library.Library.query
         if library_id:
-            filters_list.append(library.Library.id == library_id)
+            library_query = library_query.filter(library.Library.id == library_id)
 
-        library_objects = library.Library.query.filter(*filters_list).paginate(
-            page=page, per_page=per_page
-        )
+        library_objects = library_query.paginate(page=page, per_page=per_page)
 
         return create_response(
             LIBRARIES_RESPONSE,

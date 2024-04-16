@@ -47,13 +47,11 @@ class Opinion(Resource):
         if not verify_jwt_token:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
-        filters_list = []
+        opinion_query = opinion.Opinion.query
         if opinion_id:
-            filters_list.append(opinion.Opinion.id == opinion_id)
+            opinion_query = opinion_query.filter(opinion.Opinion.id == opinion_id)
 
-        opinion_objects = opinion.Opinion.query.filter(*filters_list).paginate(
-            page=page, per_page=per_page
-        )
+        opinion_objects = opinion_query.paginate(page=page, per_page=per_page)
 
         return create_response(
             OPINIONS_RESPONSE,

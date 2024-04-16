@@ -1,5 +1,6 @@
 from flask import Response, request
 from flask_restful import Resource
+from sqlalchemy import desc
 
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
@@ -49,6 +50,7 @@ class Author(Resource):
     def get(self) -> Response:
         page: int = request.args.get("page", 1, type=int)
         per_page: int = request.args.get("per_page", 8, type=int)
+        sorts: str = request.args.get("sort", "name", type=str)
         language: str = request.args.get("language", type=str)
         author_id: int = request.args.get("id", type=int)
         name: str = request.args.get("name", type=str)
@@ -56,17 +58,25 @@ class Author(Resource):
         if not verify_jwt_token():
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
-        filters_list = []
+        author_query = author.Author.query
         if genres:
-            filters_list = [author.Author.genres.any(genres) for genres in genres]
+            author_query = author_query.filter(
+                *[author.Author.genres.any(genres) for genres in genres]
+            )
         if name:
-            filters_list.append(author.Author.name.ilike(f"%{name}%"))
+            author_query = author_query.filter(author.Author.name.ilike(f"%{name}%"))
         if author_id:
-            filters_list.append(author.Author.id == author_id)
+            author_query = author_query.filter(author.Author.id == author_id)
 
-        author_objects = author.Author.query.filter(*filters_list).paginate(
-            page=page, per_page=per_page
-        )
+        for sort in sorts.split(","):
+            if sort.startswith("-"):
+                field = getattr(author.Author, sort[1:])
+                author_query = author_query.order_by(desc(field))
+            else:
+                field = getattr(author.Author, sort)
+                author_query = author_query.order_by(field)
+
+        author_objects = author_query.paginate(page=page, per_page=per_page)
 
         return create_response(
             AUTHORS_RESPONSE,

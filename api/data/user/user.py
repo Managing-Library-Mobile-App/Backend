@@ -26,17 +26,15 @@ class User(Resource):
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
-        filters_list = []
+        user_query = user.User.query
         if username:
-            filters_list.append(user.User.username.ilike(f"%{username}%"))
+            user_query = user_query.filter(user.User.username.ilike(f"%{username}%"))
         if get_self:
-            filters_list.append(user.User.email == email)
+            user_query = user_query.filter(user.User.email == email)
         if user_id:
-            filters_list.append(user.User.id == user_id)
+            user_query = user_query.filter(user.User.id == user_id)
 
-        user_objects = user.User.query.filter(*filters_list).paginate(
-            page=page, per_page=per_page
-        )
+        user_objects = user_query.paginate(page=page, per_page=per_page)
 
         current_user: user.User = user.User.query.filter_by(email=email).first()
         if not current_user.is_admin and not (
