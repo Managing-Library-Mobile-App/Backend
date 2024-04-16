@@ -2,6 +2,7 @@ import datetime
 
 from flask import Response, request
 from flask_restful import Resource
+from sqlalchemy import desc
 
 from helpers.jwt_auth import verify_jwt_token
 from helpers.request_response import RequestParser
@@ -10,7 +11,7 @@ from models import book
 from static.responses import (
     TOKEN_INVALID_RESPONSE,
     BOOKS_RESPONSE,
-    PARAM_NOT_INT_RESPONSE,
+    SORT_PARAM_DOES_NOT_EXIST,
 )
 
 
@@ -45,40 +46,56 @@ class NewBook(Resource):
         super(NewBook, self).__init__()
 
     def get(self) -> Response:
-        language: str = request.args.get("language")
-        book_id: str = request.args.get("id")
-        genres: list = request.args.getlist("genres")
-        title: str = request.args.get("title")
+        page: int = request.args.get("page", 1, type=int)
+        per_page: int = request.args.get("per_page", 8, type=int)
+        sorts: str = request.args.get("sort", "title", type=str)
+        language: str = request.args.get("language", type=str)
+        book_id: int = request.args.get("id", type=int)
+        genres: list[str] = request.args.getlist("genres", type=str)
+        title: str = request.args.get("title", type=str)
         if not verify_jwt_token:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
-        if book_id:
-            try:
-                book_id: int = int(book_id)
-            except ValueError:
-                return create_response(PARAM_NOT_INT_RESPONSE, language=language)
-
-        filters_list = [
+        book_query = book.Book.query
+        book_query.filter(
             book.Book.premiere_date
-            >= datetime.datetime.now() - datetime.timedelta(days=90),
-        ]
+            >= datetime.datetime.now() - datetime.timedelta(days=90)
+        )
         if genres:
-            filters_list.extend([book.Book.genres.any(genres) for genres in genres])
+            book_query = book_query.filter(
+                *[book.Book.genres.any(genres) for genres in genres]
+            )
         if title:
-            filters_list.append(book.Book.title.ilike(f"%{title}%"))
+            book_query = book_query.filter(book.Book.title.ilike(f"%{title}%"))
         if book_id:
-            filters_list.append(book.Book.id == book_id)
+            book_query = book_query.filter(book.Book.id == book_id)
 
-        book_objects: list[book.Book] = book.Book.query.filter(
-            *filters_list,
-        ).all()
+        for sort in sorts.split(","):
+            if sort.startswith("-"):
+                try:
+                    field = getattr(book.Book, sort[1:])
+                except AttributeError:
+                    return create_response(SORT_PARAM_DOES_NOT_EXIST, language=language)
+                book_query = book_query.order_by(desc(field))
+            else:
+                try:
+                    field = getattr(book.Book, sort)
+                except AttributeError:
+                    return create_response(SORT_PARAM_DOES_NOT_EXIST, language=language)
+                book_query = book_query.order_by(field)
+
+        book_objects = book_query.paginate(page=page, per_page=per_page)
         return create_response(
             BOOKS_RESPONSE,
-            [book_object.as_dict() for book_object in book_objects]
-            if len(book_objects) > 1
-            else book_objects[0].as_dict()
-            if len(book_objects) == 1
-            else [],
+            {
+                "results": [book_object.as_dict() for book_object in book_objects],
+                "pagination": {
+                    "count": book_objects.total,
+                    "page": page,
+                    "pages": book_objects.pages,
+                    "per_page": book_objects.per_page,
+                },
+            },
             language=language,
             not_translated={"isbn", "title", "publishing_house", "picture"},
         )

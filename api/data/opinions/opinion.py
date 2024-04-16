@@ -15,7 +15,6 @@ from static.responses import (
     OBJECT_MODIFIED_RESPONSE,
     OBJECT_NOT_FOUND_RESPONSE,
     OPINIONS_RESPONSE,
-    PARAM_NOT_INT_RESPONSE,
     OPINION_ALREADY_EXISTS_RESPONSE,
     BOOK_DOES_NOT_EXIST_RESPONSE,
 )
@@ -41,32 +40,32 @@ class Opinion(Resource):
         super(Opinion, self).__init__()
 
     def get(self) -> Response:
-        language: str = request.args.get("language")
-        opinion_id: str = request.args.get("id")
+        page: int = request.args.get("page", 1, type=int)
+        per_page: int = request.args.get("per_page", 8, type=int)
+        language: str = request.args.get("language", type=str)
+        opinion_id: int = request.args.get("id", type=int)
         if not verify_jwt_token:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
+        opinion_query = opinion.Opinion.query
         if opinion_id:
-            try:
-                opinion_id: int = int(opinion_id)
-            except ValueError:
-                return create_response(PARAM_NOT_INT_RESPONSE, language=language)
+            opinion_query = opinion_query.filter(opinion.Opinion.id == opinion_id)
 
-        filters_list = []
-        if opinion_id:
-            filters_list.append(opinion.Opinion.id == opinion_id)
-
-        opinion_objects: list[opinion.Opinion] = opinion.Opinion.query.filter(
-            *filters_list
-        ).all()
+        opinion_objects = opinion_query.paginate(page=page, per_page=per_page)
 
         return create_response(
             OPINIONS_RESPONSE,
-            [opinion_object.as_dict() for opinion_object in opinion_objects]
-            if len(opinion_objects) > 1
-            else opinion_objects[0].as_dict()
-            if len(opinion_objects) == 1
-            else [],
+            {
+                "results": [
+                    opinion_object.as_dict() for opinion_object in opinion_objects
+                ],
+                "pagination": {
+                    "count": opinion_objects.total,
+                    "page": page,
+                    "pages": opinion_objects.pages,
+                    "per_page": opinion_objects.per_page,
+                },
+            },
             language=language,
         )
 

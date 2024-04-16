@@ -11,7 +11,6 @@ from static.responses import (
     INSUFFICIENT_PERMISSIONS_RESPONSE,
     OBJECT_MODIFIED_RESPONSE,
     LIBRARIES_RESPONSE,
-    PARAM_NOT_INT_RESPONSE,
 )
 
 
@@ -37,33 +36,33 @@ class Library(Resource):
         super(Library, self).__init__()
 
     def get(self) -> Response:
-        language: str = request.args.get("language")
-        library_id: str = request.args.get("id")
+        page: int = request.args.get("page", 1, type=int)
+        per_page: int = request.args.get("per_page", 8, type=int)
+        language: str = request.args.get("language", type=str)
+        library_id: int = request.args.get("id", type=int)
         email: str | None = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
+        library_query = library.Library.query
         if library_id:
-            try:
-                library_id: int = int(library_id)
-            except ValueError:
-                return create_response(PARAM_NOT_INT_RESPONSE, language=language)
+            library_query = library_query.filter(library.Library.id == library_id)
 
-        filters_list = []
-        if library_id:
-            filters_list.append(library.Library.id == library_id)
-
-        library_objects: list[library.Library] = library.Library.query.filter(
-            *filters_list
-        ).all()
+        library_objects = library_query.paginate(page=page, per_page=per_page)
 
         return create_response(
             LIBRARIES_RESPONSE,
-            [library_object.as_dict() for library_object in library_objects]
-            if len(library_objects) > 1
-            else library_objects[0].as_dict()
-            if len(library_objects) == 1
-            else [],
+            {
+                "results": [
+                    library_object.as_dict() for library_object in library_objects
+                ],
+                "pagination": {
+                    "count": library_objects.total,
+                    "page": page,
+                    "pages": library_objects.pages,
+                    "per_page": library_objects.per_page,
+                },
+            },
             language=language,
         )
 

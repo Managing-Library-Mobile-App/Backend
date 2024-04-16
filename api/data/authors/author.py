@@ -1,5 +1,6 @@
 from flask import Response, request
 from flask_restful import Resource
+from sqlalchemy import desc
 
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
@@ -14,11 +15,11 @@ from static.responses import (
     OBJECT_DELETED_RESPONSE,
     OBJECT_CREATED_RESPONSE,
     AUTHORS_RESPONSE,
-    PARAM_NOT_INT_RESPONSE,
     USER_DOES_NOT_EXIST_RESPONSE,
     FAN_DOES_NOT_EXIST_RESPONSE,
     AUTHOR_DOES_NOT_EXIST_RESPONSE,
     BOOK_DOES_NOT_EXIST_RESPONSE,
+    SORT_PARAM_DOES_NOT_EXIST,
 )
 
 
@@ -48,38 +49,55 @@ class Author(Resource):
         super(Author, self).__init__()
 
     def get(self) -> Response:
-        language: str = request.args.get("language")
-        author_id: str = request.args.get("id")
-        name: str = request.args.get("name")
-        genres: list = request.args.getlist("genres")
+        page: int = request.args.get("page", 1, type=int)
+        per_page: int = request.args.get("per_page", 8, type=int)
+        sorts: str = request.args.get("sort", "name", type=str)
+        language: str = request.args.get("language", type=str)
+        author_id: int = request.args.get("id", type=int)
+        name: str = request.args.get("name", type=str)
+        genres: list[str] = request.args.getlist("genres", type=str)
         if not verify_jwt_token():
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
-        if author_id:
-            try:
-                author_id: int = int(author_id)
-            except ValueError:
-                return create_response(PARAM_NOT_INT_RESPONSE, language=language)
-
-        filters_list = []
+        author_query = author.Author.query
         if genres:
-            filters_list = [author.Author.genres.any(genres) for genres in genres]
+            author_query = author_query.filter(
+                *[author.Author.genres.any(genres) for genres in genres]
+            )
         if name:
-            filters_list.append(author.Author.name.ilike(f"%{name}%"))
+            author_query = author_query.filter(author.Author.name.ilike(f"%{name}%"))
         if author_id:
-            filters_list.append(author.Author.id == author_id)
+            author_query = author_query.filter(author.Author.id == author_id)
 
-        author_objects: list[author.Author] = author.Author.query.filter(
-            *filters_list
-        ).all()
+        for sort in sorts.split(","):
+            if sort.startswith("-"):
+                try:
+                    field = getattr(author.Author, sort[1:])
+                except AttributeError:
+                    return create_response(SORT_PARAM_DOES_NOT_EXIST, language=language)
+                author_query = author_query.order_by(desc(field))
+            else:
+                try:
+                    field = getattr(author.Author, sort)
+                except AttributeError:
+                    return create_response(SORT_PARAM_DOES_NOT_EXIST, language=language)
+                author_query = author_query.order_by(field)
+
+        author_objects = author_query.paginate(page=page, per_page=per_page)
 
         return create_response(
             AUTHORS_RESPONSE,
-            [author_object.as_dict() for author_object in author_objects]
-            if len(author_objects) > 1
-            else author_objects[0].as_dict()
-            if len(author_objects) == 1
-            else [],
+            {
+                "results": [
+                    author_object.as_dict() for author_object in author_objects
+                ],
+                "pagination": {
+                    "count": author_objects.total,
+                    "page": page,
+                    "pages": author_objects.pages,
+                    "per_page": author_objects.per_page,
+                },
+            },
             language=language,
             not_translated={"name", "picture"},
         )
