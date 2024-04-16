@@ -45,18 +45,14 @@ class NewBook(Resource):
         super(NewBook, self).__init__()
 
     def get(self) -> Response:
-        language: str = request.args.get("language")
-        book_id: str = request.args.get("id")
-        genres: list = request.args.getlist("genres")
-        title: str = request.args.get("title")
+        page: int = request.args.get("page", 1, type=int)
+        per_page: int = request.args.get("per_page", 8, type=int)
+        language: str = request.args.get("language", type=str)
+        book_id: int = request.args.get("id", type=int)
+        genres: list[str] = request.args.getlist("genres", type=str)
+        title: str = request.args.get("title", type=str)
         if not verify_jwt_token:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
-
-        if book_id:
-            try:
-                book_id: int = int(book_id)
-            except ValueError:
-                return create_response(PARAM_NOT_INT_RESPONSE, language=language)
 
         filters_list = [
             book.Book.premiere_date
@@ -69,16 +65,20 @@ class NewBook(Resource):
         if book_id:
             filters_list.append(book.Book.id == book_id)
 
-        book_objects: list[book.Book] = book.Book.query.filter(
+        book_objects = book.Book.query.filter(
             *filters_list,
-        ).all()
+        ).paginate(page=page, per_page=per_page)
         return create_response(
             BOOKS_RESPONSE,
-            [book_object.as_dict() for book_object in book_objects]
-            if len(book_objects) > 1
-            else book_objects[0].as_dict()
-            if len(book_objects) == 1
-            else [],
+            {
+                "results": [book_object.as_dict() for book_object in book_objects],
+                "pagination": {
+                    "count": book_objects.total,
+                    "page": page,
+                    "pages": book_objects.pages,
+                    "per_page": book_objects.per_page,
+                },
+            },
             language=language,
             not_translated={"isbn", "title", "publishing_house", "picture"},
         )

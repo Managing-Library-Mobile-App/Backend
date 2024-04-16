@@ -11,7 +11,7 @@ class Genres(Resource):
         super(Genres, self).__init__()
 
     def get(self) -> Response:
-        language: str = request.args.get("language")
+        language: str = request.args.get("language", type=str)
         if not verify_jwt_token:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
         return create_response(GENRES_RESPONSE, language=language)

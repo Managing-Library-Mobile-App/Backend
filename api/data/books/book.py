@@ -18,7 +18,6 @@ from static.responses import (
     BOOKS_RESPONSE,
     OBJECT_NOT_FOUND_RESPONSE,
     WRONG_DATE_FORMAT_RESPONSE,
-    PARAM_NOT_INT_RESPONSE,
 )
 
 
@@ -53,22 +52,19 @@ class Book(Resource):
         super(Book, self).__init__()
 
     def get(self) -> Response:
-        language: str = request.args.get("language")
-        id: str = request.args.get("id")
-        title: str = request.args.get("title")
-        author_id: str = request.args.get("author_id")
-        date_from: str | datetime.date = request.args.get("date_from")
-        date_to: str | datetime.date = request.args.get("date_to")
-        minimum_score: str | int = request.args.get("minimum_score")
-        genres: list = request.args.getlist("genres")
+        page: int = request.args.get("page", 1, type=int)
+        per_page: int = request.args.get("per_page", 8, type=int)
+        language: str = request.args.get("language", type=str)
+        id: int = request.args.get("id", type=int)
+        title: str = request.args.get("title", type=str)
+        author_id: int = request.args.get("author_id", type=int)
+        date_from: str | datetime.date = request.args.get("date_from", type=str)
+        date_to: str | datetime.date = request.args.get("date_to", type=str)
+        minimum_score: int = request.args.get("minimum_score", type=int)
+        genres: list[str] = request.args.getlist("genres", type=str)
         if not verify_jwt_token():
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
-        if author_id:
-            try:
-                author_id: int = int(author_id)
-            except ValueError:
-                return create_response(PARAM_NOT_INT_RESPONSE, language=language)
         if date_from:
             try:
                 date_from = datetime.datetime.strptime(date_from, "%d-%m-%Y").date()
@@ -79,11 +75,6 @@ class Book(Resource):
                 date_to = datetime.datetime.strptime(date_to, "%d-%m-%Y").date()
             except ValueError:
                 return create_response(WRONG_DATE_FORMAT_RESPONSE, language=language)
-        if minimum_score:
-            try:
-                minimum_score: int = int(minimum_score)
-            except ValueError:
-                return create_response(PARAM_NOT_INT_RESPONSE, language=language)
 
         filters_list = []
         if genres:
@@ -101,14 +92,20 @@ class Book(Resource):
         if id:
             filters_list.append(book.Book.id == id)
 
-        book_objects: list[book.Book] = book.Book.query.filter(*filters_list).all()
+        book_objects = book.Book.query.filter(*filters_list).paginate(
+            page=page, per_page=per_page
+        )
         return create_response(
             BOOKS_RESPONSE,
-            [book_object.as_dict() for book_object in book_objects]
-            if len(book_objects) > 1
-            else book_objects[0].as_dict()
-            if len(book_objects) == 1
-            else [],
+            {
+                "results": [book_object.as_dict() for book_object in book_objects],
+                "pagination": {
+                    "count": book_objects.total,
+                    "page": page,
+                    "pages": book_objects.pages,
+                    "per_page": book_objects.per_page,
+                },
+            },
             language=language,
             not_translated={"isbn", "title", "publishing_house", "picture"},
         )
@@ -120,7 +117,7 @@ class Book(Resource):
         author_id: int = args.get("author_id")
         publishing_house: str = args.get("publishing_house")
         description: str = args.get("description")
-        genres: list[int] = args.get("genres")
+        genres: list[str] = args.get("genres")
         picture: str = args.get("picture")
         premiere_date: datetime.datetime = args.get("premiere_date")
         language: str = args.get("language")
@@ -173,7 +170,7 @@ class Book(Resource):
         title: str = args.get("title")
         publishing_house: str = args.get("publishing_house")
         description: str = args.get("description")
-        genres: list[int] = args.get("genres")
+        genres: list[str] = args.get("genres")
         picture: str = args.get("picture")
         premiere_date: datetime.datetime = args.get("premiere_date")
         language: str = args.get("language")

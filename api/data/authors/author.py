@@ -14,7 +14,6 @@ from static.responses import (
     OBJECT_DELETED_RESPONSE,
     OBJECT_CREATED_RESPONSE,
     AUTHORS_RESPONSE,
-    PARAM_NOT_INT_RESPONSE,
     USER_DOES_NOT_EXIST_RESPONSE,
     FAN_DOES_NOT_EXIST_RESPONSE,
     AUTHOR_DOES_NOT_EXIST_RESPONSE,
@@ -48,18 +47,14 @@ class Author(Resource):
         super(Author, self).__init__()
 
     def get(self) -> Response:
-        language: str = request.args.get("language")
-        author_id: str = request.args.get("id")
-        name: str = request.args.get("name")
-        genres: list = request.args.getlist("genres")
+        page: int = request.args.get("page", 1, type=int)
+        per_page: int = request.args.get("per_page", 8, type=int)
+        language: str = request.args.get("language", type=str)
+        author_id: int = request.args.get("id", type=int)
+        name: str = request.args.get("name", type=str)
+        genres: list[str] = request.args.getlist("genres", type=str)
         if not verify_jwt_token():
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
-
-        if author_id:
-            try:
-                author_id: int = int(author_id)
-            except ValueError:
-                return create_response(PARAM_NOT_INT_RESPONSE, language=language)
 
         filters_list = []
         if genres:
@@ -69,17 +64,23 @@ class Author(Resource):
         if author_id:
             filters_list.append(author.Author.id == author_id)
 
-        author_objects: list[author.Author] = author.Author.query.filter(
-            *filters_list
-        ).all()
+        author_objects = author.Author.query.filter(*filters_list).paginate(
+            page=page, per_page=per_page
+        )
 
         return create_response(
             AUTHORS_RESPONSE,
-            [author_object.as_dict() for author_object in author_objects]
-            if len(author_objects) > 1
-            else author_objects[0].as_dict()
-            if len(author_objects) == 1
-            else [],
+            {
+                "results": [
+                    author_object.as_dict() for author_object in author_objects
+                ],
+                "pagination": {
+                    "count": author_objects.total,
+                    "page": page,
+                    "pages": author_objects.pages,
+                    "per_page": author_objects.per_page,
+                },
+            },
             language=language,
             not_translated={"name", "picture"},
         )
