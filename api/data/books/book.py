@@ -19,6 +19,7 @@ from static.responses import (
     BOOKS_RESPONSE,
     OBJECT_NOT_FOUND_RESPONSE,
     WRONG_DATE_FORMAT_RESPONSE,
+    SORT_PARAM_DOES_NOT_EXIST,
 )
 
 
@@ -98,10 +99,16 @@ class Book(Resource):
 
         for sort in sorts.split(","):
             if sort.startswith("-"):
-                field = getattr(book.Book, sort[1:])
+                try:
+                    field = getattr(book.Book, sort[1:])
+                except AttributeError:
+                    return create_response(SORT_PARAM_DOES_NOT_EXIST, language=language)
                 book_query = book_query.order_by(desc(field))
             else:
-                field = getattr(book.Book, sort)
+                try:
+                    field = getattr(book.Book, sort)
+                except AttributeError:
+                    return create_response(SORT_PARAM_DOES_NOT_EXIST, language=language)
                 book_query = book_query.order_by(field)
 
         book_objects = book_query.paginate(page=page, per_page=per_page)

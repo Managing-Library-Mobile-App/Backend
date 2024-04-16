@@ -19,6 +19,7 @@ from static.responses import (
     FAN_DOES_NOT_EXIST_RESPONSE,
     AUTHOR_DOES_NOT_EXIST_RESPONSE,
     BOOK_DOES_NOT_EXIST_RESPONSE,
+    SORT_PARAM_DOES_NOT_EXIST,
 )
 
 
@@ -70,10 +71,16 @@ class Author(Resource):
 
         for sort in sorts.split(","):
             if sort.startswith("-"):
-                field = getattr(author.Author, sort[1:])
+                try:
+                    field = getattr(author.Author, sort[1:])
+                except AttributeError:
+                    return create_response(SORT_PARAM_DOES_NOT_EXIST, language=language)
                 author_query = author_query.order_by(desc(field))
             else:
-                field = getattr(author.Author, sort)
+                try:
+                    field = getattr(author.Author, sort)
+                except AttributeError:
+                    return create_response(SORT_PARAM_DOES_NOT_EXIST, language=language)
                 author_query = author_query.order_by(field)
 
         author_objects = author_query.paginate(page=page, per_page=per_page)

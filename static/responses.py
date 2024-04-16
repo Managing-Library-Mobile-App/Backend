@@ -132,6 +132,10 @@ INVALID_PASSWORD_RESPONSE = {
     "message": "invalid_password",
     "details": "Invalid password",
 }, 401
+SORT_PARAM_DOES_NOT_EXIST = {
+    "message": "sort_param_does_not_exist",
+    "details": "Sort parameter does not exist",
+}, 400
 GENRES_RESPONSE = {
     "genres": [
         "Fantasy, Science fiction",
