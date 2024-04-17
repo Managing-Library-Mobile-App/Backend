@@ -57,7 +57,7 @@ class NewBook(Resource):
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
         book_query = book.Book.query
-        book_query.filter(
+        book_query = book_query.filter(
             book.Book.premiere_date
             >= datetime.datetime.now() - datetime.timedelta(days=90)
         )
