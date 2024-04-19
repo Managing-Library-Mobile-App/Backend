@@ -116,6 +116,18 @@ BOOK_ALREADY_IN_BOUGHT_BOOKS_RESPONSE = {
     "message": "book_already_in_bought_books",
     "details": "Book already in bought books",
 }, 400
+USER_ALREADY_IN_FANS_RESPONSE = {
+    "message": "user_already_in_fans",
+    "details": "User already in fans",
+}, 400
+AUTHOR_NOT_FOUND_RESPONSE = {
+    "message": "author_not_found",
+    "details": "Author not found",
+}, 400
+USER_NOT_IN_FANS_RESPONSE = {
+    "message": "user_not_in_fans",
+    "details": "User not in fans",
+}, 400
 USER_ALREADY_EXISTS_RESPONSE = {
     "message": "user_already_exists",
     "details": "User already exists",
@@ -123,6 +135,10 @@ USER_ALREADY_EXISTS_RESPONSE = {
 USER_ID_NOT_PROVIDED_RESPONSE = {
     "message": "user_id_not_provided",
     "details": "User id not provided",
+}, 404
+AUTHOR_ID_NOT_PROVIDED_RESPONSE = {
+    "message": "author_id_not_provided",
+    "details": "Author id not provided",
 }, 404
 REGISTER_SUCCESSFUL_RESPONSE = {
     "message": "register_successful",
