@@ -53,7 +53,7 @@ class NewBook(Resource):
         book_id: int = request.args.get("id", type=int)
         genres: list[str] = request.args.getlist("genres", type=str)
         title: str = request.args.get("title", type=str)
-        if not verify_jwt_token:
+        if not verify_jwt_token():
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
         book_query = book.Book.query

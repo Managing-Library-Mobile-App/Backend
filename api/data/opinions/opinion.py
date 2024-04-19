@@ -44,7 +44,7 @@ class Opinion(Resource):
         per_page: int = request.args.get("per_page", 8, type=int)
         language: str = request.args.get("language", type=str)
         opinion_id: int = request.args.get("id", type=int)
-        if not verify_jwt_token:
+        if not verify_jwt_token():
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
         opinion_query = opinion.Opinion.query
