@@ -1,4 +1,5 @@
 from helpers.init import db
+from models import user
 
 
 class Opinion(db.Model):  # type: ignore[name-defined]
@@ -50,6 +51,10 @@ class Opinion(db.Model):  # type: ignore[name-defined]
         return {
             "id": self.id,
             "user_id": self.user_id,
+            "username": user.User.query.filter_by(id=self.user_id).first().username,
+            "profile_picture": user.User.query.filter_by(id=self.user_id)
+            .first()
+            .profile_picture,
             "book_id": self.book_id,
             "stars_count": self.stars_count,
             "comment": self.comment,
