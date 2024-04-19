@@ -6,7 +6,6 @@ from models import user
 from helpers.request_response import create_response
 from static.responses import (
     TOKEN_INVALID_RESPONSE,
-    INSUFFICIENT_PERMISSIONS_RESPONSE,
     USERS_RESPONSE,
 )
 
@@ -35,12 +34,6 @@ class User(Resource):
             user_query = user_query.filter(user.User.id == user_id)
 
         user_objects = user_query.paginate(page=page, per_page=per_page)
-
-        current_user: user.User = user.User.query.filter_by(email=email).first()
-        if not current_user.is_admin and not (
-            user_objects.total == 1 and current_user.id == user_objects[0].id
-        ):
-            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
         return create_response(
             USERS_RESPONSE,

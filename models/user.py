@@ -52,8 +52,6 @@ class User(db.Model):  # type: ignore[name-defined]
         return {
             "id": self.id,
             "username": self.username,
-            "email": self.email,
-            "password": self.password,
             "library": self.library.first().as_dict() if self.library else None,
             "score": self.score,
             "opinions_count": self.opinions_count,

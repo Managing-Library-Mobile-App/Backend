@@ -88,10 +88,42 @@ USER_NOT_FOUND_RESPONSE = {
     "message": "user_not_found",
     "details": "User logged in with such token not found",
 }, 404
+BOOK_NOT_FOUND_RESPONSE = {
+    "message": "book_not_found",
+    "details": "Book not found",
+}, 404
+BOOK_NOT_IN_READ_BOOKS_RESPONSE = {
+    "message": "book_not_in_read_books",
+    "details": "Book not in read books",
+}, 404
+BOOK_NOT_IN_FAVOURITE_BOOKS_RESPONSE = {
+    "message": "book_not_in_favourite_books",
+    "details": "Book not in favourite books",
+}, 404
+BOOK_NOT_IN_BOUGHT_BOOKS_RESPONSE = {
+    "message": "book_not_in_bought_books",
+    "details": "Book not in bought books",
+}, 404
+BOOK_ALREADY_IN_READ_BOOKS_RESPONSE = {
+    "message": "book_already_in_read_books",
+    "details": "Book already in read books",
+}, 400
+BOOK_ALREADY_IN_FAVOURITE_BOOKS_RESPONSE = {
+    "message": "book_already_in_favourite_books",
+    "details": "Book already in favourite books",
+}, 400
+BOOK_ALREADY_IN_BOUGHT_BOOKS_RESPONSE = {
+    "message": "book_already_in_bought_books",
+    "details": "Book already in bought books",
+}, 400
 USER_ALREADY_EXISTS_RESPONSE = {
     "message": "user_already_exists",
     "details": "User already exists",
 }, 401
+USER_ID_NOT_PROVIDED_RESPONSE = {
+    "message": "user_id_not_provided",
+    "details": "User id not provided",
+}, 404
 REGISTER_SUCCESSFUL_RESPONSE = {
     "message": "register_successful",
     "details": "Registered successfully",
