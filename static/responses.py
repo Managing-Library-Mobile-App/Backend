@@ -123,7 +123,11 @@ USER_ALREADY_IN_FANS_RESPONSE = {
 AUTHOR_NOT_FOUND_RESPONSE = {
     "message": "author_not_found",
     "details": "Author not found",
-}, 400
+}, 404
+LIBRARY_NOT_FOUND_RESPONSE = {
+    "message": "library_not_found",
+    "details": "Library not found",
+}, 404
 USER_NOT_IN_FANS_RESPONSE = {
     "message": "user_not_in_fans",
     "details": "User not in fans",
