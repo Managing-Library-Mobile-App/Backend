@@ -16,6 +16,7 @@ from static.responses import (
     TOKEN_INVALID_RESPONSE,
     BOOK_ALREADY_IN_BOUGHT_BOOKS_RESPONSE,
     BOOK_NOT_IN_BOUGHT_BOOKS_RESPONSE,
+    LIBRARY_NOT_FOUND_RESPONSE,
 )
 
 
@@ -51,6 +52,8 @@ class BoughtBook(Resource):
             book_query = book_query.filter_by(id=book_id)
 
         library_object: library.Library = library_query.first()
+        if library_object:
+            return create_response(LIBRARY_NOT_FOUND_RESPONSE, language=language)
         bought_book_ids = [
             bought_book.id for bought_book in library_object.bought_books
         ]
