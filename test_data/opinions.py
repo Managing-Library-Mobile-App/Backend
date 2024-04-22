@@ -5,7 +5,11 @@ opinions: list[dict[str, Any]] = [
         "user_id": 1,
         "book_id": 1,
         "stars_count": 5,
-        "comment": "Very good book, approved.",
+        "comment": "Dziunia Loves this book as it is a sims 2 book and it covers all its content, mods and addons."
+        "The sims 2 book is a book that contains all the content of the sims 2"
+        "The sims 2 book is a book that contains all the content of the sims 2"
+        "The sims 2 book is a book that contains all the content of the sims 2"
+        "The sims 2 book is a book that contains all the content of the sims 2",
     },
     {
         "user_id": 2,
