@@ -8,7 +8,7 @@ from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
 from helpers.request_response import RequestParser
 from helpers.request_response import create_response
-from models import book
+from models import book, author
 from models.user import User
 from static.responses import (
     TOKEN_INVALID_RESPONSE,
@@ -20,6 +20,7 @@ from static.responses import (
     OBJECT_NOT_FOUND_RESPONSE,
     WRONG_DATE_FORMAT_RESPONSE,
     SORT_PARAM_DOES_NOT_EXIST,
+    AUTHOR_NOT_FOUND_RESPONSE,
 )
 
 
@@ -145,7 +146,10 @@ class Book(Resource):
         if not user.is_admin:
             return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
-        # TODO A CO JEŚLI AUTOR O TAKIM ID NIE ISTNIEJE?
+        author_object = author.Author.query.filter_by(id=author_id).first()
+        if not author_object:
+            return create_response(AUTHOR_NOT_FOUND_RESPONSE, language=language)
+
         book_object: book.Book = book.Book(
             isbn=isbn,
             title=title,

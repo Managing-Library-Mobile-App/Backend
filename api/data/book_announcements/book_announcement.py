@@ -104,7 +104,6 @@
 #         if not user.is_admin:
 #             return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 #
-#         # TODO A CO JEŚLI AUTOR O TAKIM ID NIE ISTNIEJE?
 #         book_announcement_object: book_announcement.BookAnnouncement = (
 #             book_announcement.BookAnnouncement(
 #                 title=title,

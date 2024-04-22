@@ -12,7 +12,6 @@ class Book(db.Model):  # type: ignore[name-defined]
     id = db.Column("id", db.Integer, primary_key=True)
     isbn = db.Column(db.String(20), nullable=False)
     title = db.Column(db.String(100), nullable=False)
-    # TODO pobranie autora żeby móc do niego przejść z książki
     author_id = db.Column(
         db.Integer,
         db.ForeignKey("author.id", ondelete="CASCADE"),
@@ -28,7 +27,6 @@ class Book(db.Model):  # type: ignore[name-defined]
     premiere_date = db.Column(db.Date, nullable=False)
     score = db.Column(db.Float, default=0)
     opinions_count = db.Column(db.Integer, default=0)
-    # TODO pobranie listy opinii dla książki
     opinions = db.relationship(
         "Opinion",
         backref="BookOpinion",

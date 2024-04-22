@@ -75,8 +75,6 @@ if __name__ == "__main__":
         conn.close()
     except psycopg2.errors.DuplicateDatabase:
         pass
-
-    # TODO Delete fill i drop all later when delivering later versions
     with app.app_context():
         db.drop_all()
         db.create_all()

@@ -164,10 +164,6 @@ books: list[dict[str, Any]] = [
     },
 ]
 
-# TODO NA PODSTAWIE DANYCH WYBRAĆ 24 najpopularniejsze kategorie
-#  i zrobić z nich enuma, a resztę dać jako 25 - other
-
-
 genres: list[str] = [
     "ANTIQUES & COLLECTIBLES",
     "LITERARY COLLECTIONS",
