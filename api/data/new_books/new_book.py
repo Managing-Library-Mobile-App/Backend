@@ -50,6 +50,7 @@ class NewBook(Resource):
         per_page: int = request.args.get("per_page", 8, type=int)
         sorts: str = request.args.get("sort", "title", type=str)
         language: str = request.args.get("language", type=str)
+        book_language: str = request.args.get("book_language", type=str)
         book_id: int = request.args.get("id", type=int)
         genres: list[str] = request.args.getlist("genres", type=str)
         title: str = request.args.get("title", type=str)
@@ -69,6 +70,10 @@ class NewBook(Resource):
             book_query = book_query.filter(book.Book.title.ilike(f"%{title}%"))
         if book_id:
             book_query = book_query.filter(book.Book.id == book_id)
+        if book_language:
+            book_query = book_query.filter(
+                book.Book.language == book_language
+            )
 
         for sort in sorts.split(","):
             if sort.startswith("-"):

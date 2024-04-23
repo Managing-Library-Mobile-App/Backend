@@ -27,6 +27,7 @@ from static.responses import (
 class Book(Resource):
     def __init__(self) -> None:
         self.post_parser: RequestParser = RequestParser()
+        self.post_parser.add_arg("book_language")
         self.post_parser.add_arg("isbn", type=int)
         self.post_parser.add_arg("title")
         self.post_parser.add_arg("author_id")
@@ -42,6 +43,7 @@ class Book(Resource):
         self.delete_parser.add_arg("language", required=False)
 
         self.patch_parser: RequestParser = RequestParser()
+        self.post_parser.add_arg("book_language")
         self.patch_parser.add_arg("id", type=int)
         self.patch_parser.add_arg("isbn")
         self.patch_parser.add_arg("title")
@@ -66,6 +68,7 @@ class Book(Resource):
         date_to: str | datetime.date = request.args.get("date_to", type=str)
         minimum_score: int = request.args.get("minimum_score", type=int)
         genres: list[str] = request.args.getlist("genres", type=str)
+        book_language: str = request.args.get("book_language", type=str)
         if not verify_jwt_token():
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
@@ -97,6 +100,8 @@ class Book(Resource):
             book_query = book_query.filter(book.Book.score >= minimum_score)
         if id:
             book_query = book_query.filter(book.Book.id == id)
+        if book_language:
+            book_query = book_query.filter(book.Book.language == book_language)
 
         for sort in sorts.split(","):
             if sort.startswith("-"):
@@ -139,6 +144,7 @@ class Book(Resource):
         picture: str = args.get("picture")
         premiere_date: datetime.datetime = args.get("premiere_date")
         language: str = args.get("language")
+        book_language: str = args.get("book_language")
         email: str | None = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
@@ -151,6 +157,7 @@ class Book(Resource):
             return create_response(AUTHOR_NOT_FOUND_RESPONSE, language=language)
 
         book_object: book.Book = book.Book(
+            language=book_language,
             isbn=isbn,
             title=title,
             author_id=author_id,
@@ -195,6 +202,7 @@ class Book(Resource):
         picture: str = args.get("picture")
         premiere_date: datetime.datetime = args.get("premiere_date")
         language: str = args.get("language")
+        book_language: str = args.get("book_language")
         email: str | None = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
@@ -203,7 +211,6 @@ class Book(Resource):
             return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
         modified_book: book.Book = book.Book.query.filter_by(id=book_id).first()
-
         if user:
             if isbn:
                 modified_book.isbn = isbn
@@ -219,6 +226,8 @@ class Book(Resource):
                 modified_book.picture = picture
             if premiere_date:
                 modified_book.premiere_date = premiere_date
+            if book_language:
+                modified_book.book_language = book_language
             db.session.commit()
 
         return create_response(OBJECT_MODIFIED_RESPONSE, language=language)

@@ -10,6 +10,7 @@ class Book(db.Model):  # type: ignore[name-defined]
     """The class representing table book in database."""
 
     id = db.Column("id", db.Integer, primary_key=True)
+    language = db.Column("language", db.String(50), nullable=False)
     isbn = db.Column(db.String(20), nullable=False)
     title = db.Column(db.String(100), nullable=False)
     author_id = db.Column(
@@ -37,6 +38,7 @@ class Book(db.Model):  # type: ignore[name-defined]
     def __init__(
         self,
         isbn: str,
+        language: str,
         title: str,
         author_id: int,
         publishing_house: str,
@@ -51,6 +53,7 @@ class Book(db.Model):  # type: ignore[name-defined]
         :param premiere_date: format(YYYY-MM-DD)
         """
         self.isbn = isbn
+        self.language = language
         self.title = title
         self.author_id = author_id
 
@@ -71,6 +74,7 @@ class Book(db.Model):  # type: ignore[name-defined]
         """Serializing object to dictionary."""
         return {
             "id": self.id,
+            "language": self.language,
             "isbn": self.isbn,
             "title": self.title,
             "author_id": self.author_id,

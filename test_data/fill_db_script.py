@@ -31,6 +31,7 @@ def fill_db(db: SQLAlchemy):
 
     for book in books:
         new_book: Book = Book(
+            language=book["language"],
             isbn=book["isbn"],
             title=book["title"],
             author_id=book["author_id"],
@@ -45,6 +46,7 @@ def fill_db(db: SQLAlchemy):
 
     for book in new_books:
         new_book: Book = Book(
+            language=book["language"],
             isbn=book["isbn"],
             title=book["title"],
             author_id=book["author_id"],
@@ -56,19 +58,6 @@ def fill_db(db: SQLAlchemy):
         )
         db.session.add(new_book)
         db.session.commit()
-
-    # for book_announcement in book_announcements:
-    #     new_book_announcement: BookAnnouncement = BookAnnouncement(
-    #         title=book_announcement["title"],
-    #         author=book_announcement["author"],
-    #         publishing_house=book_announcement["publishing_house"],
-    #         description=book_announcement["description"],
-    #         genres=book_announcement["genres"],
-    #         picture=book_announcement["picture"],
-    #         premiere_date=book_announcement["premiere_date"],
-    #     )
-    #     db.session.add(new_book_announcement)
-    #     db.session.commit()
 
     for index, user in enumerate(users):
         new_user: User = User(
