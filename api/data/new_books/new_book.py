@@ -71,9 +71,7 @@ class NewBook(Resource):
         if book_id:
             book_query = book_query.filter(book.Book.id == book_id)
         if book_language:
-            book_query = book_query.filter(
-                book.Book.language == book_language
-            )
+            book_query = book_query.filter(book.Book.language == book_language)
 
         for sort in sorts.split(","):
             if sort.startswith("-"):
