@@ -3,6 +3,7 @@ from typing import Any
 
 new_books: list[dict[str, Any]] = [
     {
+        "language": "pol",
         "isbn": "1234567891234",
         "title": "The Great Britain",
         "author_id": 1,
@@ -13,6 +14,7 @@ new_books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2024-01-21", "%Y-%m-%d"),
     },
     {
+        "language": "pol",
         "isbn": "1234567891235",
         "title": "Potop",
         "author_id": 1,
@@ -23,6 +25,7 @@ new_books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2024-10-21", "%Y-%m-%d"),
     },
     {
+        "language": "eng",
         "isbn": "1234567891236",
         "title": "The Great America",
         "author_id": 1,
@@ -33,6 +36,7 @@ new_books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2025-01-21", "%Y-%m-%d"),
     },
     {
+        "language": "pol",
         "isbn": "1234567891237",
         "title": "The Great Poland",
         "author_id": 2,
@@ -43,6 +47,7 @@ new_books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2026-01-21", "%Y-%m-%d"),
     },
     {
+        "language": "pol",
         "isbn": "1234567891238",
         "title": "The Great Great Far",
         "author_id": 3,

@@ -21,21 +21,18 @@ class Library(db.Model):  # type: ignore[name-defined]
         db.ForeignKey("user.id", ondelete="CASCADE"),
         nullable=False,
     )
-    # TODO pobranie listy książek przeczytanych
     read_books = db.relationship(
         "Book",
         secondary=library_books_read,
         lazy="subquery",
         backref=backref("library_books_read"),
     )
-    # TODO pobranie listy książek ulubionych
     favourite_books = db.relationship(
         "Book",
         secondary=library_books_favourite,
         lazy="subquery",
         backref=backref("library_books_favourite"),
     )
-    # TODO pobranie listy książek kupionych
     bought_books = db.relationship(
         "Book",
         secondary=library_books_bought,

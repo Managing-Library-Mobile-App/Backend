@@ -79,8 +79,6 @@ class Opinion(Resource):
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
         user: User = User.query.filter_by(email=email).first()
-        if not user.is_admin:
-            return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
         existing_opinion: opinion.Opinion = opinion.Opinion.query.filter_by(
             user_id=user.id, book_id=book_id

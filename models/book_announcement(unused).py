@@ -10,7 +10,6 @@
 #
 #     id = db.Column("id", db.Integer, primary_key=True)
 #     title = db.Column(db.String(100), nullable=False)
-#     # TODO przejście do autora
 #     author = db.Column(
 #         db.Integer,
 #         db.ForeignKey("author.id", ondelete="CASCADE"),

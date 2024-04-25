@@ -3,6 +3,7 @@ from typing import Any
 
 books: list[dict[str, Any]] = [
     {
+        "language": "pol",
         "isbn": "01010101010101",
         "title": "The Great Britain",
         "author_id": 1,
@@ -13,6 +14,7 @@ books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2024-02-21", "%Y-%m-%d"),
     },
     {
+        "language": "pol",
         "isbn": "01010101010102",
         "title": "The Great Britain",
         "author_id": 1,
@@ -23,6 +25,7 @@ books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2022-02-21", "%Y-%m-%d"),
     },
     {
+        "language": "pol",
         "isbn": "01010101010103",
         "title": "The Great Britain",
         "author_id": 1,
@@ -33,6 +36,7 @@ books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2022-05-21", "%Y-%m-%d"),
     },
     {
+        "language": "pol",
         "isbn": "01010101010104",
         "title": "The Great Britain",
         "author_id": 2,
@@ -43,6 +47,7 @@ books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2022-01-21", "%Y-%m-%d"),
     },
     {
+        "language": "pol",
         "isbn": "01010101010105",
         "title": "The Great Britain",
         "author_id": 2,
@@ -53,6 +58,7 @@ books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2022-01-21", "%Y-%m-%d"),
     },
     {
+        "language": "eng",
         "isbn": "01010101010106",
         "title": "The Great Britain",
         "author_id": 2,
@@ -63,6 +69,7 @@ books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2022-04-21", "%Y-%m-%d"),
     },
     {
+        "language": "pol",
         "isbn": "01010101010107",
         "title": "The Great Britain",
         "author_id": 3,
@@ -73,6 +80,7 @@ books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2022-01-21", "%Y-%m-%d"),
     },
     {
+        "language": "eng",
         "isbn": "01010101010108",
         "title": "The Great Britain",
         "author_id": 4,
@@ -83,6 +91,7 @@ books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2022-07-21", "%Y-%m-%d"),
     },
     {
+        "language": "deu",
         "isbn": "01010101010109",
         "title": "The Great Britain",
         "author_id": 5,
@@ -93,6 +102,7 @@ books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2022-10-21", "%Y-%m-%d"),
     },
     {
+        "language": "chi",
         "isbn": "01010101010111",
         "title": "The Great Britain",
         "author_id": 5,
@@ -103,6 +113,7 @@ books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2022-11-21", "%Y-%m-%d"),
     },
     {
+        "language": "pol",
         "isbn": "01010101010121",
         "title": "The Great Britain",
         "author_id": 5,
@@ -113,6 +124,7 @@ books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2022-01-21", "%Y-%m-%d"),
     },
     {
+        "language": "pol",
         "isbn": "01010101010131",
         "title": "The Great Britain",
         "author_id": 5,
@@ -123,6 +135,7 @@ books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2022-01-21", "%Y-%m-%d"),
     },
     {
+        "language": "pol",
         "isbn": "01010101010141",
         "title": "The Great Britain",
         "author_id": 5,
@@ -133,6 +146,7 @@ books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2022-01-21", "%Y-%m-%d"),
     },
     {
+        "language": "pol",
         "isbn": "01010101010151",
         "title": "The Great Britain",
         "author_id": 5,
@@ -143,6 +157,7 @@ books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2022-01-21", "%Y-%m-%d"),
     },
     {
+        "language": "pol",
         "isbn": "01010101010161",
         "title": "The Great Britain",
         "author_id": 3,
@@ -153,6 +168,7 @@ books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("2022-01-21", "%Y-%m-%d"),
     },
     {
+        "language": "pol",
         "isbn": "01010101010171",
         "title": "The Great Britain",
         "author_id": 2,
@@ -162,64 +178,4 @@ books: list[dict[str, Any]] = [
         "picture": "https://picsum.photos/id/1084/4579/3271",
         "premiere_date": datetime.strptime("2022-01-21", "%Y-%m-%d"),
     },
-]
-
-# TODO NA PODSTAWIE DANYCH WYBRAĆ 24 najpopularniejsze kategorie
-#  i zrobić z nich enuma, a resztę dać jako 25 - other
-
-
-genres: list[str] = [
-    "ANTIQUES & COLLECTIBLES",
-    "LITERARY COLLECTIONS",
-    "ARCHITECTURE",
-    "LITERARY CRITICISM",
-    "ART",
-    "MATHEMATICS",
-    "BIBLES",
-    "MEDICAL",
-    "BIOGRAPHY & AUTOBIOGRAPHY",
-    "MUSIC",
-    "BODY, MIND & SPIRIT",
-    "NATURE",
-    "BUSINESS & ECONOMICS",
-    "PERFORMING ARTS",
-    "COMICS & GRAPHIC NOVELS",
-    "PETS",
-    "COMPUTERS",
-    "PHILOSOPHY",
-    "COOKING",
-    "PHOTOGRAPHY",
-    "CRAFTS & HOBBIES",
-    "POETRY",
-    "DESIGN",
-    "POLITICAL SCIENCE",
-    "DRAMA",
-    "PSYCHOLOGY",
-    "EDUCATION",
-    "REFERENCE",
-    "FAMILY & RELATIONSHIPS",
-    "RELIGION",
-    "FICTION",
-    "SCIENCE",
-    "FOREIGN LANGUAGE STUDY",
-    "SELF-HELP",
-    "GAMES & ACTIVITIES",
-    "SOCIAL SCIENCE",
-    "GARDENING",
-    "SPORTS & RECREATION",
-    "HEALTH & FITNESS",
-    "STUDY AIDS",
-    "HISTORY",
-    "TECHNOLOGY & ENGINEERING",
-    "HOUSE & HOME",
-    "TRANSPORTATION",
-    "HUMOR",
-    "TRAVEL",
-    "JUVENILE FICTION",
-    "TRUE CRIME",
-    "JUVENILE NONFICTION",
-    "YOUNG ADULT FICTION",
-    "LANGUAGE ARTS & DISCIPLINES",
-    "YOUNG ADULT NONFICTION",
-    "LAW",
 ]

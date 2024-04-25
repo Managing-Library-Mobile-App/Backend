@@ -74,8 +74,8 @@ DELETE - usuwanie elementu z api
 
 ------------------------------------------------------------
 
-## address (local): 127.0.0.1:5000
-## address (remote): #TODO
+## address (local): 127.0.0.1:5000 (mobile app uses 10.0.2.2 instead)
+## address (remote): differs
 
 ------------------------------------------------------------
 

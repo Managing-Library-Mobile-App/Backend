@@ -14,7 +14,6 @@ class Author(db.Model):  # type: ignore[name-defined]
     biography = db.Column(db.String(1000), default="No biography")
     picture = db.Column(db.String(1000), default=0)
     fans_count = db.Column(db.Integer, default=0)
-    # TODO pobranie listy fanów? czy wgl potrzebne
     fans = db.relationship(
         "User",
         secondary=authors_users,
@@ -22,7 +21,6 @@ class Author(db.Model):  # type: ignore[name-defined]
         back_populates="followed_authors",
     )
     released_books_count = db.Column(db.Integer, default=0)
-    # TODO pobranie listy książek
     released_books = db.relationship(
         "Book",
         secondary=authors_released_books,

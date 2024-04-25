@@ -58,7 +58,7 @@ class InvalidLoginAttemptsCache(object):
     @staticmethod
     def invalid_attempt(
         cache_results: dict, current_datetime: datetime.datetime, email: str
-    ) -> bool:
+    ) -> None:
         invalid_attempt_timestamps = (
             cache_results["invalid_attempt_timestamps"] if cache_results else []
         )
@@ -73,10 +73,7 @@ class InvalidLoginAttemptsCache(object):
             InvalidLoginAttemptsCache.set(
                 email, invalid_attempt_timestamps, current_datetime.timestamp()
             )
-            # TODO po co ten return skoro nic z tym nie robimy
-            return True
         InvalidLoginAttemptsCache.set(email, invalid_attempt_timestamps)
-        return False
 
 
 def authenticate_login_credentials(
