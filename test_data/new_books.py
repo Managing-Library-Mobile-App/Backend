@@ -4,7 +4,7 @@ from typing import Any
 new_books: list[dict[str, Any]] = [
     {
         "language": "pol",
-        "isbn": "1234567891234",
+        "isbn": "567891234",
         "title": "The Great Britain",
         "author_id": 1,
         "publishing_house": "Adams House",
@@ -15,7 +15,7 @@ new_books: list[dict[str, Any]] = [
     },
     {
         "language": "pol",
-        "isbn": "1234567891235",
+        "isbn": "567891235",
         "title": "Potop",
         "author_id": 1,
         "publishing_house": "Jans House",
@@ -26,7 +26,7 @@ new_books: list[dict[str, Any]] = [
     },
     {
         "language": "eng",
-        "isbn": "1234567891236",
+        "isbn": "567891236",
         "title": "The Great America",
         "author_id": 1,
         "publishing_house": "Adams House",
@@ -37,7 +37,7 @@ new_books: list[dict[str, Any]] = [
     },
     {
         "language": "pol",
-        "isbn": "1234567891237",
+        "isbn": "567891237",
         "title": "The Great Poland",
         "author_id": 2,
         "publishing_house": "Jans House",
@@ -48,7 +48,7 @@ new_books: list[dict[str, Any]] = [
     },
     {
         "language": "pol",
-        "isbn": "1234567891238",
+        "isbn": "567891238",
         "title": "The Great Great Far",
         "author_id": 3,
         "publishing_house": "Gothams House",

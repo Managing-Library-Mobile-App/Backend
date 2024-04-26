@@ -86,7 +86,7 @@ WRONG_DATE_FORMAT_RESPONSE = {
 }, 401
 USER_NOT_FOUND_RESPONSE = {
     "message": "user_not_found",
-    "details": "User logged in with such token not found",
+    "details": "User not found",
 }, 404
 BOOK_NOT_FOUND_RESPONSE = {
     "message": "book_not_found",
@@ -131,7 +131,7 @@ LIBRARY_NOT_FOUND_RESPONSE = {
 USER_NOT_IN_FANS_RESPONSE = {
     "message": "user_not_in_fans",
     "details": "User not in fans",
-}, 400
+}, 404
 USER_ALREADY_EXISTS_RESPONSE = {
     "message": "user_already_exists",
     "details": "User already exists",

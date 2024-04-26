@@ -11,19 +11,19 @@ class Book(db.Model):  # type: ignore[name-defined]
 
     id = db.Column("id", db.Integer, primary_key=True)
     language = db.Column("language", db.String(50), nullable=False)
-    isbn = db.Column(db.String(20), nullable=False)
-    title = db.Column(db.String(100), nullable=False)
+    isbn = db.Column(db.String(13), nullable=False)
+    title = db.Column(db.String(200), nullable=False)
     author_id = db.Column(
         db.Integer,
         db.ForeignKey("author.id", ondelete="CASCADE"),
         nullable=False,
         unique=False,
     )
-    publishing_house = db.Column(db.String(100))
-    description = db.Column(db.String(1000), default=0)
-    genres = db.Column(ARRAY(db.String(50)), default=[])
+    publishing_house = db.Column(db.String(200))
+    description = db.Column(db.String(3000), default=0)
+    genres = db.Column(ARRAY(db.String(100)), default=[])
     picture = db.Column(
-        db.String(1000), default="https://demofree.sirv.com/nope-not-here.jpg?w=150"
+        db.String(200), default="https://demofree.sirv.com/nope-not-here.jpg?w=150"
     )
     premiere_date = db.Column(db.Date, nullable=False)
     score = db.Column(db.Float, default=0)
@@ -34,6 +34,7 @@ class Book(db.Model):  # type: ignore[name-defined]
         lazy="subquery",
         cascade="all, delete",
     )
+    links = db.Column(ARRAY(db.String(50)), default=[])
 
     def __init__(
         self,
@@ -70,6 +71,12 @@ class Book(db.Model):  # type: ignore[name-defined]
         self.picture = picture
         self.premiere_date = premiere_date
 
+        self.links = [
+            f"https://www.campusbooks.com/search/{isbn}?buysellrent=buy",
+            f"https://www.amazon.com/s?rh=p_66%3A{isbn}",
+            f"https://www.google.com/search?tbm=bks&q=isbn:{isbn}",
+        ]
+
     def as_dict(self) -> dict:
         """Serializing object to dictionary."""
         return {
@@ -89,4 +96,5 @@ class Book(db.Model):  # type: ignore[name-defined]
             "score": self.score,
             "opinions_count": self.opinions_count,
             "opinions": [opinion.id for opinion in self.opinions],  # type: ignore
+            "links": self.links,
         }
