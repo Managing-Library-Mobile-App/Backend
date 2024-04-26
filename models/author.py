@@ -9,10 +9,10 @@ class Author(db.Model):  # type: ignore[name-defined]
 
     __tablename__ = "author"
     id = db.Column("id", db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.String(200), nullable=False)
     genres = db.Column(ARRAY(db.String), default=[])
-    biography = db.Column(db.String(1000), default="No biography")
-    picture = db.Column(db.String(1000), default=0)
+    biography = db.Column(db.String(3000), default="No biography")
+    picture = db.Column(db.String(200), default=0)
     fans_count = db.Column(db.Integer, default=0)
     fans = db.relationship(
         "User",

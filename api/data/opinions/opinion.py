@@ -3,7 +3,11 @@ from flask_restful import Resource
 
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
-from helpers.request_response import RequestParser
+from helpers.request_response import (
+    RequestParser,
+    int_range_validation,
+    string_range_validation,
+)
 from models import opinion, book
 from models.user import User
 from helpers.request_response import create_response
@@ -24,8 +28,8 @@ class Opinion(Resource):
     def __init__(self) -> None:
         self.post_parser: RequestParser = RequestParser()
         self.post_parser.add_arg("book_id", type=int)
-        self.post_parser.add_arg("stars_count", type=int)
-        self.post_parser.add_arg("comment")
+        self.post_parser.add_arg("stars_count", type=int_range_validation(min=1, max=5))
+        self.post_parser.add_arg("comment", type=string_range_validation(max=3000))
         self.post_parser.add_arg("language", required=False)
 
         self.delete_parser: RequestParser = RequestParser()
@@ -34,8 +38,12 @@ class Opinion(Resource):
 
         self.patch_parser: RequestParser = RequestParser()
         self.patch_parser.add_arg("id", type=int)
-        self.patch_parser.add_arg("stars_count", type=int, required=False)
-        self.patch_parser.add_arg("comment", type=str, required=False)
+        self.patch_parser.add_arg(
+            "stars_count", type=int_range_validation(min=1, max=5), required=False
+        )
+        self.patch_parser.add_arg(
+            "comment", type=string_range_validation(max=3000), required=False
+        )
         self.patch_parser.add_arg("language", required=False)
         super(Opinion, self).__init__()
 

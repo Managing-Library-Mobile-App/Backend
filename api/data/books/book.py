@@ -6,7 +6,7 @@ from sqlalchemy import desc
 
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
-from helpers.request_response import RequestParser
+from helpers.request_response import RequestParser, string_range_validation
 from helpers.request_response import create_response
 from models import book, author
 from models.user import User
@@ -27,14 +27,16 @@ from static.responses import (
 class Book(Resource):
     def __init__(self) -> None:
         self.post_parser: RequestParser = RequestParser()
-        self.post_parser.add_arg("book_language")
-        self.post_parser.add_arg("isbn", type=int)
-        self.post_parser.add_arg("title")
+        self.post_parser.add_arg("book_language", type=string_range_validation(max=50))
+        self.post_parser.add_arg("isbn", type=string_range_validation(max=13))
+        self.post_parser.add_arg("title", type=string_range_validation(max=200))
         self.post_parser.add_arg("author_id")
-        self.post_parser.add_arg("publishing_house")
-        self.post_parser.add_arg("description")
+        self.post_parser.add_arg(
+            "publishing_house", type=string_range_validation(max=200)
+        )
+        self.post_parser.add_arg("description", type=string_range_validation(max=3000))
         self.post_parser.add_arg("genres", type=list)
-        self.post_parser.add_arg("picture")
+        self.post_parser.add_arg("picture", type=string_range_validation(max=200))
         self.post_parser.add_arg("premiere_date")
         self.post_parser.add_arg("language", required=False)
 
@@ -43,15 +45,17 @@ class Book(Resource):
         self.delete_parser.add_arg("language", required=False)
 
         self.patch_parser: RequestParser = RequestParser()
-        self.post_parser.add_arg("book_language")
+        self.patch_parser.add_arg("book_language")
         self.patch_parser.add_arg("id", type=int)
-        self.patch_parser.add_arg("isbn")
-        self.patch_parser.add_arg("title")
+        self.patch_parser.add_arg("isbn", type=string_range_validation(max=13))
+        self.patch_parser.add_arg("title", type=string_range_validation(max=200))
         self.patch_parser.add_arg("author_id")
-        self.patch_parser.add_arg("publishing_house")
-        self.patch_parser.add_arg("description")
+        self.patch_parser.add_arg(
+            "publishing_house", type=string_range_validation(max=200)
+        )
+        self.patch_parser.add_arg("description", type=string_range_validation(max=3000))
         self.patch_parser.add_arg("genres", type=list)
-        self.patch_parser.add_arg("picture")
+        self.patch_parser.add_arg("picture", type=string_range_validation(max=200))
         self.patch_parser.add_arg("premiere_date")
         self.patch_parser.add_arg("language", required=False)
         super(Book, self).__init__()

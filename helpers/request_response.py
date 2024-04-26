@@ -7,6 +7,28 @@ from helpers.translation import (
 )
 
 
+def int_range_validation(min=0, max=255):
+    def validate(value):
+        if not isinstance(value, int):
+            raise ValueError("Invalid literal for integer(): {0}".format(value))
+        if min <= value <= max:
+            return value
+        raise ValueError(f"Value must be an integer in range [{min}, {max}]")
+
+    return validate
+
+
+def string_range_validation(min=0, max=255):
+    def validate(value):
+        if not isinstance(value, str):
+            raise ValueError("Invalid literal for str(): {0}".format(value))
+        if min <= len(value) <= max:
+            return value
+        raise ValueError(f"Value must be a str with length in range [{min}, {max}]")
+
+    return validate
+
+
 class RequestParser(reqparse.RequestParser):
     """Custom request parser class."""
 

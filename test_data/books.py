@@ -4,7 +4,7 @@ from typing import Any
 books: list[dict[str, Any]] = [
     {
         "language": "pol",
-        "isbn": "01010101010101",
+        "isbn": "0101010101",
         "title": "The Great Britain",
         "author_id": 1,
         "publishing_house": "Jans House",
@@ -15,7 +15,7 @@ books: list[dict[str, Any]] = [
     },
     {
         "language": "pol",
-        "isbn": "01010101010102",
+        "isbn": "0101010102",
         "title": "The Great Britain",
         "author_id": 1,
         "publishing_house": "Adams House",
@@ -26,7 +26,7 @@ books: list[dict[str, Any]] = [
     },
     {
         "language": "pol",
-        "isbn": "01010101010103",
+        "isbn": "0101010103",
         "title": "The Great Britain",
         "author_id": 1,
         "publishing_house": "Adams House",
@@ -37,7 +37,7 @@ books: list[dict[str, Any]] = [
     },
     {
         "language": "pol",
-        "isbn": "01010101010104",
+        "isbn": "0101010104",
         "title": "The Great Britain",
         "author_id": 2,
         "publishing_house": "Adams House",
@@ -48,7 +48,7 @@ books: list[dict[str, Any]] = [
     },
     {
         "language": "pol",
-        "isbn": "01010101010105",
+        "isbn": "0101010105",
         "title": "The Great Britain",
         "author_id": 2,
         "publishing_house": "Adams House",
@@ -59,7 +59,7 @@ books: list[dict[str, Any]] = [
     },
     {
         "language": "eng",
-        "isbn": "01010101010106",
+        "isbn": "0101010106",
         "title": "The Great Britain",
         "author_id": 2,
         "publishing_house": "Adams House",
@@ -70,7 +70,7 @@ books: list[dict[str, Any]] = [
     },
     {
         "language": "pol",
-        "isbn": "01010101010107",
+        "isbn": "0101010107",
         "title": "The Great Britain",
         "author_id": 3,
         "publishing_house": "Adams House",
@@ -81,7 +81,7 @@ books: list[dict[str, Any]] = [
     },
     {
         "language": "eng",
-        "isbn": "01010101010108",
+        "isbn": "0101010108",
         "title": "The Great Britain",
         "author_id": 4,
         "publishing_house": "Adams House",
@@ -92,7 +92,7 @@ books: list[dict[str, Any]] = [
     },
     {
         "language": "deu",
-        "isbn": "01010101010109",
+        "isbn": "0101010109",
         "title": "The Great Britain",
         "author_id": 5,
         "publishing_house": "Adams House",
@@ -103,7 +103,7 @@ books: list[dict[str, Any]] = [
     },
     {
         "language": "chi",
-        "isbn": "01010101010111",
+        "isbn": "0101010111",
         "title": "The Great Britain",
         "author_id": 5,
         "publishing_house": "Adams House",
@@ -114,7 +114,7 @@ books: list[dict[str, Any]] = [
     },
     {
         "language": "pol",
-        "isbn": "01010101010121",
+        "isbn": "0101010121",
         "title": "The Great Britain",
         "author_id": 5,
         "publishing_house": "Adams House",
@@ -125,7 +125,7 @@ books: list[dict[str, Any]] = [
     },
     {
         "language": "pol",
-        "isbn": "01010101010131",
+        "isbn": "0101010131",
         "title": "The Great Britain",
         "author_id": 5,
         "publishing_house": "Adams House",
@@ -136,7 +136,7 @@ books: list[dict[str, Any]] = [
     },
     {
         "language": "pol",
-        "isbn": "01010101010141",
+        "isbn": "0101010141",
         "title": "The Great Britain",
         "author_id": 5,
         "publishing_house": "Adams House",
@@ -147,7 +147,7 @@ books: list[dict[str, Any]] = [
     },
     {
         "language": "pol",
-        "isbn": "01010101010151",
+        "isbn": "0101010151",
         "title": "The Great Britain",
         "author_id": 5,
         "publishing_house": "Adams House",
@@ -158,7 +158,7 @@ books: list[dict[str, Any]] = [
     },
     {
         "language": "pol",
-        "isbn": "01010101010161",
+        "isbn": "0101010161",
         "title": "The Great Britain",
         "author_id": 3,
         "publishing_house": "Adams House",
@@ -169,7 +169,7 @@ books: list[dict[str, Any]] = [
     },
     {
         "language": "pol",
-        "isbn": "01010101010171",
+        "isbn": "0101010171",
         "title": "The Great Britain",
         "author_id": 2,
         "publishing_house": "Adams House",
