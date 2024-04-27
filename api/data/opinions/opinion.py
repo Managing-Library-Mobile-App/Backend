@@ -29,7 +29,7 @@ class Opinion(Resource):
         self.post_parser: RequestParser = RequestParser()
         self.post_parser.add_arg("book_id", type=int)
         self.post_parser.add_arg("stars_count", type=int_range_validation(min=1, max=5))
-        self.post_parser.add_arg("comment", type=string_range_validation(max=3000))
+        self.post_parser.add_arg("comment", type=string_range_validation(max=1000))
         self.post_parser.add_arg("language", required=False)
 
         self.delete_parser: RequestParser = RequestParser()
@@ -42,7 +42,7 @@ class Opinion(Resource):
             "stars_count", type=int_range_validation(min=1, max=5), required=False
         )
         self.patch_parser.add_arg(
-            "comment", type=string_range_validation(max=3000), required=False
+            "comment", type=string_range_validation(max=1000), required=False
         )
         self.patch_parser.add_arg("language", required=False)
         super(Opinion, self).__init__()
