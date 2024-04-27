@@ -9,7 +9,7 @@ from loguru import logger
 
 from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.init import cache
-from helpers.request_response import RequestParser, create_response
+from helpers.request_response import RequestParser, create_response, APIArgument
 from models.user import User
 from static.responses import (
     USER_NOT_LOGGED_IN_RESPONSE,
@@ -119,7 +119,9 @@ def authenticate_login_credentials(
 
 class Login(Resource):
     def __init__(self) -> None:
-        self.post_parser: RequestParser = RequestParser()
+        self.post_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.post_parser.add_arg("email")
         self.post_parser.add_arg("password")
         self.post_parser.add_arg("language", required=False)

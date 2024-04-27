@@ -5,7 +5,7 @@ from flask_restful import Resource
 from sqlalchemy import exists
 
 from helpers.init import db
-from helpers.request_response import RequestParser, create_response
+from helpers.request_response import RequestParser, create_response, APIArgument
 from models.library import Library
 from models.user import User
 from static.responses import (
@@ -19,7 +19,9 @@ from static.responses import (
 
 class Register(Resource):
     def __init__(self) -> None:
-        self.post_parser: RequestParser = RequestParser()
+        self.post_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.post_parser.add_arg("username")
         self.post_parser.add_arg("password")
         self.post_parser.add_arg("email")

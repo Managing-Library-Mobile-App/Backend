@@ -3,7 +3,7 @@ from flask_restful import Resource
 
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
-from helpers.request_response import RequestParser, create_response
+from helpers.request_response import RequestParser, create_response, APIArgument
 
 from models import book, library
 from static.responses import (
@@ -22,12 +22,16 @@ from static.responses import (
 
 class ReadBook(Resource):
     def __init__(self) -> None:
-        self.post_parser: RequestParser = RequestParser()
+        self.post_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.post_parser.add_arg("language", required=False)
         self.post_parser.add_arg("user_id", type=int)
         self.post_parser.add_arg("book_id", type=int)
 
-        self.delete_parser: RequestParser = RequestParser()
+        self.delete_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.delete_parser.add_arg("language", required=False)
         self.delete_parser.add_arg("user_id", type=int)
         self.delete_parser.add_arg("book_id", type=int)

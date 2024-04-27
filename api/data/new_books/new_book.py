@@ -5,7 +5,7 @@ from flask_restful import Resource
 from sqlalchemy import desc
 
 from helpers.jwt_auth import verify_jwt_token
-from helpers.request_response import RequestParser
+from helpers.request_response import RequestParser, APIArgument
 from helpers.request_response import create_response
 from models import book
 from static.responses import (
@@ -17,7 +17,9 @@ from static.responses import (
 
 class NewBook(Resource):
     def __init__(self) -> None:
-        self.post_parser: RequestParser = RequestParser()
+        self.post_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.post_parser.add_arg("isbn", type=int)
         self.post_parser.add_arg("title")
         self.post_parser.add_arg("author_id")
@@ -28,11 +30,15 @@ class NewBook(Resource):
         self.post_parser.add_arg("premiere_date")
         self.post_parser.add_arg("language", required=False)
 
-        self.delete_parser: RequestParser = RequestParser()
+        self.delete_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.delete_parser.add_arg("id", type=int)
         self.delete_parser.add_arg("language", required=False)
 
-        self.patch_parser: RequestParser = RequestParser()
+        self.patch_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.patch_parser.add_arg("id", type=int)
         self.patch_parser.add_arg("isbn")
         self.patch_parser.add_arg("title")

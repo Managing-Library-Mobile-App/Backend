@@ -3,7 +3,7 @@ from flask_restful import Resource
 
 from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.jwt_auth import verify_jwt_token
-from helpers.request_response import create_response, RequestParser
+from helpers.request_response import create_response, RequestParser, APIArgument
 from static.responses import (
     TOKEN_INVALID_RESPONSE,
     LOGGED_OUT_RESPONSE,
@@ -14,7 +14,9 @@ from static.responses import (
 
 class Logout(Resource):
     def __init__(self) -> None:
-        self.post_parser: RequestParser = RequestParser()
+        self.post_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.post_parser.add_arg("language", required=False)
         super(Logout, self).__init__()
 

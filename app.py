@@ -4,7 +4,6 @@ import os
 import argparse
 
 import flask_restful
-from flasgger import Swagger
 from flask_restful import Api
 from loguru import logger
 from werkzeug import run_simple
@@ -18,15 +17,8 @@ from models.library import Library  # noqa
 from models.opinion import Opinion  # noqa
 from models.user import User  # noqa
 
-SWAGGER_TEMPLATE = {
-    "securityDefinitions": {
-        "APIKeyHeader": {"type": "apiKey", "name": "Authorization", "in": "header"}
-    }
-}
-swagger = Swagger(app, template=SWAGGER_TEMPLATE)
 api: flask_restful.Api = Api(app)
 api_add_resources(api)
-
 
 parser = argparse.ArgumentParser(description="Description of your script")
 parser.add_argument(
@@ -49,6 +41,7 @@ app.config["SECRET_KEY"] = "SECRET_KEY"
 app.config["JSONIFY_PRETTYPRINT_REGULAR"] = True
 app.config["CACHE_TYPE"] = "SimpleCache"
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
+app.config["BUNDLE_ERRORS"] = True
 
 
 jwt.init_app(app)

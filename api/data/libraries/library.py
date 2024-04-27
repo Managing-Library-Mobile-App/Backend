@@ -3,7 +3,7 @@ from flask_restful import Resource
 
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
-from helpers.request_response import RequestParser, create_response
+from helpers.request_response import RequestParser, create_response, APIArgument
 from models import library
 from models.user import User
 from static.responses import (
@@ -16,18 +16,24 @@ from static.responses import (
 
 class Library(Resource):
     def __init__(self) -> None:
-        self.post_parser: RequestParser = RequestParser()
+        self.post_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.post_parser.add_arg("read_books", type=list, required=False)
         self.post_parser.add_arg("bought_books", type=list, required=False)
         self.post_parser.add_arg("favourite_books", type=list, required=False)
         self.post_parser.add_arg("user_id", type=int)
         self.post_parser.add_arg("language", required=False)
 
-        self.delete_parser: RequestParser = RequestParser()
+        self.delete_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.delete_parser.add_arg("id", type=int)
         self.delete_parser.add_arg("language", required=False)
 
-        self.patch_parser: RequestParser = RequestParser()
+        self.patch_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.patch_parser.add_arg("id", type=int)
         self.patch_parser.add_arg("read_books", type=list, required=False)
         self.patch_parser.add_arg("bought_books", type=list, required=False)

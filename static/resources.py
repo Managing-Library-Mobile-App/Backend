@@ -1,4 +1,6 @@
+from api.account.change_theme import ChangeTheme
 from api.account.change_password import ChangePassword
+from api.account.change_profile_picture import ChangeProfilePicture
 from api.account.check_if_logged_in import CheckIfLoggedIn
 from api.account.delete_account import DeleteAccount
 from api.account.logged_in_users import LoggedInUsers
@@ -23,7 +25,9 @@ RESOURCES = {
     AUTHOR_URL: Author,
     BOOK_URL: Book,
     BOUGHT_BOOK_URL: BoughtBook,
+    CHANGE_THEME_URL: ChangeTheme,
     CHANGE_PASSWORD_URL: ChangePassword,
+    CHANGE_PROFILE_PICTURE_URL: ChangeProfilePicture,
     CHECK_IF_LOGGED_IN_URL: CheckIfLoggedIn,
     DELETE_ACCOUNT_URL: DeleteAccount,
     FANS_URL: Fan,
