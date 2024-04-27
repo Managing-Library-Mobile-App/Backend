@@ -13,7 +13,7 @@ class Opinion(db.Model):  # type: ignore[name-defined]
         db.Integer, db.ForeignKey("book.id", ondelete="CASCADE"), nullable=False
     )
     stars_count = db.Column(db.Integer, nullable=False)
-    comment = db.Column(db.String(3000), default="")
+    comment = db.Column(db.String(1000), default="")
 
     __table_args__ = (
         db.UniqueConstraint("user_id", "book_id", name="uq_user_id_book_id"),
