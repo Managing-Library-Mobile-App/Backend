@@ -6,7 +6,7 @@ from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
 from helpers.request_response import RequestParser, string_range_validation, APIArgument
 from helpers.request_response import create_response
-from models import author, book
+from models import author
 from models.user import User
 from static.responses import (
     TOKEN_INVALID_RESPONSE,
@@ -18,7 +18,6 @@ from static.responses import (
     USER_DOES_NOT_EXIST_RESPONSE,
     FAN_DOES_NOT_EXIST_RESPONSE,
     AUTHOR_DOES_NOT_EXIST_RESPONSE,
-    BOOK_DOES_NOT_EXIST_RESPONSE,
     SORT_PARAM_DOES_NOT_EXIST,
 )
 
@@ -29,11 +28,9 @@ class Author(Resource):
             argument_class=APIArgument, bundle_errors=True
         )
         self.post_parser.add_arg("name", type=string_range_validation(max=200))
-        self.post_parser.add_arg("genres", type=list)
         self.post_parser.add_arg("biography", type=string_range_validation(max=3000))
         self.post_parser.add_arg("picture", type=string_range_validation(max=200))
         self.post_parser.add_arg("fans", type=list, required=False)
-        self.post_parser.add_arg("released_books", type=list, required=False)
         self.post_parser.add_arg("language", required=False)
 
         self.delete_parser: RequestParser = RequestParser(
@@ -49,7 +46,6 @@ class Author(Resource):
         self.patch_parser.add_arg(
             "name", type=string_range_validation(max=200), required=False
         )
-        self.patch_parser.add_arg("genres", type=list, required=False)
         self.patch_parser.add_arg(
             "biography", type=string_range_validation(max=3000), required=False
         )
@@ -117,11 +113,9 @@ class Author(Resource):
     def post(self) -> Response:
         args: dict = self.post_parser.parse_args()
         name: str = args.get("name")
-        genres: list[str] = args.get("genres")
         biography: str = args.get("biography")
         picture: str = args.get("picture")
         fans: list[int] = args.get("fans")
-        released_books: list[int] = args.get("released_books")
         language: str = args.get("language")
         email: str | None = verify_jwt_token()
         if not email:
@@ -133,16 +127,11 @@ class Author(Resource):
         for fan in fans:
             if not User.query.filter_by(id=fan).first():
                 return create_response(FAN_DOES_NOT_EXIST_RESPONSE, language=language)
-        for released_book in released_books:
-            if not book.Book.query.filter_by(id=released_book).first():
-                return create_response(BOOK_DOES_NOT_EXIST_RESPONSE, language=language)
         author_object: author.Author = author.Author(
             name=name,
-            genres=genres,
             biography=biography,
             picture=picture,
             fans=fans if fans else [],
-            released_books=released_books if released_books else [],
         )
         db.session.add(author_object)
         db.session.commit()
@@ -176,7 +165,6 @@ class Author(Resource):
         args: dict = self.delete_parser.parse_args()
         author_id: int = args.get("id")
         name: str = args.get("name")
-        genres: list[str] = args.get("genres")
         biography: str = args.get("biography")
         picture: str = args.get("picture")
         language: str = args.get("language")
@@ -199,8 +187,6 @@ class Author(Resource):
         if user:
             if name:
                 modified_author.name = name
-            if genres:
-                modified_author.genres = genres
             if biography:
                 modified_author.biography = biography
             if picture:

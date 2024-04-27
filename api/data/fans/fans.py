@@ -15,7 +15,7 @@ from static.responses import (
     AUTHOR_NOT_FOUND_RESPONSE,
     USER_ALREADY_IN_FANS_RESPONSE,
     USER_NOT_IN_FANS_RESPONSE,
-    AUTHOR_ID_NOT_PROVIDED_RESPONSE,
+    AUTHORS_NOT_PROVIDED_RESPONSE,
 )
 
 
@@ -52,7 +52,7 @@ class Fan(Resource):
         if author_id:
             author_query = author_query.filter_by(id=author_id)
         else:
-            return create_response(AUTHOR_ID_NOT_PROVIDED_RESPONSE, language=language)
+            return create_response(AUTHORS_NOT_PROVIDED_RESPONSE, language=language)
 
         author_query = author_query.first()
         if not author_query:

@@ -32,7 +32,7 @@ class Book(Resource):
         self.post_parser.add_arg("book_language", type=string_range_validation(max=50))
         self.post_parser.add_arg("isbn", type=string_range_validation(max=13))
         self.post_parser.add_arg("title", type=string_range_validation(max=200))
-        self.post_parser.add_arg("author_id")
+        self.post_parser.add_arg("authors", type=list)
         self.post_parser.add_arg(
             "publishing_house", type=string_range_validation(max=200)
         )
@@ -55,12 +55,10 @@ class Book(Resource):
         self.patch_parser.add_arg("id", type=int)
         self.patch_parser.add_arg("isbn", type=string_range_validation(max=13))
         self.patch_parser.add_arg("title", type=string_range_validation(max=200))
-        self.patch_parser.add_arg("author_id")
         self.patch_parser.add_arg(
             "publishing_house", type=string_range_validation(max=200)
         )
         self.patch_parser.add_arg("description", type=string_range_validation(max=3000))
-        self.patch_parser.add_arg("genres", type=list)
         self.patch_parser.add_arg("picture", type=string_range_validation(max=200))
         self.patch_parser.add_arg("premiere_date")
         self.patch_parser.add_arg("language", required=False)
@@ -73,7 +71,7 @@ class Book(Resource):
         language: str = request.args.get("language", type=str)
         id: int = request.args.get("id", type=int)
         title: str = request.args.get("title", type=str)
-        author_id: int = request.args.get("author_id", type=int)
+        authors: list[int] = request.args.getlist("authors", type=int)
         date_from: str | datetime.date = request.args.get("date_from", type=str)
         date_to: str | datetime.date = request.args.get("date_to", type=str)
         minimum_score: int = request.args.get("minimum_score", type=int)
@@ -96,12 +94,14 @@ class Book(Resource):
         book_query = book.Book.query
         if genres:
             book_query = book_query.filter(
-                *[book.Book.genres.any(genres) for genres in genres]
+                *[book.Book.genres.any(genre) for genre in genres]
             )
         if title:
             book_query = book_query.filter(book.Book.title.contains(title))
-        if author_id:
-            book_query = book_query.filter(book.Book.author_id == author_id)
+        if authors:
+            book_query = book_query.filter(
+                *[book.Book.authors.any(author_id) for author_id in authors]
+            )
         if date_from:
             book_query = book_query.filter(book.Book.premiere_date >= date_from)
         if date_to:
@@ -147,7 +147,7 @@ class Book(Resource):
         args: dict = self.post_parser.parse_args()
         isbn: str = args.get("isbn")
         title: str = args.get("title")
-        author_id: int = args.get("author_id")
+        authors: list[int] = args.get("authors")
         publishing_house: str = args.get("publishing_house")
         description: str = args.get("description")
         genres: list[str] = args.get("genres")
@@ -162,15 +162,17 @@ class Book(Resource):
         if not user.is_admin:
             return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
-        author_object = author.Author.query.filter_by(id=author_id).first()
-        if not author_object:
+        author_objects = author.Author.query.filter(
+            *[book.Book.authors.any(author_object_id) for author_object_id in authors]
+        ).all()
+        if not author_objects:
             return create_response(AUTHOR_NOT_FOUND_RESPONSE, language=language)
 
         book_object: book.Book = book.Book(
             language=book_language,
             isbn=isbn,
             title=title,
-            author_id=author_id,
+            authors=authors,
             publishing_house=publishing_house,
             description=description,
             genres=genres,
@@ -178,7 +180,6 @@ class Book(Resource):
             premiere_date=premiere_date,
         )
         db.session.add(book_object)
-        db.session.commit()
 
         return create_response(OBJECT_CREATED_RESPONSE, language=language)
 
@@ -193,10 +194,10 @@ class Book(Resource):
         if not user.is_admin:
             return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
-        opinion_object: book.Book = book.Book.query.filter_by(id=book_id).first()
-        if not opinion_object:
+        book_object: book.Book = book.Book.query.filter_by(id=book_id).first()
+        if not book_object:
             return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
-        db.session.delete(opinion_object)
+        db.session.delete(book_object)
         db.session.commit()
 
         return create_response(OBJECT_DELETED_RESPONSE, language=language)
@@ -208,7 +209,6 @@ class Book(Resource):
         title: str = args.get("title")
         publishing_house: str = args.get("publishing_house")
         description: str = args.get("description")
-        genres: list[str] = args.get("genres")
         picture: str = args.get("picture")
         premiere_date: datetime.datetime = args.get("premiere_date")
         language: str = args.get("language")
@@ -230,8 +230,6 @@ class Book(Resource):
                 modified_book.publishing_house = publishing_house
             if description:
                 modified_book.description = description
-            if genres:
-                modified_book.genres = genres
             if picture:
                 modified_book.picture = picture
             if premiere_date:
@@ -239,5 +237,4 @@ class Book(Resource):
             if book_language:
                 modified_book.book_language = book_language
             db.session.commit()
-
         return create_response(OBJECT_MODIFIED_RESPONSE, language=language)
