@@ -25,27 +25,23 @@ class Author(db.Model):  # type: ignore[name-defined]
         "Book",
         secondary=authors_released_books,
         lazy="subquery",
-        backref=db.backref("authors_released_books"),
+        back_populates="authors",
         cascade="all, delete",
     )
 
     def __init__(
         self,
         name: str,
-        genres: list[str],
         biography: str,
         picture: str,
-        fans: list[int],
-        released_books: list[int],
+        fans: list[int] = None,
     ) -> None:
         """Initializing an object of the class.
         :param biography: description of the author
         :param picture: link to the picture
         :param fans: list of users who like the author
-        :param released_books: list of author's books
         """
         self.name = name
-        self.genres = genres
         self.biography = biography
         self.picture = picture
         from .user import User
@@ -53,14 +49,7 @@ class Author(db.Model):  # type: ignore[name-defined]
         for fan_id in fans:
             self.fans.append(db.session.query(User).filter_by(id=fan_id).first())
 
-        from .book import Book
-
-        for book_id in released_books:
-            self.released_books.append(
-                db.session.query(Book).filter_by(id=book_id).first()
-            )
         self.fans_count = len(fans)
-        self.released_books_count = len(released_books)
 
     def as_dict(self) -> dict:
         """Serializing object to dictionary."""

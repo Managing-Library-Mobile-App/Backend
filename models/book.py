@@ -3,7 +3,7 @@ import datetime
 from sqlalchemy import ARRAY
 
 from helpers.init import db
-from models import author
+from models.many_to_many_tables import authors_released_books
 
 
 class Book(db.Model):  # type: ignore[name-defined]
@@ -13,11 +13,11 @@ class Book(db.Model):  # type: ignore[name-defined]
     language = db.Column("language", db.String(50), nullable=False)
     isbn = db.Column(db.String(13), nullable=False)
     title = db.Column(db.String(200), nullable=False)
-    author_id = db.Column(
-        db.Integer,
-        db.ForeignKey("author.id", ondelete="CASCADE"),
-        nullable=False,
-        unique=False,
+    authors = db.relationship(
+        "Author",
+        secondary=authors_released_books,
+        lazy="subquery",
+        back_populates="released_books",
     )
     publishing_house = db.Column(db.String(200))
     description = db.Column(db.String(3000), default=0)
@@ -41,7 +41,7 @@ class Book(db.Model):  # type: ignore[name-defined]
         isbn: str,
         language: str,
         title: str,
-        author_id: int,
+        authors: list[int],
         publishing_house: str,
         description: str,
         genres: list,
@@ -56,14 +56,18 @@ class Book(db.Model):  # type: ignore[name-defined]
         self.isbn = isbn
         self.language = language
         self.title = title
-        self.author_id = author_id
-
         from .author import Author
 
-        author: Author = db.session.query(Author).filter_by(id=author_id).first()
-        if author:
-            author.released_books_count += 1
-            db.session.commit()
+        author_objects = (
+            db.session.query(Author)
+            .filter(*[Author.id == author_id for author_id in authors])
+            .all()
+        )
+        if author_objects:
+            self.authors = author_objects
+            for author_object in author_objects:
+                author_object.released_books_count += 1
+                db.session.add(author_object)
 
         self.publishing_house = publishing_house
         self.description = description
@@ -84,10 +88,8 @@ class Book(db.Model):  # type: ignore[name-defined]
             "language": self.language,
             "isbn": self.isbn,
             "title": self.title,
-            "author_id": self.author_id,
-            "author_name": author.Author.query.filter_by(id=self.author_id)
-            .first()
-            .name,
+            "authors": [author_object.id for author_object in self.authors],
+            "authors_names": [author_object.name for author_object in self.authors],
             "publishing_house": self.publishing_house,
             "description": self.description,
             "genres": self.genres,

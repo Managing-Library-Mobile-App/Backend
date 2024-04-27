@@ -147,9 +147,9 @@ USER_ID_NOT_PROVIDED_RESPONSE = {
     "message": "user_id_not_provided",
     "details": "User id not provided",
 }, 404
-AUTHOR_ID_NOT_PROVIDED_RESPONSE = {
-    "message": "author_id_not_provided",
-    "details": "Author id not provided",
+AUTHORS_NOT_PROVIDED_RESPONSE = {
+    "message": "authors_not_provided",
+    "details": "Authors not provided",
 }, 404
 REGISTER_SUCCESSFUL_RESPONSE = {
     "message": "register_successful",

@@ -8,7 +8,6 @@ authors: list[dict[str, Any]] = [
         ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1062/5000/3334",
         "fans": [1, 2, 3],
-        "released_books": [1, 2, 3],
     },
     {
         "name": "Angela Martina",
@@ -16,7 +15,6 @@ authors: list[dict[str, Any]] = [
         "biography": """The best author""",
         "picture": "https://picsum.photos/id/1027/2848/4272",
         "fans": [1, 2],
-        "released_books": [1, 2],
     },
     {
         "name": "Ania Franinska",
@@ -27,7 +25,6 @@ authors: list[dict[str, Any]] = [
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1005/5000/3333",
         "fans": [],
-        "released_books": [1, 2, 3, 4, 5],
     },
     {
         "name": "Amara Shey",
@@ -35,7 +32,6 @@ authors: list[dict[str, Any]] = [
         "biography": """I am an author.""",
         "picture": "https://picsum.photos/id/1062/5000/3334",
         "fans": [],
-        "released_books": [1],
     },
     {
         "name": "Amina Marinara",
@@ -44,7 +40,6 @@ authors: list[dict[str, Any]] = [
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1027/2848/4272",
         "fans": [],
-        "released_books": [1, 2],
     },
     {
         "name": "Dziunia Joli",
@@ -53,7 +48,6 @@ authors: list[dict[str, Any]] = [
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1005/5000/3333",
         "fans": [],
-        "released_books": [],
     },
     {
         "name": "Bartek Juli",
@@ -62,7 +56,6 @@ authors: list[dict[str, Any]] = [
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1062/5000/3334",
         "fans": [],
-        "released_books": [],
     },
     {
         "name": "Dziuniek Jelo",
@@ -71,7 +64,6 @@ authors: list[dict[str, Any]] = [
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1027/2848/4272",
         "fans": [],
-        "released_books": [],
     },
     {
         "name": "Halina Jula",
@@ -80,7 +72,6 @@ authors: list[dict[str, Any]] = [
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1005/5000/3333",
         "fans": [],
-        "released_books": [],
     },
     {
         "name": "Julia Jotun",
@@ -89,7 +80,6 @@ authors: list[dict[str, Any]] = [
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1062/5000/3334",
         "fans": [1, 5],
-        "released_books": [],
     },
     {
         "name": "Manga Jom",
@@ -98,6 +88,5 @@ authors: list[dict[str, Any]] = [
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
         "picture": "https://picsum.photos/id/1027/2848/4272",
         "fans": [1, 2, 3, 4, 5],
-        "released_books": [],
     },
 ]
