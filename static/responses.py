@@ -12,7 +12,6 @@ PASSWORD_CHANGED_RESPONSE = {
     "message": "password_changed",
     "details": "Password changed",
 }, 200
-
 PASSWORD_NOT_CHANGED_RESPONSE = {
     "message": "wrong_password",
     "details": "Wrong password",

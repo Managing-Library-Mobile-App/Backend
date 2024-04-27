@@ -4,7 +4,7 @@ from flask_restful import Resource
 from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
-from helpers.request_response import RequestParser
+from helpers.request_response import RequestParser, APIArgument
 from models.user import User
 from helpers.request_response import create_response
 from static.responses import (
@@ -18,7 +18,9 @@ from static.responses import (
 
 class DeleteAccount(Resource):
     def __init__(self) -> None:
-        self.delete_parser: RequestParser = RequestParser()
+        self.delete_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.delete_parser.add_arg("password")
         self.delete_parser.add_arg("language", required=False)
         super(DeleteAccount, self).__init__()

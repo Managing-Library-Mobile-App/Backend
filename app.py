@@ -49,6 +49,7 @@ app.config["SECRET_KEY"] = "SECRET_KEY"
 app.config["JSONIFY_PRETTYPRINT_REGULAR"] = True
 app.config["CACHE_TYPE"] = "SimpleCache"
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
+app.config["BUNDLE_ERRORS"] = True
 
 
 jwt.init_app(app)

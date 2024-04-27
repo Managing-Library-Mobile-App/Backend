@@ -7,6 +7,7 @@ from helpers.request_response import (
     RequestParser,
     int_range_validation,
     string_range_validation,
+    APIArgument,
 )
 from models import opinion, book
 from models.user import User
@@ -26,17 +27,23 @@ from static.responses import (
 
 class Opinion(Resource):
     def __init__(self) -> None:
-        self.post_parser: RequestParser = RequestParser()
+        self.post_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.post_parser.add_arg("book_id", type=int)
         self.post_parser.add_arg("stars_count", type=int_range_validation(min=1, max=5))
         self.post_parser.add_arg("comment", type=string_range_validation(max=1000))
         self.post_parser.add_arg("language", required=False)
 
-        self.delete_parser: RequestParser = RequestParser()
+        self.delete_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.delete_parser.add_arg("id", type=int)
         self.delete_parser.add_arg("language", required=False)
 
-        self.patch_parser: RequestParser = RequestParser()
+        self.patch_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.patch_parser.add_arg("id", type=int)
         self.patch_parser.add_arg(
             "stars_count", type=int_range_validation(min=1, max=5), required=False

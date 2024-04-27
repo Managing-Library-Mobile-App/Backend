@@ -1,5 +1,8 @@
-from flask import make_response, jsonify, Response
+import json
+
+from flask import make_response, jsonify, Response, abort
 from flask_restful import reqparse
+from flask_restful.reqparse import Argument
 
 from helpers.translation import (
     translate_dict_to_known,
@@ -27,6 +30,28 @@ def string_range_validation(min=0, max=255):
         raise ValueError(f"Value must be a str with length in range [{min}, {max}]")
 
     return validate
+
+
+class APIArgument(Argument):
+    def __init__(self, *args, **kwargs):
+        super(APIArgument, self).__init__(*args, **kwargs)
+
+    def handle_validation_error(self, error, bundle_errors):
+        help_str = "(%s) " % self.help if self.help else ""
+        details = "[%s]: %s%s" % (self.name, help_str, str(error))
+        return abort(
+            Response(
+                json.dumps(
+                    {
+                        "message": "length_validation_error",
+                        "details": details,
+                        "field": self.name,
+                    }
+                ),
+                mimetype="application/json",
+                status=400,
+            )
+        )
 
 
 class RequestParser(reqparse.RequestParser):

@@ -6,7 +6,7 @@ from sqlalchemy import desc
 
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
-from helpers.request_response import RequestParser, string_range_validation
+from helpers.request_response import RequestParser, string_range_validation, APIArgument
 from helpers.request_response import create_response
 from models import book, author
 from models.user import User
@@ -26,7 +26,9 @@ from static.responses import (
 
 class Book(Resource):
     def __init__(self) -> None:
-        self.post_parser: RequestParser = RequestParser()
+        self.post_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.post_parser.add_arg("book_language", type=string_range_validation(max=50))
         self.post_parser.add_arg("isbn", type=string_range_validation(max=13))
         self.post_parser.add_arg("title", type=string_range_validation(max=200))
@@ -40,11 +42,15 @@ class Book(Resource):
         self.post_parser.add_arg("premiere_date")
         self.post_parser.add_arg("language", required=False)
 
-        self.delete_parser: RequestParser = RequestParser()
+        self.delete_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.delete_parser.add_arg("id", type=int)
         self.delete_parser.add_arg("language", required=False)
 
-        self.patch_parser: RequestParser = RequestParser()
+        self.patch_parser: RequestParser = RequestParser(
+            argument_class=APIArgument, bundle_errors=True
+        )
         self.patch_parser.add_arg("book_language")
         self.patch_parser.add_arg("id", type=int)
         self.patch_parser.add_arg("isbn", type=string_range_validation(max=13))
