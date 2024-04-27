@@ -16,6 +16,14 @@ PASSWORD_NOT_CHANGED_RESPONSE = {
     "message": "wrong_password",
     "details": "Wrong password",
 }, 401
+MOTIVE_CHANGED_RESPONSE = {
+    "message": "motive_changed",
+    "details": "motive changed",
+}, 200
+MOTIVE_NOT_CHANGED_RESPONSE = {
+    "message": "wrong_motive",
+    "details": "Wrong motive",
+}, 401
 TOKEN_INVALID_RESPONSE = {
     "message": "token_invalid",
     "details": "Token invalid",

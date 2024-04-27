@@ -28,13 +28,18 @@ class User(db.Model):  # type: ignore[name-defined]
         back_populates="fans",
     )
     followed_authors_count = db.Column(db.Integer, default=0)
-    profile_picture = db.Column(
-        db.String(200), default="https://www.gravatar.com/avatar/?d=mp"
-    )
-    is_admin = db.Column(db.Boolean, default=False)
+    profile_picture = db.Column(db.Integer)
+    is_admin = db.Column(db.Boolean)
+    theme = db.Column(db.Integer)  # 1 - light, 2 - dark, 3 - blind
 
     def __init__(
-        self, username: str, email: str, password: str, is_admin=False
+        self,
+        username: str,
+        email: str,
+        password: str,
+        is_admin: bool = False,
+        theme: int = 1,
+        profile_picture: int = 1,
     ) -> None:
         """Initializing an object of the class.
         :param is_admin: used for authentication
@@ -43,6 +48,8 @@ class User(db.Model):  # type: ignore[name-defined]
         self.email = email
         self.password = password
         self.is_admin = is_admin
+        self.theme = theme
+        self.profile_picture = profile_picture
 
     def as_dict(self) -> dict:
         """Serializing object to dictionary."""
@@ -59,4 +66,5 @@ class User(db.Model):  # type: ignore[name-defined]
             ],
             "profile_picture": self.profile_picture,
             "is_admin": self.is_admin,
+            "theme": self.theme,
         }
