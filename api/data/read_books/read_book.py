@@ -56,7 +56,7 @@ class ReadBook(Resource):
             book_query = book_query.filter_by(id=book_id)
 
         library_object: library.Library = library_query.first()
-        if library_object:
+        if not library_object:
             return create_response(LIBRARY_NOT_FOUND_RESPONSE, language=language)
         read_book_ids = [read_book.id for read_book in library_object.read_books]
         book_query = book_query.filter(book.Book.id.in_(read_book_ids))

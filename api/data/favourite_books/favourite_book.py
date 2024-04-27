@@ -56,7 +56,7 @@ class FavouriteBook(Resource):
             book_query = book_query.filter_by(id=book_id)
 
         library_object: library.Library = library_query.first()
-        if library_object:
+        if not library_object:
             return create_response(LIBRARY_NOT_FOUND_RESPONSE, language=language)
         favourite_book_ids = [
             favourite_book.id for favourite_book in library_object.favourite_books
