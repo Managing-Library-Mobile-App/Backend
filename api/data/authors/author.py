@@ -16,7 +16,6 @@ from static.responses import (
     OBJECT_CREATED_RESPONSE,
     AUTHORS_RESPONSE,
     USER_DOES_NOT_EXIST_RESPONSE,
-    FAN_DOES_NOT_EXIST_RESPONSE,
     AUTHOR_DOES_NOT_EXIST_RESPONSE,
     SORT_PARAM_DOES_NOT_EXIST,
 )
@@ -30,7 +29,6 @@ class Author(Resource):
         self.post_parser.add_arg("name", type=string_range_validation(max=200))
         self.post_parser.add_arg("biography", type=string_range_validation(max=3000))
         self.post_parser.add_arg("picture", type=string_range_validation(max=200))
-        self.post_parser.add_arg("fans", type=list, required=False)
         self.post_parser.add_arg("language", required=False)
 
         self.delete_parser: RequestParser = RequestParser(
@@ -117,7 +115,6 @@ class Author(Resource):
         name: str = args.get("name")
         biography: str = args.get("biography")
         picture: str = args.get("picture")
-        fans: list[int] = args.get("fans")
         language: str = args.get("language")
         email: str | None = verify_jwt_token()
         if not email:
@@ -126,14 +123,10 @@ class Author(Resource):
         if not user.is_admin:
             return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
-        for fan in fans:
-            if not User.query.filter_by(id=fan).first():
-                return create_response(FAN_DOES_NOT_EXIST_RESPONSE, language=language)
         author_object: author.Author = author.Author(
             name=name,
             biography=biography,
             picture=picture,
-            fans=fans if fans else [],
         )
         db.session.add(author_object)
         db.session.commit()

@@ -40,9 +40,12 @@ class APIArgument(Argument):
     def handle_validation_error(self, error, bundle_errors):
         help_str = "(%s) " % self.help if self.help else ""
         details = "[%s]: %s%s" % (self.name, help_str, str(error))
+        response = LENGTH_VALIDATION_ERROR_RESPONSE[0]
+        response["details"] = details
+        response["field"] = self.name
         return abort(
             Response(
-                json.dumps(LENGTH_VALIDATION_ERROR_RESPONSE[0]),
+                json.dumps(response),
                 mimetype="application/json",
                 status=LENGTH_VALIDATION_ERROR_RESPONSE[1],
             )
