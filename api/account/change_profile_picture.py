@@ -12,8 +12,8 @@ from models.user import User
 from helpers.request_response import create_response
 from static.responses import (
     TOKEN_INVALID_RESPONSE,
-    MOTIVE_CHANGED_RESPONSE,
-    MOTIVE_NOT_CHANGED_RESPONSE,
+    THEME_CHANGED_RESPONSE,
+    THEME_NOT_CHANGED_RESPONSE,
 )
 
 
@@ -40,5 +40,5 @@ class ChangeProfilePicture(Resource):
         if user:
             user.profile_picture = profile_picture
             db.session.commit()
-            return create_response(MOTIVE_CHANGED_RESPONSE, language=language)
-        return create_response(MOTIVE_NOT_CHANGED_RESPONSE, language=language)
+            return create_response(THEME_CHANGED_RESPONSE, language=language)
+        return create_response(THEME_NOT_CHANGED_RESPONSE, language=language)
