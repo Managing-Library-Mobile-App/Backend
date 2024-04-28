@@ -163,9 +163,9 @@ class Book(Resource):
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
-
+        print(authors)
         author_objects = author.Author.query.filter(
-            *[book.Book.authors.any(author_object_id) for author_object_id in authors]
+            *[author.Author.id == author_object_id for author_object_id in authors]
         ).all()
         if not author_objects:
             return create_response(AUTHOR_NOT_FOUND_RESPONSE, language=language)
