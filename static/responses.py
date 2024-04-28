@@ -235,6 +235,10 @@ LOGIN_SUCCESSFUL_RESPONSE = {
     "details": "Login successful",
     "token": "",  # Mutable str
 }, 200
-
+LENGTH_VALIDATION_ERROR_RESPONSE = {
+    "message": "length_validation_error",
+    "details": "",  # Mutable str
+    "field": "",  # Mutable str
+}, 401
 # BOOK_ANNOUNCEMENTS_LIST_RESPONSE = {}, 200
 # BOOK_ANNOUNCEMENT_OBJECT_RESPONSE = {}, 200
