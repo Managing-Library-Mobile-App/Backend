@@ -27,33 +27,35 @@ def fill_db(db: SQLAlchemy):
         db.session.commit()
 
     for book in books:
-        new_book: Book = Book(
-            language=book["language"],
-            isbn=book["isbn"],
-            title=book["title"],
-            authors=book["authors"],
-            publishing_house=book["publishing_house"],
-            description=book["description"],
-            genres=book["genres"],
-            picture=book["picture"],
-            premiere_date=book["premiere_date"],
+        db.session.add(
+            Book(
+                language=book["language"],
+                isbn=book["isbn"],
+                title=book["title"],
+                authors=book["authors"],
+                publishing_house=book["publishing_house"],
+                description=book["description"],
+                genres=book["genres"],
+                picture=book["picture"],
+                premiere_date=book["premiere_date"],
+            )
         )
-        db.session.add(new_book)
         db.session.commit()
 
     for book in new_books:
-        new_book: Book = Book(
-            language=book["language"],
-            isbn=book["isbn"],
-            title=book["title"],
-            authors=book["authors"],
-            publishing_house=book["publishing_house"],
-            description=book["description"],
-            genres=book["genres"],
-            picture=book["picture"],
-            premiere_date=book["premiere_date"],
+        db.session.add(
+            Book(
+                language=book["language"],
+                isbn=book["isbn"],
+                title=book["title"],
+                authors=book["authors"],
+                publishing_house=book["publishing_house"],
+                description=book["description"],
+                genres=book["genres"],
+                picture=book["picture"],
+                premiere_date=book["premiere_date"],
+            )
         )
-        db.session.add(new_book)
         db.session.commit()
 
     for index, user in enumerate(users):
