@@ -24,6 +24,14 @@ THEME_NOT_CHANGED_RESPONSE = {
     "message": "wrong_theme",
     "details": "Wrong theme",
 }, 401
+PROFILE_PICTURE_CHANGED_RESPONSE = {
+    "message": "profile_picture_changed",
+    "details": "profile picture changed",
+}, 200
+PROFILE_PICTURE_NOT_CHANGED_RESPONSE = {
+    "message": "profile_picture_not_changed",
+    "details": "Profile picture not changed",
+}, 401
 TOKEN_INVALID_RESPONSE = {
     "message": "token_invalid",
     "details": "Token invalid",
