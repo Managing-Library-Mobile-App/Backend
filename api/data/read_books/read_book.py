@@ -60,7 +60,9 @@ class ReadBook(Resource):
             return create_response(LIBRARY_NOT_FOUND_RESPONSE, language=language)
         read_book_ids = [read_book.id for read_book in library_object.read_books]
         book_query = book_query.filter(book.Book.id.in_(read_book_ids))
-        book_objects = book_query.paginate(page=page, per_page=per_page)
+        book_objects = book_query.paginate(
+            page=page, per_page=per_page, error_out=False
+        )
 
         if library_object and book_objects:
             return create_response(

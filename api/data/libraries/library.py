@@ -26,7 +26,9 @@ class Library(Resource):
         library_query = library.Library.query
         if library_id:
             library_query = library_query.filter(library.Library.id == library_id)
-        library_objects = library_query.paginate(page=page, per_page=per_page)
+        library_objects = library_query.paginate(
+            page=page, per_page=per_page, error_out=False
+        )
         return create_response(
             LIBRARIES_RESPONSE,
             {

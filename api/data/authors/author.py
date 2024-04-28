@@ -59,7 +59,7 @@ class Author(Resource):
     def get(self) -> Response:
         page: int = request.args.get("page", 1, type=int)
         per_page: int = request.args.get("per_page", 8, type=int)
-        sorts: str = request.args.get("sort", "name", type=str)
+        sorts: str = request.args.get("sorts", "name", type=str)
         language: str = request.args.get("language", type=str)
         author_id: int = request.args.get("id", type=int)
         name: str = request.args.get("name", type=str)
@@ -91,7 +91,9 @@ class Author(Resource):
                     return create_response(SORT_PARAM_DOES_NOT_EXIST, language=language)
                 author_query = author_query.order_by(field)
 
-        author_objects = author_query.paginate(page=page, per_page=per_page)
+        author_objects = author_query.paginate(
+            page=page, per_page=per_page, error_out=False
+        )
 
         return create_response(
             AUTHORS_RESPONSE,

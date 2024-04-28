@@ -62,7 +62,9 @@ class FavouriteBook(Resource):
             favourite_book.id for favourite_book in library_object.favourite_books
         ]
         book_query = book_query.filter(book.Book.id.in_(favourite_book_ids))
-        book_objects = book_query.paginate(page=page, per_page=per_page)
+        book_objects = book_query.paginate(
+            page=page, per_page=per_page, error_out=False
+        )
 
         if library_object:
             return create_response(

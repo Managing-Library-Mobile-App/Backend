@@ -59,7 +59,9 @@ class Fan(Resource):
             return create_response(AUTHOR_NOT_FOUND_RESPONSE, language=language)
         fans_ids = [fan.id for fan in author_query.fans]
         user_query = user_query.filter(user.User.id.in_(fans_ids))
-        user_objects = user_query.paginate(page=page, per_page=per_page)
+        user_objects = user_query.paginate(
+            page=page, per_page=per_page, error_out=False
+        )
 
         if author_query:
             return create_response(
