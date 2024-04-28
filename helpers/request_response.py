@@ -8,6 +8,7 @@ from helpers.translation import (
     translate_dict_to_known,
     translate_list_to_known,
 )
+from static.responses import LENGTH_VALIDATION_ERROR_RESPONSE
 
 
 def int_range_validation(min=0, max=255):
@@ -39,17 +40,14 @@ class APIArgument(Argument):
     def handle_validation_error(self, error, bundle_errors):
         help_str = "(%s) " % self.help if self.help else ""
         details = "[%s]: %s%s" % (self.name, help_str, str(error))
+        response = LENGTH_VALIDATION_ERROR_RESPONSE[0]
+        response["details"] = details
+        response["field"] = self.name
         return abort(
             Response(
-                json.dumps(
-                    {
-                        "message": "length_validation_error",
-                        "details": details,
-                        "field": self.name,
-                    }
-                ),
+                json.dumps(response),
                 mimetype="application/json",
-                status=400,
+                status=LENGTH_VALIDATION_ERROR_RESPONSE[1],
             )
         )
 

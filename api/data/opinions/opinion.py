@@ -1,5 +1,6 @@
 from flask import Response, request
 from flask_restful import Resource
+from sqlalchemy import desc
 
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
@@ -22,6 +23,7 @@ from static.responses import (
     OPINIONS_RESPONSE,
     OPINION_ALREADY_EXISTS_RESPONSE,
     BOOK_DOES_NOT_EXIST_RESPONSE,
+    SORT_PARAM_DOES_NOT_EXIST,
 )
 
 
@@ -58,6 +60,7 @@ class Opinion(Resource):
         page: int = request.args.get("page", 1, type=int)
         per_page: int = request.args.get("per_page", 8, type=int)
         language: str = request.args.get("language", type=str)
+        sorts: str = request.args.get("sorts", "-stars_count", type=str)
         opinion_id: int = request.args.get("id", type=int)
         if not verify_jwt_token():
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
@@ -66,7 +69,23 @@ class Opinion(Resource):
         if opinion_id:
             opinion_query = opinion_query.filter(opinion.Opinion.id == opinion_id)
 
-        opinion_objects = opinion_query.paginate(page=page, per_page=per_page)
+        for sort in sorts.split(","):
+            if sort.startswith("-"):
+                try:
+                    field = getattr(opinion.Opinion, sort[1:])
+                except AttributeError:
+                    return create_response(SORT_PARAM_DOES_NOT_EXIST, language=language)
+                opinion_query = opinion_query.order_by(desc(field))
+            else:
+                try:
+                    field = getattr(opinion.Opinion, sort)
+                except AttributeError:
+                    return create_response(SORT_PARAM_DOES_NOT_EXIST, language=language)
+                opinion_query = opinion_query.order_by(field)
+
+        opinion_objects = opinion_query.paginate(
+            page=page, per_page=per_page, error_out=False
+        )
 
         return create_response(
             OPINIONS_RESPONSE,

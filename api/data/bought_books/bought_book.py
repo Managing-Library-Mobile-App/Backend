@@ -56,13 +56,15 @@ class BoughtBook(Resource):
             book_query = book_query.filter_by(id=book_id)
 
         library_object: library.Library = library_query.first()
-        if library_object:
+        if not library_object:
             return create_response(LIBRARY_NOT_FOUND_RESPONSE, language=language)
         bought_book_ids = [
             bought_book.id for bought_book in library_object.bought_books
         ]
         book_query = book_query.filter(book.Book.id.in_(bought_book_ids))
-        book_objects = book_query.paginate(page=page, per_page=per_page)
+        book_objects = book_query.paginate(
+            page=page, per_page=per_page, error_out=False
+        )
 
         if library_object:
             return create_response(

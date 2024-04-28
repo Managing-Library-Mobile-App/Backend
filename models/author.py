@@ -34,22 +34,14 @@ class Author(db.Model):  # type: ignore[name-defined]
         name: str,
         biography: str,
         picture: str,
-        fans: list[int] = None,
     ) -> None:
         """Initializing an object of the class.
         :param biography: description of the author
         :param picture: link to the picture
-        :param fans: list of users who like the author
         """
         self.name = name
         self.biography = biography
         self.picture = picture
-        from .user import User
-
-        for fan_id in fans:
-            self.fans.append(db.session.query(User).filter_by(id=fan_id).first())
-
-        self.fans_count = len(fans)
 
     def as_dict(self) -> dict:
         """Serializing object to dictionary."""
@@ -77,6 +69,7 @@ class Author(db.Model):  # type: ignore[name-defined]
         if fan:
             self.fans.append(fan)
             self.fans_count += 1
+            fan.followed_authors_count += 1
 
     def remove_fan(self, fan_id) -> None:
         """remove a user from fans' list
@@ -88,6 +81,7 @@ class Author(db.Model):  # type: ignore[name-defined]
         if fan:
             self.fans.remove(fan)
             self.fans_count -= 1
+            fan.followed_authors_count -= 1
 
     def add_released_book(self, book_id) -> None:
         """Add a book to released_books' list"""

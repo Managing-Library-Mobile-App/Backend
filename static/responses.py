@@ -16,13 +16,21 @@ PASSWORD_NOT_CHANGED_RESPONSE = {
     "message": "wrong_password",
     "details": "Wrong password",
 }, 401
-MOTIVE_CHANGED_RESPONSE = {
-    "message": "motive_changed",
-    "details": "motive changed",
+THEME_CHANGED_RESPONSE = {
+    "message": "theme_changed",
+    "details": "theme changed",
 }, 200
-MOTIVE_NOT_CHANGED_RESPONSE = {
-    "message": "wrong_motive",
-    "details": "Wrong motive",
+THEME_NOT_CHANGED_RESPONSE = {
+    "message": "wrong_theme",
+    "details": "Wrong theme",
+}, 401
+PROFILE_PICTURE_CHANGED_RESPONSE = {
+    "message": "profile_picture_changed",
+    "details": "profile picture changed",
+}, 200
+PROFILE_PICTURE_NOT_CHANGED_RESPONSE = {
+    "message": "profile_picture_not_changed",
+    "details": "Profile picture not changed",
 }, 401
 TOKEN_INVALID_RESPONSE = {
     "message": "token_invalid",
@@ -235,6 +243,10 @@ LOGIN_SUCCESSFUL_RESPONSE = {
     "details": "Login successful",
     "token": "",  # Mutable str
 }, 200
-
+LENGTH_VALIDATION_ERROR_RESPONSE = {
+    "message": "length_validation_error",
+    "details": "",  # Mutable str
+    "field": "",  # Mutable str
+}, 401
 # BOOK_ANNOUNCEMENTS_LIST_RESPONSE = {}, 200
 # BOOK_ANNOUNCEMENT_OBJECT_RESPONSE = {}, 200

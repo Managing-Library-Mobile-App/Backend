@@ -16,7 +16,6 @@ from static.responses import (
     OBJECT_CREATED_RESPONSE,
     AUTHORS_RESPONSE,
     USER_DOES_NOT_EXIST_RESPONSE,
-    FAN_DOES_NOT_EXIST_RESPONSE,
     AUTHOR_DOES_NOT_EXIST_RESPONSE,
     SORT_PARAM_DOES_NOT_EXIST,
 )
@@ -30,7 +29,6 @@ class Author(Resource):
         self.post_parser.add_arg("name", type=string_range_validation(max=200))
         self.post_parser.add_arg("biography", type=string_range_validation(max=3000))
         self.post_parser.add_arg("picture", type=string_range_validation(max=200))
-        self.post_parser.add_arg("fans", type=list, required=False)
         self.post_parser.add_arg("language", required=False)
 
         self.delete_parser: RequestParser = RequestParser(
@@ -59,7 +57,7 @@ class Author(Resource):
     def get(self) -> Response:
         page: int = request.args.get("page", 1, type=int)
         per_page: int = request.args.get("per_page", 8, type=int)
-        sorts: str = request.args.get("sort", "name", type=str)
+        sorts: str = request.args.get("sorts", "name", type=str)
         language: str = request.args.get("language", type=str)
         author_id: int = request.args.get("id", type=int)
         name: str = request.args.get("name", type=str)
@@ -91,7 +89,9 @@ class Author(Resource):
                     return create_response(SORT_PARAM_DOES_NOT_EXIST, language=language)
                 author_query = author_query.order_by(field)
 
-        author_objects = author_query.paginate(page=page, per_page=per_page)
+        author_objects = author_query.paginate(
+            page=page, per_page=per_page, error_out=False
+        )
 
         return create_response(
             AUTHORS_RESPONSE,
@@ -115,7 +115,6 @@ class Author(Resource):
         name: str = args.get("name")
         biography: str = args.get("biography")
         picture: str = args.get("picture")
-        fans: list[int] = args.get("fans")
         language: str = args.get("language")
         email: str | None = verify_jwt_token()
         if not email:
@@ -124,14 +123,10 @@ class Author(Resource):
         if not user.is_admin:
             return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
-        for fan in fans:
-            if not User.query.filter_by(id=fan).first():
-                return create_response(FAN_DOES_NOT_EXIST_RESPONSE, language=language)
         author_object: author.Author = author.Author(
             name=name,
             biography=biography,
             picture=picture,
-            fans=fans if fans else [],
         )
         db.session.add(author_object)
         db.session.commit()

@@ -22,7 +22,6 @@ def fill_db(db: SQLAlchemy):
             name=author["name"],
             biography=author["biography"],
             picture=author["picture"],
-            fans=[],
         )
         db.session.add(new_author)
         db.session.commit()

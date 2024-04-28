@@ -33,7 +33,9 @@ class User(Resource):
         if user_id:
             user_query = user_query.filter(user.User.id == user_id)
 
-        user_objects = user_query.paginate(page=page, per_page=per_page)
+        user_objects = user_query.paginate(
+            page=page, per_page=per_page, error_out=False
+        )
 
         return create_response(
             USERS_RESPONSE,
