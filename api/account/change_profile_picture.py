@@ -40,5 +40,7 @@ class ChangeProfilePicture(Resource):
         if user:
             user.profile_picture = profile_picture
             db.session.commit()
-            return create_response(PROFILE_PICTURE_CHANGED_RESPONSE, language=language)
+            return create_response(
+                PROFILE_PICTURE_CHANGED_RESPONSE, user.as_dict(), language=language
+            )
         return create_response(PROFILE_PICTURE_NOT_CHANGED_RESPONSE, language=language)

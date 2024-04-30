@@ -8,26 +8,14 @@ PASSWORD_WRONG_FORMAT_RESPONSE = (
     },
     403,
 )
-PASSWORD_CHANGED_RESPONSE = {
-    "message": "password_changed",
-    "details": "Password changed",
-}, 200
 PASSWORD_NOT_CHANGED_RESPONSE = {
     "message": "wrong_password",
     "details": "Wrong password",
 }, 401
-THEME_CHANGED_RESPONSE = {
-    "message": "theme_changed",
-    "details": "theme changed",
-}, 200
 THEME_NOT_CHANGED_RESPONSE = {
     "message": "wrong_theme",
     "details": "Wrong theme",
 }, 401
-PROFILE_PICTURE_CHANGED_RESPONSE = {
-    "message": "profile_picture_changed",
-    "details": "profile picture changed",
-}, 200
 PROFILE_PICTURE_NOT_CHANGED_RESPONSE = {
     "message": "profile_picture_not_changed",
     "details": "Profile picture not changed",
@@ -183,17 +171,9 @@ PARAM_NOT_INT_RESPONSE = {
     "message": "param_not_int",
     "details": "Parameter is not an integer",
 }, 400
-OBJECT_CREATED_RESPONSE = {
-    "message": "object_created",
-    "details": "Object created",
-}, 200
 OBJECT_DELETED_RESPONSE = {
     "message": "object_deleted",
     "details": "Object deleted",
-}, 200
-OBJECT_MODIFIED_RESPONSE = {
-    "message": "object_modified",
-    "details": "Object modified",
 }, 200
 INVALID_PASSWORD_RESPONSE = {
     "message": "invalid_password",
@@ -248,5 +228,10 @@ LENGTH_VALIDATION_ERROR_RESPONSE = {
     "details": "",  # Mutable str
     "field": "",  # Mutable str
 }, 401
+PASSWORD_CHANGED_RESPONSE = {}, 200  # User model object
+THEME_CHANGED_RESPONSE = {}, 200  # User model object
+PROFILE_PICTURE_CHANGED_RESPONSE = {}, 200  # User model object
+OBJECT_CREATED_RESPONSE = {}, 200  # model object/s corresponding to the endpoint
+OBJECT_MODIFIED_RESPONSE = {}, 200  # model object/s corresponding to the endpoint
 # BOOK_ANNOUNCEMENTS_LIST_RESPONSE = {}, 200
 # BOOK_ANNOUNCEMENT_OBJECT_RESPONSE = {}, 200

@@ -102,7 +102,9 @@ class FavouriteBook(Resource):
             if book_object not in library_object.favourite_books:
                 library_object.favourite_books.append(book_object)
                 db.session.commit()
-                return create_response(OBJECT_CREATED_RESPONSE, language=language)
+                return create_response(
+                    OBJECT_CREATED_RESPONSE, library_object.as_dict(), language=language
+                )
             else:
                 return create_response(
                     BOOK_ALREADY_IN_FAVOURITE_BOOKS_RESPONSE, language=language

@@ -99,7 +99,9 @@ class Fan(Resource):
             if user_object not in author_query.fans:
                 author_query.fans.append(user_object)
                 db.session.commit()
-                return create_response(OBJECT_CREATED_RESPONSE, language=language)
+                return create_response(
+                    OBJECT_CREATED_RESPONSE, user_object.as_dict(), language=language
+                )
             else:
                 return create_response(USER_ALREADY_IN_FANS_RESPONSE, language=language)
         return create_response(USER_NOT_FOUND_RESPONSE, language=language)

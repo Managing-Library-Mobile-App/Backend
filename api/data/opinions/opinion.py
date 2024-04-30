@@ -132,7 +132,9 @@ class Opinion(Resource):
         db.session.add(opinion_object)
         db.session.commit()
 
-        return create_response(OBJECT_CREATED_RESPONSE, language=language)
+        return create_response(
+            OBJECT_CREATED_RESPONSE, opinion_object.as_dict(), language=language
+        )
 
     def delete(self) -> Response:
         args: dict = self.delete_parser.parse_args()
@@ -185,4 +187,6 @@ class Opinion(Resource):
                 modified_opinion.comment = comment
             db.session.commit()
 
-        return create_response(OBJECT_MODIFIED_RESPONSE, language=language)
+        return create_response(
+            OBJECT_MODIFIED_RESPONSE, modified_opinion.as_dict(), language=language
+        )

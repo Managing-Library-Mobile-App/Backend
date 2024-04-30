@@ -47,5 +47,7 @@ class ChangePassword(Resource):
         if user:
             user.password = new_password
             db.session.commit()
-            return create_response(PASSWORD_CHANGED_RESPONSE, language=language)
+            return create_response(
+                PASSWORD_CHANGED_RESPONSE, user.as_dict(), language=language
+            )
         return create_response(PASSWORD_NOT_CHANGED_RESPONSE, language=language)
