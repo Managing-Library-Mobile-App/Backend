@@ -11,7 +11,7 @@ new_books: list[dict[str, Any]] = [
         "description": "The great britain is an amazing great britain that was a great britain...",
         "genres": ["Action", "Thriller"],
         "picture": "https://picsum.photos/id/24/4855/1803",
-        "premiere_date": datetime.strptime("2024-01-21", "%Y-%m-%d"),
+        "premiere_date": datetime.strptime("10-01-2024", "%d-%m-%Y"),
     },
     {
         "language": "pol",
@@ -22,7 +22,7 @@ new_books: list[dict[str, Any]] = [
         "description": "The great britain is an amazing great britain that was a great britain...",
         "genres": ["Action"],
         "picture": "https://picsum.photos/id/237/200/300",
-        "premiere_date": datetime.strptime("2024-10-21", "%Y-%m-%d"),
+        "premiere_date": datetime.strptime("05-10-2024", "%d-%m-%Y"),
     },
     {
         "language": "eng",
@@ -33,7 +33,7 @@ new_books: list[dict[str, Any]] = [
         "description": "The great britain is an amazing great britain that was a great britain...",
         "genres": ["Thriller"],
         "picture": "https://picsum.photos/id/237/200/300",
-        "premiere_date": datetime.strptime("2025-01-21", "%Y-%m-%d"),
+        "premiere_date": datetime.strptime("06-01-2024", "%d-%m-%Y"),
     },
     {
         "language": "pol",
@@ -44,7 +44,7 @@ new_books: list[dict[str, Any]] = [
         "description": "The great britain is an amazing great britain that was a great britain...",
         "genres": ["Thriller"],
         "picture": "https://picsum.photos/id/40/4106/2806",
-        "premiere_date": datetime.strptime("2026-01-21", "%Y-%m-%d"),
+        "premiere_date": datetime.strptime("07-01-2024", "%d-%m-%Y"),
     },
     {
         "language": "pol",
@@ -55,6 +55,6 @@ new_books: list[dict[str, Any]] = [
         "description": "The great britain is an amazing great britain that was a great britain...",
         "genres": ["Fantasy"],
         "picture": "https://picsum.photos/id/237/200/300",
-        "premiere_date": datetime.strptime("2024-10-25", "%Y-%m-%d"),
+        "premiere_date": datetime.strptime("22-10-2024", "%d-%m-%Y"),
     },
 ]
