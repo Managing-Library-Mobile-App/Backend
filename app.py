@@ -8,7 +8,7 @@ from flask_restful import Api
 from loguru import logger
 from werkzeug import run_simple
 
-from test_data.fill_db_script import fill_db
+from test_data.fill_db_script import fill_db, create_admin_accounts_in_db
 from helpers.api_add_resources import api_add_resources
 from helpers.init import app, cache, db, dispatcher, jwt, limiter
 from models.author import Author  # noqa
@@ -71,7 +71,10 @@ if __name__ == "__main__":
     with app.app_context():
         db.drop_all()
         db.create_all()
-        fill_db(db)
+        if database == "test":
+            create_admin_accounts_in_db(db)
+        else:
+            fill_db(db)
     # App setup
     run_simple(
         hostname="0.0.0.0",

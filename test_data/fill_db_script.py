@@ -14,6 +14,29 @@ from models.opinion import Opinion
 from models.user import User
 
 
+def create_admin_accounts_in_db(db: SQLAlchemy):
+    logger.info("Creating admin accounts")
+    for index, admin in enumerate(admins):
+        new_admin: User = User(
+            username=admin["username"],
+            password=admin["password"],
+            email=admin["email"],
+            is_admin=admin["is_admin"],
+        )
+        db.session.add(new_admin)
+        db.session.commit()
+
+        new_admin_library: Library = Library(
+            read_books=[],
+            favourite_books=[],
+            bought_books=[],
+            user_id=new_admin.id,
+        )
+        db.session.add(new_admin_library)
+        db.session.commit()
+    logger.info("Admin accounts created")
+
+
 def fill_db(db: SQLAlchemy):
     logger.info("Filling database")
 
