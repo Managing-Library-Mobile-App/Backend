@@ -39,7 +39,7 @@ books: list[dict[str, Any]] = [
         "language": "pol",
         "isbn": "0101010104",
         "title": "The Great Britain",
-        "authors": [2],
+        "authors": [2, 4, 5, 3],
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Action"],
