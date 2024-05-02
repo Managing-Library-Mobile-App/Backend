@@ -23,7 +23,7 @@ class ChangeProfilePicture(Resource):
             argument_class=APIArgument, bundle_errors=True
         )
         self.patch_parser.add_arg(
-            "profile_picture", type=int_range_validation(min=1, max=15)
+            "profile_picture", type=int_range_validation(min=1, max=18)
         )
         self.patch_parser.add_arg("language", required=False)
         super(ChangeProfilePicture, self).__init__()

@@ -86,6 +86,9 @@ def fill_db(db: SQLAlchemy):
             username=user["username"],
             password=user["password"],
             email=user["email"],
+            profile_picture=user["profile_picture"]
+            if "profile_picture" in user.keys()
+            else 1,
         )
         db.session.add(new_user)
         db.session.commit()
@@ -105,6 +108,9 @@ def fill_db(db: SQLAlchemy):
             password=admin["password"],
             email=admin["email"],
             is_admin=admin["is_admin"],
+            profile_picture=admin["profile_picture"]
+            if "profile_picture" in admin.keys()
+            else 1,
         )
         db.session.add(new_admin)
         db.session.commit()
