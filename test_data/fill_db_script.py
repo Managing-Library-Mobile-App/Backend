@@ -14,6 +14,29 @@ from models.opinion import Opinion
 from models.user import User
 
 
+def create_admin_accounts_in_db(db: SQLAlchemy):
+    logger.info("Creating admin accounts")
+    for index, admin in enumerate(admins):
+        new_admin: User = User(
+            username=admin["username"],
+            password=admin["password"],
+            email=admin["email"],
+            is_admin=admin["is_admin"],
+        )
+        db.session.add(new_admin)
+        db.session.commit()
+
+        new_admin_library: Library = Library(
+            read_books=[],
+            favourite_books=[],
+            bought_books=[],
+            user_id=new_admin.id,
+        )
+        db.session.add(new_admin_library)
+        db.session.commit()
+    logger.info("Admin accounts created")
+
+
 def fill_db(db: SQLAlchemy):
     logger.info("Filling database")
 
@@ -27,33 +50,35 @@ def fill_db(db: SQLAlchemy):
         db.session.commit()
 
     for book in books:
-        new_book: Book = Book(
-            language=book["language"],
-            isbn=book["isbn"],
-            title=book["title"],
-            authors=book["authors"],
-            publishing_house=book["publishing_house"],
-            description=book["description"],
-            genres=book["genres"],
-            picture=book["picture"],
-            premiere_date=book["premiere_date"],
+        db.session.add(
+            Book(
+                language=book["language"],
+                isbn=book["isbn"],
+                title=book["title"],
+                authors=book["authors"],
+                publishing_house=book["publishing_house"],
+                description=book["description"],
+                genres=book["genres"],
+                picture=book["picture"],
+                premiere_date=book["premiere_date"],
+            )
         )
-        db.session.add(new_book)
         db.session.commit()
 
     for book in new_books:
-        new_book: Book = Book(
-            language=book["language"],
-            isbn=book["isbn"],
-            title=book["title"],
-            authors=book["authors"],
-            publishing_house=book["publishing_house"],
-            description=book["description"],
-            genres=book["genres"],
-            picture=book["picture"],
-            premiere_date=book["premiere_date"],
+        db.session.add(
+            Book(
+                language=book["language"],
+                isbn=book["isbn"],
+                title=book["title"],
+                authors=book["authors"],
+                publishing_house=book["publishing_house"],
+                description=book["description"],
+                genres=book["genres"],
+                picture=book["picture"],
+                premiere_date=book["premiere_date"],
+            )
         )
-        db.session.add(new_book)
         db.session.commit()
 
     for index, user in enumerate(users):

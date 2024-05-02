@@ -163,7 +163,6 @@ class Book(Resource):
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
-        print(authors)
         author_objects = author.Author.query.filter(
             *[author.Author.id == author_object_id for author_object_id in authors]
         ).all()
@@ -183,7 +182,9 @@ class Book(Resource):
         )
         db.session.add(book_object)
 
-        return create_response(OBJECT_CREATED_RESPONSE, language=language)
+        return create_response(
+            OBJECT_CREATED_RESPONSE, book_object.as_dict(), language=language
+        )
 
     def delete(self) -> Response:
         args: dict = self.delete_parser.parse_args()
@@ -239,4 +240,6 @@ class Book(Resource):
             if book_language:
                 modified_book.book_language = book_language
             db.session.commit()
-        return create_response(OBJECT_MODIFIED_RESPONSE, language=language)
+        return create_response(
+            OBJECT_MODIFIED_RESPONSE, modified_book.as_dict(), language=language
+        )

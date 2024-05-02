@@ -34,5 +34,7 @@ class ChangeTheme(Resource):
         if user:
             user.theme = theme
             db.session.commit()
-            return create_response(THEME_CHANGED_RESPONSE, language=language)
+            return create_response(
+                THEME_CHANGED_RESPONSE, user.as_dict(), language=language
+            )
         return create_response(THEME_NOT_CHANGED_RESPONSE, language=language)

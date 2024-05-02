@@ -1,6 +1,7 @@
 from googletrans import Translator
 from googletrans.models import Detected
 
+
 def translate_known_to_known(text_to_translate: str, src: str, language: str) -> str:
     return Translator().translate(text_to_translate, src=src, dest=language).text
 

@@ -131,7 +131,9 @@ class Author(Resource):
         db.session.add(author_object)
         db.session.commit()
 
-        return create_response(OBJECT_CREATED_RESPONSE, language=language)
+        return create_response(
+            OBJECT_CREATED_RESPONSE, author_object.as_dict(), language=language
+        )
 
     def delete(self) -> Response:
         args: dict = self.delete_parser.parse_args()
@@ -188,4 +190,6 @@ class Author(Resource):
                 modified_author.picture = picture
             db.session.commit()
 
-        return create_response(OBJECT_MODIFIED_RESPONSE, language=language)
+        return create_response(
+            OBJECT_MODIFIED_RESPONSE, modified_author.as_dict(), language=language
+        )
