@@ -5,14 +5,13 @@ from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
 from helpers.request_response import RequestParser, create_response, APIArgument
 
-from models import book, library
+from models import book, library, user
 from static.responses import (
     OBJECT_DELETED_RESPONSE,
     USER_NOT_FOUND_RESPONSE,
     BOOK_NOT_FOUND_RESPONSE,
     OBJECT_CREATED_RESPONSE,
     BOOKS_RESPONSE,
-    USER_ID_NOT_PROVIDED_RESPONSE,
     TOKEN_INVALID_RESPONSE,
     BOOK_ALREADY_IN_FAVOURITE_BOOKS_RESPONSE,
     BOOK_NOT_IN_FAVOURITE_BOOKS_RESPONSE,
@@ -26,14 +25,14 @@ class FavouriteBook(Resource):
             argument_class=APIArgument, bundle_errors=True
         )
         self.post_parser.add_arg("language", required=False)
-        self.post_parser.add_arg("user_id", type=int)
+        self.post_parser.add_arg("user_id", type=int, required=False)
         self.post_parser.add_arg("book_id", type=int)
 
         self.delete_parser: RequestParser = RequestParser(
             argument_class=APIArgument, bundle_errors=True
         )
         self.delete_parser.add_arg("language", required=False)
-        self.delete_parser.add_arg("user_id", type=int)
+        self.delete_parser.add_arg("user_id", type=int, required=False)
         self.delete_parser.add_arg("book_id", type=int)
         super(FavouriteBook, self).__init__()
 
@@ -43,7 +42,8 @@ class FavouriteBook(Resource):
         language: str = request.args.get("language")
         user_id: int = request.args.get("user_id", type=int)
         book_id: int = request.args.get("book_id", type=int)
-        if not verify_jwt_token():
+        email = verify_jwt_token()
+        if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
         library_query = library.Library.query
@@ -51,7 +51,8 @@ class FavouriteBook(Resource):
         if user_id:
             library_query = library_query.filter_by(user_id=user_id)
         else:
-            return create_response(USER_ID_NOT_PROVIDED_RESPONSE, language=language)
+            current_user_id = user.User.query.filter_by(email=email).first().id
+            library_query = library_query.filter_by(user_id=current_user_id)
         if book_id:
             book_query = book_query.filter_by(id=book_id)
 
@@ -87,12 +88,18 @@ class FavouriteBook(Resource):
         language: str = args.get("language")
         user_id: int = args.get("user_id")
         book_id: int = args.get("book_id")
-        if not verify_jwt_token():
+        email = verify_jwt_token()
+        if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
         library_query = library.Library.query
         book_query = book.Book.query
-        library_query = library_query.filter_by(user_id=user_id)
+        if user_id:
+            library_query = library_query.filter_by(user_id=user_id)
+        else:
+            current_user_id = user.User.query.filter_by(email=email).first().id
+            library_query = library_query.filter_by(user_id=current_user_id)
+        book_query = book_query.filter_by(id=book_id)
         book_query = book_query.filter_by(id=book_id)
 
         library_object: library.Library = library_query.first()
@@ -118,10 +125,15 @@ class FavouriteBook(Resource):
         language: str = args.get("language")
         user_id: int = args.get("user_id")
         book_id: int = args.get("book_id")
-        if not verify_jwt_token():
+        email = verify_jwt_token()
+        if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
-        library_query = library.Library.query.filter_by(user_id=user_id)
+        if user_id:
+            library_query = library.Library.query.filter_by(user_id=user_id)
+        else:
+            current_user_id = user.User.query.filter_by(email=email).first().id
+            library_query = library.Library.query.filter_by(user_id=current_user_id)
         book_query = book.Book.query.filter_by(id=book_id)
 
         library_object: library.Library = library_query.first()
