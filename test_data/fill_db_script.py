@@ -41,12 +41,13 @@ def fill_db(db: SQLAlchemy):
     logger.info("Filling database")
 
     for author in authors:
-        new_author: Author = Author(
-            name=author["name"],
-            biography=author["biography"],
-            picture=author["picture"],
+        db.session.add(
+            Author(
+                name=author["name"],
+                biography=author["biography"],
+                picture=author["picture"],
+            )
         )
-        db.session.add(new_author)
         db.session.commit()
 
     for book in books:
@@ -125,13 +126,14 @@ def fill_db(db: SQLAlchemy):
         db.session.commit()
 
     for opinion in opinions:
-        new_opinion: Opinion = Opinion(
-            user_id=opinion["user_id"],
-            book_id=opinion["book_id"],
-            stars_count=opinion["stars_count"],
-            comment=opinion["comment"],
+        db.session.add(
+            Opinion(
+                user_id=opinion["user_id"],
+                book_id=opinion["book_id"],
+                stars_count=opinion["stars_count"],
+                comment=opinion["comment"],
+            )
         )
-        db.session.add(new_opinion)
         db.session.commit()
 
     for index, author in enumerate(authors):

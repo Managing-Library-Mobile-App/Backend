@@ -58,11 +58,10 @@ class Book(db.Model):  # type: ignore[name-defined]
         self.title = title
         from .author import Author
 
-        author_objects = (
-            db.session.query(Author)
-            .filter(*[Author.id == author_id for author_id in authors])
-            .all()
-        )
+        author_objects = [
+            db.session.query(Author).filter(Author.id == author_id).first()
+            for author_id in authors
+        ]
         if author_objects:
             self.authors = author_objects
             for author_object in author_objects:
