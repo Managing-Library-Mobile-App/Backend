@@ -181,6 +181,7 @@ class Book(Resource):
             premiere_date=premiere_date,
         )
         db.session.add(book_object)
+        db.session.commit()
 
         return create_response(
             OBJECT_CREATED_RESPONSE, book_object.as_dict(), language=language
