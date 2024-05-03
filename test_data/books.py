@@ -10,7 +10,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Jans House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Action", "Adventure", "Fantasy"],
-        "picture": "https://picsum.photos/id/1084/4579/3271",
+        "picture": "https://picsum.photos/id/1/4579/3271",
         "premiere_date": datetime.strptime("20-02-2022", "%d-%m-%Y"),
     },
     {
@@ -21,7 +21,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Action"],
-        "picture": "https://picsum.photos/id/237/200/300",
+        "picture": "https://picsum.photos/id/2/200/300",
         "premiere_date": datetime.strptime("21-02-2022", "%d-%m-%Y"),
     },
     {
@@ -32,7 +32,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Action"],
-        "picture": "https://picsum.photos/id/237/200/300",
+        "picture": "https://picsum.photos/id/77/5000/3333",
         "premiere_date": datetime.strptime("21-05-2022", "%d-%m-%Y"),
     },
     {
@@ -43,7 +43,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Action"],
-        "picture": "https://picsum.photos/id/1084/4579/3271",
+        "picture": "https://picsum.photos/id/65/5000/3333",
         "premiere_date": datetime.strptime("21-01-2022", "%d-%m-%Y"),
     },
     {
@@ -54,7 +54,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Action"],
-        "picture": "https://picsum.photos/id/200/1920/1280",
+        "picture": "https://picsum.photos/id/5/1920/1280",
         "premiere_date": datetime.strptime("21-01-2022", "%d-%m-%Y"),
     },
     {
@@ -65,7 +65,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Romance"],
-        "picture": "https://picsum.photos/id/237/200/300",
+        "picture": "https://picsum.photos/id/6/200/300",
         "premiere_date": datetime.strptime("21-04-2022", "%d-%m-%Y"),
     },
     {
@@ -76,7 +76,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Romance"],
-        "picture": "https://picsum.photos/id/200/1920/1280",
+        "picture": "https://picsum.photos/id/7/1920/1280",
         "premiere_date": datetime.strptime("21-01-2022", "%d-%m-%Y"),
     },
     {
@@ -87,7 +87,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Romance"],
-        "picture": "https://picsum.photos/id/237/200/300",
+        "picture": "https://picsum.photos/id/8/200/300",
         "premiere_date": datetime.strptime("21-07-2022", "%d-%m-%Y"),
     },
     {
@@ -98,7 +98,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Romance"],
-        "picture": "https://picsum.photos/id/200/1920/1280",
+        "picture": "https://picsum.photos/id/9/1920/1280",
         "premiere_date": datetime.strptime("21-10-2022", "%d-%m-%Y"),
     },
     {
@@ -109,7 +109,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Romance"],
-        "picture": "https://picsum.photos/id/237/200/300",
+        "picture": "https://picsum.photos/id/10/200/300",
         "premiere_date": datetime.strptime("21-11-2022", "%d-%m-%Y"),
     },
     {
@@ -120,7 +120,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Drama"],
-        "picture": "https://picsum.photos/id/237/200/300",
+        "picture": "https://picsum.photos/id/11/200/300",
         "premiere_date": datetime.strptime("21-01-2022", "%d-%m-%Y"),
     },
     {
@@ -131,7 +131,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Horror"],
-        "picture": "https://picsum.photos/id/85/1280/774",
+        "picture": "https://picsum.photos/id/12/1280/774",
         "premiere_date": datetime.strptime("21-01-2022", "%d-%m-%Y"),
     },
     {
@@ -142,7 +142,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Politics"],
-        "picture": "https://picsum.photos/id/63/5000/2813",
+        "picture": "https://picsum.photos/id/13/5000/2813",
         "premiere_date": datetime.strptime("21-01-2022", "%d-%m-%Y"),
     },
     {
@@ -153,7 +153,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Law"],
-        "picture": "https://picsum.photos/id/40/4106/2806",
+        "picture": "https://picsum.photos/id/14/4106/2806",
         "premiere_date": datetime.strptime("21-01-2022", "%d-%m-%Y"),
     },
     {
@@ -164,7 +164,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Comedy"],
-        "picture": "https://picsum.photos/id/24/4855/1803",
+        "picture": "https://picsum.photos/id/15/4855/1803",
         "premiere_date": datetime.strptime("21-01-2022", "%d-%m-%Y"),
     },
     {
@@ -175,7 +175,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Botany"],
-        "picture": "https://picsum.photos/id/1084/4579/3271",
+        "picture": "https://picsum.photos/id/16/4579/3271",
         "premiere_date": datetime.strptime("21-01-2022", "%d-%m-%Y"),
     },
 ]

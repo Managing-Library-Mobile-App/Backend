@@ -6,14 +6,14 @@ authors: list[dict[str, Any]] = [
         "genres": ["Action", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
         ever ever ever ever ever ever ever ever ever ever ever ever ever""",
-        "picture": "https://picsum.photos/id/1062/5000/3334",
+        "picture": "https://picsum.photos/id/22/5000/3334",
         "fans": [1, 2, 3],
     },
     {
         "name": "Angela Martina",
         "genres": ["Action"],
         "biography": """The best author""",
-        "picture": "https://picsum.photos/id/1027/2848/4272",
+        "picture": "https://picsum.photos/id/40/2848/4272",
         "fans": [1, 2],
     },
     {
@@ -23,14 +23,14 @@ authors: list[dict[str, Any]] = [
                  ever ever ever ever ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
-        "picture": "https://picsum.photos/id/1005/5000/3333",
+        "picture": "https://picsum.photos/id/24/5000/3333",
         "fans": [],
     },
     {
         "name": "Amara Shey",
         "genres": ["Action", "Thriller"],
         "biography": """I am an author.""",
-        "picture": "https://picsum.photos/id/1062/5000/3334",
+        "picture": "https://picsum.photos/id/25/5000/3334",
         "fans": [],
     },
     {
@@ -38,7 +38,7 @@ authors: list[dict[str, Any]] = [
         "genres": ["Thriller"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
-        "picture": "https://picsum.photos/id/1027/2848/4272",
+        "picture": "https://picsum.photos/id/26/2848/4272",
         "fans": [],
     },
     {
@@ -46,7 +46,7 @@ authors: list[dict[str, Any]] = [
         "genres": ["Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
-        "picture": "https://picsum.photos/id/1005/5000/3333",
+        "picture": "https://picsum.photos/id/27/5000/3333",
         "fans": [],
     },
     {
@@ -54,7 +54,7 @@ authors: list[dict[str, Any]] = [
         "genres": ["Action"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
-        "picture": "https://picsum.photos/id/1062/5000/3334",
+        "picture": "https://picsum.photos/id/28/5000/3334",
         "fans": [],
     },
     {
@@ -62,7 +62,7 @@ authors: list[dict[str, Any]] = [
         "genres": ["Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
-        "picture": "https://picsum.photos/id/1027/2848/4272",
+        "picture": "https://picsum.photos/id/29/2848/4272",
         "fans": [],
     },
     {
@@ -70,7 +70,7 @@ authors: list[dict[str, Any]] = [
         "genres": ["Action", "Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
-        "picture": "https://picsum.photos/id/1005/5000/3333",
+        "picture": "https://picsum.photos/id/30/5000/3333",
         "fans": [],
     },
     {
@@ -78,7 +78,7 @@ authors: list[dict[str, Any]] = [
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
-        "picture": "https://picsum.photos/id/1062/5000/3334",
+        "picture": "https://picsum.photos/id/51/5000/3334",
         "fans": [1, 5],
     },
     {
@@ -86,7 +86,7 @@ authors: list[dict[str, Any]] = [
         "genres": ["Action", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
                  ever ever ever ever ever ever ever ever ever ever ever ever ever""",
-        "picture": "https://picsum.photos/id/1027/2848/4272",
+        "picture": "https://picsum.photos/id/32/2848/4272",
         "fans": [1, 2, 3, 4, 5],
     },
 ]

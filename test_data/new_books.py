@@ -10,7 +10,7 @@ new_books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The great britain is an amazing great britain that was a great britain...",
         "genres": ["Action", "Thriller"],
-        "picture": "https://picsum.photos/id/24/4855/1803",
+        "picture": "https://picsum.photos/id/17/4855/1803",
         "premiere_date": datetime.strptime("10-01-2024", "%d-%m-%Y"),
     },
     {
@@ -21,7 +21,7 @@ new_books: list[dict[str, Any]] = [
         "publishing_house": "Jans House",
         "description": "The great britain is an amazing great britain that was a great britain...",
         "genres": ["Action"],
-        "picture": "https://picsum.photos/id/237/200/300",
+        "picture": "https://picsum.photos/id/18/200/300",
         "premiere_date": datetime.strptime("05-10-2024", "%d-%m-%Y"),
     },
     {
@@ -32,7 +32,7 @@ new_books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The great britain is an amazing great britain that was a great britain...",
         "genres": ["Thriller"],
-        "picture": "https://picsum.photos/id/237/200/300",
+        "picture": "https://picsum.photos/id/19/200/300",
         "premiere_date": datetime.strptime("06-01-2024", "%d-%m-%Y"),
     },
     {
@@ -43,7 +43,7 @@ new_books: list[dict[str, Any]] = [
         "publishing_house": "Jans House",
         "description": "The great britain is an amazing great britain that was a great britain...",
         "genres": ["Thriller"],
-        "picture": "https://picsum.photos/id/40/4106/2806",
+        "picture": "https://picsum.photos/id/20/4106/2806",
         "premiere_date": datetime.strptime("07-01-2024", "%d-%m-%Y"),
     },
     {
@@ -54,7 +54,7 @@ new_books: list[dict[str, Any]] = [
         "publishing_house": "Gothams House",
         "description": "The great britain is an amazing great britain that was a great britain...",
         "genres": ["Fantasy"],
-        "picture": "https://picsum.photos/id/237/200/300",
+        "picture": "https://picsum.photos/id/21/200/300",
         "premiere_date": datetime.strptime("22-10-2024", "%d-%m-%Y"),
     },
 ]
