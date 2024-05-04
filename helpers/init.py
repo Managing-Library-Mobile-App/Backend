@@ -20,7 +20,7 @@ load_dotenv()
 app: flask.app.Flask = Flask(__name__)
 limiter: flask_limiter.extension.Limiter = Limiter(
     get_remote_address,
-    default_limits=["10000 per day", "5000 per hour"],
+    default_limits=["250000 per day", "50000 per hour"],
     storage_uri="memory://",
 )
 jwt: flask_jwt_extended.jwt_manager.JWTManager = JWTManager()
