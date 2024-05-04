@@ -7,7 +7,6 @@ from helpers.request_response import RequestParser, create_response, APIArgument
 
 from models import book, library, user
 from static.responses import (
-    OBJECT_DELETED_RESPONSE,
     USER_NOT_FOUND_RESPONSE,
     BOOK_NOT_FOUND_RESPONSE,
     OBJECT_CREATED_RESPONSE,
@@ -16,6 +15,7 @@ from static.responses import (
     BOOK_ALREADY_IN_FAVOURITE_BOOKS_RESPONSE,
     BOOK_NOT_IN_FAVOURITE_BOOKS_RESPONSE,
     LIBRARY_NOT_FOUND_RESPONSE,
+    OBJECT_REMOVED_RESPONSE,
 )
 
 
@@ -108,6 +108,7 @@ class FavouriteBook(Resource):
         if library_object and book_object:
             if book_object not in library_object.favourite_books:
                 library_object.favourite_books.append(book_object)
+                library_object.favourite_books_count += 1
                 db.session.commit()
                 return create_response(
                     OBJECT_CREATED_RESPONSE, library_object.as_dict(), language=language
@@ -142,8 +143,11 @@ class FavouriteBook(Resource):
         if library_object and book_object:
             if book_object in library_object.favourite_books:
                 library_object.favourite_books.remove(book_object)
+                library_object.favourite_books_count -= 1
                 db.session.commit()
-                return create_response(OBJECT_DELETED_RESPONSE, language=language)
+                return create_response(
+                    OBJECT_REMOVED_RESPONSE, library_object.as_dict(), language=language
+                )
             else:
                 return create_response(
                     BOOK_NOT_IN_FAVOURITE_BOOKS_RESPONSE, language=language
