@@ -93,7 +93,7 @@ class Book(db.Model):  # type: ignore[name-defined]
             "description": self.description,
             "genres": self.genres,
             "picture": self.picture,
-            "premiere_date": self.premiere_date,
+            "premiere_date": self.premiere_date.strftime("%d-%m-%Y"),
             "score": self.score,
             "opinions_count": self.opinions_count,
             "opinions": [opinion.id for opinion in self.opinions],  # type: ignore
