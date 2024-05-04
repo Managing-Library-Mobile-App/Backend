@@ -21,9 +21,10 @@ class SimilarBooks(Resource):
 
         book_object = book.Book.query.filter(book.Book.id == id).first()
 
+        similar_books_max_count = 10
         similar_book_objects = book.Book.query.all()
-        if len(similar_book_objects) >= 3:
-            similar_book_objects = similar_book_objects[:3]
+        if len(similar_book_objects) >= similar_books_max_count:
+            similar_book_objects = similar_book_objects[:similar_books_max_count]
 
         return create_response(
             BOOKS_RESPONSE,

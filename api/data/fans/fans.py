@@ -7,7 +7,6 @@ from helpers.request_response import RequestParser, create_response, APIArgument
 
 from models import user, author
 from static.responses import (
-    OBJECT_DELETED_RESPONSE,
     USER_NOT_FOUND_RESPONSE,
     OBJECT_CREATED_RESPONSE,
     TOKEN_INVALID_RESPONSE,
@@ -16,6 +15,7 @@ from static.responses import (
     USER_ALREADY_IN_FANS_RESPONSE,
     USER_NOT_IN_FANS_RESPONSE,
     AUTHORS_NOT_PROVIDED_RESPONSE,
+    OBJECT_REMOVED_RESPONSE,
 )
 
 
@@ -92,12 +92,13 @@ class Fan(Resource):
         user_query = user_query.filter_by(id=user_id)
         author_query = author_query.filter_by(id=author_id)
 
-        author_query = author_query.first()
+        author_object: author.Author = author_query.first()
         user_object = user_query.first()
 
         if author_query:
             if user_object not in author_query.fans:
-                author_query.fans.append(user_object)
+                author_object.fans.append(user_object)
+                author_object.fans_count += 1
                 db.session.commit()
                 return create_response(
                     OBJECT_CREATED_RESPONSE, user_object.as_dict(), language=language
@@ -119,14 +120,17 @@ class Fan(Resource):
         user_query = user_query.filter_by(id=user_id)
         author_query = author_query.filter_by(id=author_id)
 
-        author_query = author_query.first()
+        author_object: author.Author = author_query.first()
         user_object = user_query.first()
 
         if author_query:
             if user_object in author_query.fans:
                 author_query.fans.remove(user_object)
+                author_object.fans_count += 1
                 db.session.commit()
-                return create_response(OBJECT_DELETED_RESPONSE, language=language)
+                return create_response(
+                    OBJECT_REMOVED_RESPONSE, author_object.as_dict(), language=language
+                )
             else:
                 return create_response(USER_NOT_IN_FANS_RESPONSE, language=language)
         return create_response(USER_NOT_FOUND_RESPONSE, language=language)

@@ -233,5 +233,6 @@ THEME_CHANGED_RESPONSE = {}, 200  # User model object
 PROFILE_PICTURE_CHANGED_RESPONSE = {}, 200  # User model object
 OBJECT_CREATED_RESPONSE = {}, 200  # model object/s corresponding to the endpoint
 OBJECT_MODIFIED_RESPONSE = {}, 200  # model object/s corresponding to the endpoint
+OBJECT_REMOVED_RESPONSE = {}, 200  # model object/s corresponding to the endpoint
 # BOOK_ANNOUNCEMENTS_LIST_RESPONSE = {}, 200
 # BOOK_ANNOUNCEMENT_OBJECT_RESPONSE = {}, 200
