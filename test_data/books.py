@@ -98,7 +98,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Action & Adventure"],
-        "picture": "https://picsum.photos/id/97/200/300",
+        "picture": "https://picsum.photos/id/151/200/300",
         "premiere_date": datetime.strptime("21-02-2022", "%d-%m-%Y"),
     },
     {
@@ -230,7 +230,7 @@ books: list[dict[str, Any]] = [
         "publishing_house": "Adams House",
         "description": "The Great Britain is a great britain book which...",
         "genres": ["Romance"],
-        "picture": "https://picsum.photos/id/86/200/300",
+        "picture": "https://picsum.photos/id/111/200/300",
         "premiere_date": datetime.strptime("21-11-2022", "%d-%m-%Y"),
     },
     {

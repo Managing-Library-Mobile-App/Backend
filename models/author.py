@@ -29,12 +29,7 @@ class Author(db.Model):  # type: ignore[name-defined]
         cascade="all, delete",
     )
 
-    def __init__(
-        self,
-        name: str,
-        biography: str,
-        picture: str,
-    ) -> None:
+    def __init__(self, name: str, biography: str, picture: str) -> None:
         """Initializing an object of the class.
         :param biography: description of the author
         :param picture: link to the picture
@@ -92,6 +87,12 @@ class Author(db.Model):  # type: ignore[name-defined]
             self.released_books.append(book)
             self.released_books_count += 1
 
+            genres = set()
+            for book in self.released_books:
+                for genre in book.genres:
+                    genres.add(genre)
+                self.genres = genres
+
     def remove_released_book(self, book_id) -> None:
         """Remove a book from released_books' list"""
         from .book import Book
@@ -100,3 +101,8 @@ class Author(db.Model):  # type: ignore[name-defined]
         if book:
             self.released_books.remove(book)
             self.released_books_count -= 1
+            genres = set()
+            for book in self.released_books:
+                for genre in book.genres:
+                    genres.add(genre)
+                self.genres = genres

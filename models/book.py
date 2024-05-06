@@ -65,8 +65,15 @@ class Book(db.Model):  # type: ignore[name-defined]
         if author_objects:
             self.authors = author_objects
             for author_object in author_objects:
+                session = db.create_session({})
                 author_object.released_books_count += 1
-                db.session.add(author_object)
+                author_genres = author_object.genres
+                author_genres = set(author_genres)
+                for genre in genres:
+                    author_genres.add(genre)
+                author_object.genres = author_genres
+                session.commit()
+                session.close()
 
         self.publishing_house = publishing_house
         self.description = description
