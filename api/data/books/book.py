@@ -183,6 +183,13 @@ class Book(Resource):
         db.session.add(book_object)
         db.session.commit()
 
+        for author_object in author_objects:
+            author_genres = set(author_object.genres)
+            for genre in book_object.genres:
+                author_genres.add(genre)
+            author_object.genres = author_genres
+        db.session.commit()
+
         return create_response(
             OBJECT_CREATED_RESPONSE, book_object.as_dict(), language=language
         )
@@ -199,9 +206,23 @@ class Book(Resource):
             return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
         book_object: book.Book = book.Book.query.filter_by(id=book_id).first()
+        author_objects = author.Author.query.filter(
+            *[
+                author.Author.id == author_object_id
+                for author_object_id in book_object.authors
+            ]
+        ).all()
         if not book_object:
             return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
         db.session.delete(book_object)
+        db.session.commit()
+
+        for author_object in author_objects:
+            author_genres = set()
+            for author_book in author_object.released_books:
+                for genre in author_book.genres:
+                    author_genres.add(genre)
+            author_object.genres = author_genres
         db.session.commit()
 
         return create_response(OBJECT_DELETED_RESPONSE, language=language)
