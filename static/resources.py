@@ -16,6 +16,7 @@ from api.data.genres.genres import Genres
 from api.data.libraries.library import Library
 from api.data.new_books.new_book import NewBook
 from api.data.opinions.opinion import Opinion
+from api.data.quotes.quotes import Quotes
 from api.data.read_books.read_book import ReadBook
 from api.data.similar_books.similar_books import SimilarBooks
 from api.data.user.user import User
@@ -45,4 +46,5 @@ RESOURCES = {
     REGISTER_URL: Register,
     USER_URL: User,
     SIMILAR_BOOKS_URL: SimilarBooks,
+    QUOTES_URL: Quotes,
 }
