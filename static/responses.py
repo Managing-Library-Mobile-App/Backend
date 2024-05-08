@@ -199,13 +199,13 @@ GENRES_RESPONSE = {
         "Other",
     ]
 }, 200
-
 # Mutable
 USERS_RESPONSE = {}, 200  # User model object/s
 OPINIONS_RESPONSE = (
     {},
     200,
 )  # Opinion model object/s
+QUOTES_RESPONSE = {"quote": "", "author": "", "category": ""}, 200  # All strings
 LIBRARIES_RESPONSE = {}, 200  # Library model object/s
 BOOKS_RESPONSE = {}, 200  # Book model object/s
 AUTHORS_RESPONSE = (
@@ -236,3 +236,7 @@ OBJECT_MODIFIED_RESPONSE = {}, 200  # model object/s corresponding to the endpoi
 OBJECT_REMOVED_RESPONSE = {}, 200  # model object/s corresponding to the endpoint
 # BOOK_ANNOUNCEMENTS_LIST_RESPONSE = {}, 200
 # BOOK_ANNOUNCEMENT_OBJECT_RESPONSE = {}, 200
+QUOTES_NOT_WORKING_RESPONSE = {
+    "message": "quotes_not_working",
+    "details": "",  # Mutable str
+}, 400
