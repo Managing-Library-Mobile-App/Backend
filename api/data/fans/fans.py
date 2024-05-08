@@ -14,8 +14,8 @@ from static.responses import (
     AUTHOR_NOT_FOUND_RESPONSE,
     USER_ALREADY_IN_FANS_RESPONSE,
     USER_NOT_IN_FANS_RESPONSE,
-    AUTHORS_NOT_PROVIDED_RESPONSE,
     OBJECT_REMOVED_RESPONSE,
+    AUTHORS_RESPONSE,
 )
 
 
@@ -42,17 +42,77 @@ class Fan(Resource):
         language: str = request.args.get("language")
         user_id: int = request.args.get("user_id", type=int)
         author_id: int = request.args.get("author_id", type=int)
-        if not verify_jwt_token():
+        email = verify_jwt_token()
+        if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
         user_query = user.User.query
         author_query = author.Author.query
         if user_id:
+            if user_id and not author_id:
+                user_object: user.User = user_query.filter_by(id=user_id).first()
+                followed_authors_ids = [
+                    followed_author.id
+                    for followed_author in user_object.followed_authors
+                ]
+                author_query = author_query.filter(
+                    author.Author.id.in_(followed_authors_ids)
+                )
+                author_objects = author_query.paginate(
+                    page=page, per_page=per_page, error_out=False
+                )
+
+                if author_query:
+                    return create_response(
+                        AUTHORS_RESPONSE,
+                        {
+                            "results": [
+                                author_object.as_dict()
+                                for author_object in author_objects
+                            ],
+                            "pagination": {
+                                "count": author_objects.total,
+                                "page": page,
+                                "pages": author_objects.pages,
+                                "per_page": author_objects.per_page,
+                            },
+                        },
+                        language=language,
+                    )
+                return create_response(AUTHOR_NOT_FOUND_RESPONSE, language=language)
+
             user_query = user_query.filter_by(id=user_id)
         if author_id:
             author_query = author_query.filter_by(id=author_id)
-        else:
-            return create_response(AUTHORS_NOT_PROVIDED_RESPONSE, language=language)
+        if not user_id and not author_id:
+            user_object: user.User = user_query.filter_by(email=email).first()
+            followed_authors_ids = [
+                followed_author.id for followed_author in user_object.followed_authors
+            ]
+            author_query = author_query.filter(
+                author.Author.id.in_(followed_authors_ids)
+            )
+            author_objects = author_query.paginate(
+                page=page, per_page=per_page, error_out=False
+            )
+
+            if author_query:
+                return create_response(
+                    AUTHORS_RESPONSE,
+                    {
+                        "results": [
+                            author_object.as_dict() for author_object in author_objects
+                        ],
+                        "pagination": {
+                            "count": author_objects.total,
+                            "page": page,
+                            "pages": author_objects.pages,
+                            "per_page": author_objects.per_page,
+                        },
+                    },
+                    language=language,
+                )
+            return create_response(AUTHOR_NOT_FOUND_RESPONSE, language=language)
 
         author_query = author_query.first()
         if not author_query:
