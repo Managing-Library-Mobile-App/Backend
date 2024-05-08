@@ -11,12 +11,16 @@ class QuoteOfTheDay(db.Model):  # type: ignore[name-defined]
     author = db.Column(db.String(1000))
     category = db.Column(db.String(1000))
     date = db.Column(db.Date, default=datetime.datetime.now)
+    user_id = db.Column(
+        db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False
+    )
 
-    def __init__(self, quote: str, author: str, category: str) -> None:
+    def __init__(self, quote: str, author: str, category: str, user_id: int) -> None:
         """Initializing an object of the class."""
         self.quote = quote
         self.author = author
         self.category = category
+        self.user_id = user_id
 
     def as_dict(self) -> dict:
         """Serializing object to dictionary."""
@@ -26,4 +30,5 @@ class QuoteOfTheDay(db.Model):  # type: ignore[name-defined]
             "author": self.author,
             "category": self.category,
             "date": self.date.strftime("%d-%m-%Y"),
+            "user_id": self.user_id,
         }
