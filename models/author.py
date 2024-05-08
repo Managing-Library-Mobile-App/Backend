@@ -28,8 +28,19 @@ class Author(db.Model):  # type: ignore[name-defined]
         back_populates="authors",
         cascade="all, delete",
     )
+    birth_date = db.Column(db.String(200))
+    death_date = db.Column(db.String(200))
+    website = db.Column(db.String(200))
 
-    def __init__(self, name: str, biography: str, picture: str) -> None:
+    def __init__(
+        self,
+        name: str,
+        biography: str,
+        picture: str,
+        birth_date: str = None,
+        death_date: str = None,
+        website: str = None,
+    ) -> None:
         """Initializing an object of the class.
         :param biography: description of the author
         :param picture: link to the picture
@@ -37,6 +48,9 @@ class Author(db.Model):  # type: ignore[name-defined]
         self.name = name
         self.biography = biography
         self.picture = picture
+        self.birth_date = birth_date
+        self.death_date = death_date
+        self.website = website
 
     def as_dict(self) -> dict:
         """Serializing object to dictionary."""
@@ -52,6 +66,9 @@ class Author(db.Model):  # type: ignore[name-defined]
             "released_books": [
                 released_book.id for released_book in self.released_books  # type: ignore
             ],
+            "birth_date": self.birth_date,
+            "death_date": self.death_date,
+            "website": self.website,
         }
 
     def add_fan(self, fan_id) -> None:

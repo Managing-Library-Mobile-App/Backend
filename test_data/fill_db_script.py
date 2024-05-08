@@ -46,6 +46,9 @@ def fill_db(db: SQLAlchemy):
                 name=author["name"],
                 biography=author["biography"],
                 picture=author["picture"],
+                website=author["website"],
+                birth_date=author["birth_date"],
+                death_date=author["death_date"],
             )
         )
         db.session.commit()
@@ -62,6 +65,7 @@ def fill_db(db: SQLAlchemy):
                 genres=book["genres"],
                 picture=book["picture"],
                 premiere_date=book["premiere_date"],
+                number_of_pages=book["number_of_pages"],
             )
         )
         db.session.commit()
