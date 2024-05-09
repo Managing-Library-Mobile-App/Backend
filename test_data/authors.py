@@ -2,6 +2,7 @@ from typing import Any
 
 authors: list[dict[str, Any]] = [
     {
+        "id": "BERET",
         "name": "Angelina Beret",
         "genres": ["Action", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -13,6 +14,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "ANG",
         "name": "Angela Martina",
         "genres": ["Action"],
         "biography": """The best author""",
@@ -23,6 +25,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "ANA",
         "name": "Ania Franinska",
         "genres": ["Action"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -36,6 +39,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "AMA",
         "name": "Amara Shey",
         "genres": ["Action", "Thriller"],
         "biography": """I am an author.""",
@@ -46,6 +50,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "AMI",
         "name": "Amina Marinara",
         "genres": ["Thriller"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -57,6 +62,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "DZJ",
         "name": "Dziunia Joli",
         "genres": ["Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -68,6 +74,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.twitter.com",
     },
     {
+        "id": "BA",
         "name": "Bartek Juli",
         "genres": ["Action"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -79,6 +86,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "DZ",
         "name": "Dziuniek Jelo",
         "genres": ["Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -90,6 +98,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.facebook.com",
     },
     {
+        "id": "H",
         "name": "Halina Jula",
         "genres": ["Action", "Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -101,6 +110,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN1",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -112,6 +122,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN2",
         "name": "Manga Jom",
         "genres": ["Action", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -123,6 +134,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN3",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -134,6 +146,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN4",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -145,6 +158,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN5",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -156,6 +170,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN6",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -167,6 +182,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN7",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -178,6 +194,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN8",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -189,6 +206,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN9",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -200,6 +218,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN10",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -211,6 +230,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN11",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -222,6 +242,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN12",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -233,6 +254,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN13",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -244,6 +266,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN14",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -255,6 +278,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN15",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -266,6 +290,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN16",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -277,6 +302,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN17",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -288,6 +314,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN18",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -299,6 +326,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN19",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -310,6 +338,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN20",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever
@@ -321,6 +350,7 @@ authors: list[dict[str, Any]] = [
         "website": "https://www.google.com",
     },
     {
+        "id": "JOTUN21",
         "name": "Julia Jotun",
         "genres": ["Thriller", "Romance"],
         "biography": """The best author ever ever ever ever ever ever ever ever ever

@@ -18,6 +18,7 @@ from static.responses import (
     USER_DOES_NOT_EXIST_RESPONSE,
     AUTHOR_DOES_NOT_EXIST_RESPONSE,
     SORT_PARAM_DOES_NOT_EXIST,
+    ID_MISSING_RESPONSE,
 )
 
 
@@ -34,13 +35,13 @@ class Author(Resource):
         self.delete_parser: RequestParser = RequestParser(
             argument_class=APIArgument, bundle_errors=True
         )
-        self.delete_parser.add_arg("id", type=int)
+        self.delete_parser.add_arg("str", type=int)
         self.delete_parser.add_arg("language", required=False)
 
         self.patch_parser: RequestParser = RequestParser(
             argument_class=APIArgument, bundle_errors=True
         )
-        self.patch_parser.add_arg("id", type=int)
+        self.patch_parser.add_arg("str", type=int)
         self.patch_parser.add_arg(
             "name", type=string_range_validation(max=200), required=False
         )
@@ -59,7 +60,7 @@ class Author(Resource):
         per_page: int = request.args.get("per_page", 8, type=int)
         sorts: str = request.args.get("sorts", "name", type=str)
         language: str = request.args.get("language", type=str)
-        author_id: int = request.args.get("id", type=int)
+        author_id: str = request.args.get("id", type=str)
         name: str = request.args.get("name", type=str)
         name_is_startswith: bool = request.args.get(
             "name_is_startswith", False, type=bool
@@ -124,6 +125,7 @@ class Author(Resource):
 
     def post(self) -> Response:
         args: dict = self.post_parser.parse_args()
+        id: str = args.get("id")
         name: str = args.get("name")
         biography: str = args.get("biography")
         picture: str = args.get("picture")
@@ -134,8 +136,10 @@ class Author(Resource):
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
-
+        if not id:
+            return create_response(ID_MISSING_RESPONSE, language=language)
         author_object: author.Author = author.Author(
+            id=id,
             name=name,
             biography=biography,
             picture=picture,
@@ -149,7 +153,7 @@ class Author(Resource):
 
     def delete(self) -> Response:
         args: dict = self.delete_parser.parse_args()
-        author_id: int = args.get("id")
+        author_id: str = args.get("id")
         language: str = args.get("language")
         email: str | None = verify_jwt_token()
         if not email:
@@ -172,7 +176,7 @@ class Author(Resource):
 
     def patch(self) -> Response:
         args: dict = self.delete_parser.parse_args()
-        author_id: int = args.get("id")
+        author_id: str = args.get("id")
         name: str = args.get("name")
         biography: str = args.get("biography")
         picture: str = args.get("picture")

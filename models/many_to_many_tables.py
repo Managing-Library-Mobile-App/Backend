@@ -4,7 +4,7 @@ authors_users = db.Table(
     "fans",
     db.Column(
         "author_id",
-        db.Integer,
+        db.String,
         db.ForeignKey("author.id", ondelete="CASCADE"),
         primary_key=True,
     ),
@@ -20,13 +20,13 @@ authors_released_books = db.Table(
     "released_books",
     db.Column(
         "author_id",
-        db.Integer,
+        db.String,
         db.ForeignKey("author.id", ondelete="CASCADE"),
         primary_key=True,
     ),
     db.Column(
         "book_id",
-        db.Integer,
+        db.String,
         db.ForeignKey("book.id", ondelete="CASCADE"),
         primary_key=True,
     ),
@@ -43,7 +43,7 @@ library_books_favourite = db.Table(
     ),
     db.Column(
         "book_id",
-        db.Integer,
+        db.String,
         db.ForeignKey("book.id", ondelete="CASCADE"),
         primary_key=True,
     ),
@@ -59,7 +59,7 @@ library_books_bought = db.Table(
     ),
     db.Column(
         "book_id",
-        db.Integer,
+        db.String,
         db.ForeignKey("book.id", ondelete="CASCADE"),
         primary_key=True,
     ),
@@ -75,7 +75,7 @@ library_books_read = db.Table(
     ),
     db.Column(
         "book_id",
-        db.Integer,
+        db.String,
         db.ForeignKey("book.id", ondelete="CASCADE"),
         primary_key=True,
     ),

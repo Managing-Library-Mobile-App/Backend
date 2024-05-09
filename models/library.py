@@ -50,15 +50,15 @@ class Library(db.Model):  # type: ignore[name-defined]
         self.user_id = user_id
         db.session.add(self)
         for read_book_id in read_books:
-            read_book: Book = Book.query.get(read_book_id)
+            read_book: Book = Book.query.filter_by(id=read_book_id).first()
             if read_book:
                 self.add_read_book(read_book)
         for bought_book_id in bought_books:
-            bought_book: Book = Book.query.get(bought_book_id)
+            bought_book: Book = Book.query.filter_by(id=bought_book_id).first()
             if bought_book:
                 self.add_bought_book(bought_book)
         for favourite_book_id in favourite_books:
-            favourite_book: Book = Book.query.get(favourite_book_id)
+            favourite_book: Book = Book.query.filter_by(id=favourite_book_id).first()
             if favourite_book:
                 self.add_favourite_book(favourite_book)
 

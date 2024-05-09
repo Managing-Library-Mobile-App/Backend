@@ -26,14 +26,14 @@ class Fan(Resource):
         )
         self.post_parser.add_arg("language", required=False)
         self.post_parser.add_arg("user_id", type=int)
-        self.post_parser.add_arg("author_id", type=int)
+        self.post_parser.add_arg("author_id", type=str)
 
         self.delete_parser: RequestParser = RequestParser(
             argument_class=APIArgument, bundle_errors=True
         )
         self.delete_parser.add_arg("language", required=False)
         self.delete_parser.add_arg("user_id", type=int)
-        self.delete_parser.add_arg("author_id", type=int)
+        self.delete_parser.add_arg("author_id", type=str)
         super(Fan, self).__init__()
 
     def get(self) -> Response:
@@ -41,7 +41,7 @@ class Fan(Resource):
         per_page: int = request.args.get("per_page", 8, type=int)
         language: str = request.args.get("language")
         user_id: int = request.args.get("user_id", type=int)
-        author_id: int = request.args.get("author_id", type=int)
+        author_id: int = request.args.get("author_id", type=str)
         email = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
@@ -114,10 +114,10 @@ class Fan(Resource):
                 )
             return create_response(AUTHOR_NOT_FOUND_RESPONSE, language=language)
 
-        author_query = author_query.first()
-        if not author_query:
+        author_object = author_query.first()
+        if not author_object:
             return create_response(AUTHOR_NOT_FOUND_RESPONSE, language=language)
-        fans_ids = [fan.id for fan in author_query.fans]
+        fans_ids = [fan.id for fan in author_object.fans]
         user_query = user_query.filter(user.User.id.in_(fans_ids))
         user_objects = user_query.paginate(
             page=page, per_page=per_page, error_out=False
@@ -143,7 +143,7 @@ class Fan(Resource):
         args: dict = self.post_parser.parse_args()
         language: str = args.get("language")
         user_id: int = args.get("user_id")
-        author_id: int = args.get("author_id")
+        author_id: str = args.get("author_id")
         if not verify_jwt_token():
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
@@ -155,8 +155,8 @@ class Fan(Resource):
         author_object: author.Author = author_query.first()
         user_object = user_query.first()
 
-        if author_query:
-            if user_object not in author_query.fans:
+        if author_object:
+            if user_object not in author_object.fans:
                 author_object.fans.append(user_object)
                 author_object.fans_count += 1
                 db.session.commit()
@@ -171,7 +171,7 @@ class Fan(Resource):
         args: dict = self.post_parser.parse_args()
         language: str = args.get("language")
         user_id: int = args.get("user_id")
-        author_id: int = args.get("author_id")
+        author_id: str = args.get("author_id")
         if not verify_jwt_token():
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
@@ -183,9 +183,9 @@ class Fan(Resource):
         author_object: author.Author = author_query.first()
         user_object = user_query.first()
 
-        if author_query:
-            if user_object in author_query.fans:
-                author_query.fans.remove(user_object)
+        if author_object:
+            if user_object in author_object.fans:
+                author_object.fans.remove(user_object)
                 author_object.fans_count += 1
                 db.session.commit()
                 return create_response(
