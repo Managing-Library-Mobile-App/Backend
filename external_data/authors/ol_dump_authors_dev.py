@@ -4,7 +4,7 @@ import os
 import pandas as pd
 
 read_file_path = os.path.join("../raw_data", "ol_dump_authors_2024-03-31.txt")
-write_file_path = os.path.join("processed_data_authors", "ol_dump_authors.json")
+write_file_path = os.path.join("processed_data_authors", "ol_dump_authors_dev.json")
 
 if os.path.exists(write_file_path):
     os.remove(write_file_path)
@@ -14,12 +14,12 @@ if os.path.exists(write_file_path):
 n = 0
 for df in pd.read_csv(
     read_file_path,
-    chunksize=1000000,
+    chunksize=100000,
     sep="\t",
     names=["type", "id", "something", "date", "json_data"],
 ):
     n += 1
-    print(f"Batch {n}")
+    print(f"Batch {n}. Size: {df.shape}")
     df.reset_index(drop=True, inplace=True)
 
     df["json_data"] = df["json_data"].apply(json.loads)
@@ -41,26 +41,39 @@ for df in pd.read_csv(
     for column in columns:
         if column in df.columns:
             filtered_df = pd.concat([filtered_df, df[column]], axis="columns")
+        else:
+            filtered_df[column] = pd.Series()
 
     filtered_fields = [
         "id",
         "name",
+        "photos",
+        "bio.value",
+        "birth_date",
     ]
     for filter_field in filtered_fields:
         if filter_field in filtered_df.columns:
             filtered_df = filtered_df[filtered_df[filter_field].notna()]
 
-    filtered_df = filtered_df.rename(
-        columns={"photos": "picture", "bio.value": "biography"}
-    )
+    for index in filtered_df.index:
+        photos = filtered_df["photos"][index]
+        if isinstance(photos, list):
+            if photos[0] == -1:
+                photos = None
+            else:
+                photos = photos[0]
+            filtered_df.loc[index, "photos"] = photos
+
+    columns_to_rename = {"photos": "picture", "bio.value": "biography"}
+    for key in columns_to_rename.keys():
+        if key in filtered_df.columns:
+            filtered_df = filtered_df.rename(columns={key: columns_to_rename[key]})
+
     if not os.path.exists(write_file_path):
-        filtered_df.to_json(
-            write_file_path, lines=True, orient="records", index=False, mode="w"
-        )
+        filtered_df.to_json(write_file_path, lines=True, orient="records", mode="w")
     else:
-        filtered_df.to_json(
-            write_file_path, lines=True, orient="records", index=False, mode="a"
-        )
+        filtered_df.to_json(write_file_path, lines=True, orient="records", mode="a")
+    print(f"Batch {n} after processing. Size: {filtered_df.shape}")
 
 with open(write_file_path, encoding="utf8") as f:
     print(sum(1 for line in f))
