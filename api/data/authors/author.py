@@ -61,6 +61,7 @@ class Author(Resource):
         language: str = request.args.get("language", type=str)
         author_id: int = request.args.get("id", type=int)
         name: str = request.args.get("name", type=str)
+        name_is_startswith: bool = request.args.get("name", type=bool)
         genres: list[str] = request.args.getlist("genres", type=str)
         if not verify_jwt_token():
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
@@ -71,7 +72,12 @@ class Author(Resource):
                 *[author.Author.genres.any(genres) for genres in genres]
             )
         if name:
-            author_query = author_query.filter(author.Author.name.ilike(f"%{name}%"))
+            if name_is_startswith:
+                author_query = author_query.filter(author.Author.name.ilike(f"{name}%"))
+            else:
+                author_query = author_query.filter(
+                    author.Author.name.ilike(f"%{name}%")
+                )
         if author_id:
             author_query = author_query.filter(author.Author.id == author_id)
 
