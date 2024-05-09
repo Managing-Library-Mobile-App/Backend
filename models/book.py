@@ -10,7 +10,7 @@ class Book(db.Model):  # type: ignore[name-defined]
     """The class representing table book in database."""
 
     id = db.Column("id", db.Integer, primary_key=True)
-    language = db.Column("language", db.String(50), nullable=False)
+    language = db.Column(db.String(50), nullable=False)
     isbn = db.Column(db.String(13), nullable=False)
     title = db.Column(db.String(200), nullable=False)
     authors = db.relationship(
@@ -35,6 +35,7 @@ class Book(db.Model):  # type: ignore[name-defined]
         cascade="all, delete",
     )
     links = db.Column(ARRAY(db.String(50)), default=[])
+    number_of_pages = db.Column(db.Integer)
 
     def __init__(
         self,
@@ -44,9 +45,10 @@ class Book(db.Model):  # type: ignore[name-defined]
         authors: list[int],
         publishing_house: str,
         description: str,
-        genres: list,
-        picture: str,
         premiere_date: datetime.datetime,
+        genres: list = None,
+        picture: str = None,
+        number_of_pages: int = None,
     ) -> None:
         """Initializing an object of the class.
         :param isbn: either isbn-13 or isbn-15
@@ -77,9 +79,11 @@ class Book(db.Model):  # type: ignore[name-defined]
 
         self.publishing_house = publishing_house
         self.description = description
-        self.genres = genres
+        if genres:
+            self.genres = genres
         self.picture = picture
         self.premiere_date = premiere_date
+        self.number_of_pages = number_of_pages
 
         self.links = [
             f"https://www.campusbooks.com/search/{isbn}?buysellrent=buy",
@@ -105,4 +109,5 @@ class Book(db.Model):  # type: ignore[name-defined]
             "opinions_count": self.opinions_count,
             "opinions": [opinion.id for opinion in self.opinions],  # type: ignore
             "links": self.links,
+            "number_of_pages": self.number_of_pages,
         }
