@@ -30,15 +30,15 @@ class User(db.Model):  # type: ignore[name-defined]
     followed_authors_count = db.Column(db.Integer, default=0)
     profile_picture = db.Column(db.Integer)
     is_admin = db.Column(db.Boolean)
-    theme = db.Column(db.Integer)  # 1 - light, 2 - dark, 3 - blind 4 - blind_2
+    theme = db.Column(db.String(50))  # 1 - light, 2 - dark, 3 - blind 4 - blind_2
 
     def __init__(
         self,
         username: str,
         email: str,
         password: str,
+        theme: str,
         is_admin: bool = False,
-        theme: int = 1,
         profile_picture: int = 1,
     ) -> None:
         """Initializing an object of the class.
@@ -48,7 +48,10 @@ class User(db.Model):  # type: ignore[name-defined]
         self.email = email
         self.password = password
         self.is_admin = is_admin
-        self.theme = theme
+        if theme in ["light", "dark", "special", "daltonism"]:
+            self.theme = theme
+        else:
+            self.theme = "light"
         self.profile_picture = profile_picture
 
     def as_dict(self) -> dict:
