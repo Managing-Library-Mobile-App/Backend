@@ -21,6 +21,7 @@ from static.responses import (
     WRONG_DATE_FORMAT_RESPONSE,
     SORT_PARAM_DOES_NOT_EXIST,
     AUTHOR_NOT_FOUND_RESPONSE,
+    ID_MISSING_RESPONSE,
 )
 
 
@@ -32,7 +33,7 @@ class Book(Resource):
         self.post_parser.add_arg("book_language", type=string_range_validation(max=50))
         self.post_parser.add_arg("isbn", type=string_range_validation(max=13))
         self.post_parser.add_arg("title", type=string_range_validation(max=200))
-        self.post_parser.add_arg("authors", type=list)
+        self.post_parser.add_arg("authors", type=str)
         self.post_parser.add_arg(
             "publishing_house", type=string_range_validation(max=200)
         )
@@ -45,14 +46,14 @@ class Book(Resource):
         self.delete_parser: RequestParser = RequestParser(
             argument_class=APIArgument, bundle_errors=True
         )
-        self.delete_parser.add_arg("id", type=int)
+        self.delete_parser.add_arg("id", type=str)
         self.delete_parser.add_arg("language", required=False)
 
         self.patch_parser: RequestParser = RequestParser(
             argument_class=APIArgument, bundle_errors=True
         )
         self.patch_parser.add_arg("book_language")
-        self.patch_parser.add_arg("id", type=int)
+        self.patch_parser.add_arg("id", type=str)
         self.patch_parser.add_arg("isbn", type=string_range_validation(max=13))
         self.patch_parser.add_arg("title", type=string_range_validation(max=200))
         self.patch_parser.add_arg(
@@ -69,9 +70,9 @@ class Book(Resource):
         per_page: int = request.args.get("per_page", 8, type=int)
         sorts: str = request.args.get("sorts", "title", type=str)
         language: str = request.args.get("language", type=str)
-        id: int = request.args.get("id", type=int)
+        id: str = request.args.get("id", type=str)
         title: str = request.args.get("title", type=str)
-        authors: list[int] = request.args.getlist("authors", type=int)
+        authors: list[str] = request.args.getlist("authors", type=str)
         date_from: str | datetime.date = request.args.get("date_from", type=str)
         date_to: str | datetime.date = request.args.get("date_to", type=str)
         minimum_score: int = request.args.get("minimum_score", type=int)
@@ -147,9 +148,10 @@ class Book(Resource):
 
     def post(self) -> Response:
         args: dict = self.post_parser.parse_args()
+        id: str = args.get("id")
         isbn: str = args.get("isbn")
         title: str = args.get("title")
-        authors: list[int] = args.get("authors")
+        authors: list[str] = args.get("authors")
         publishing_house: str = args.get("publishing_house")
         description: str = args.get("description")
         genres: list[str] = args.get("genres")
@@ -163,13 +165,20 @@ class Book(Resource):
         user: User = User.query.filter_by(email=email).first()
         if not user.is_admin:
             return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
+        print(authors)
+        print(type(authors))
+        print(type(authors[0]))
         author_objects = author.Author.query.filter(
             *[author.Author.id == author_object_id for author_object_id in authors]
         ).all()
         if not author_objects:
             return create_response(AUTHOR_NOT_FOUND_RESPONSE, language=language)
 
+        if not id:
+            return create_response(ID_MISSING_RESPONSE, language=language)
+
         book_object: book.Book = book.Book(
+            id=id,
             language=book_language,
             isbn=isbn,
             title=title,
@@ -196,7 +205,7 @@ class Book(Resource):
 
     def delete(self) -> Response:
         args: dict = self.delete_parser.parse_args()
-        book_id: int = args.get("id")
+        book_id: str = args.get("id")
         language: str = args.get("language")
         email: str | None = verify_jwt_token()
         if not email:
@@ -208,8 +217,8 @@ class Book(Resource):
         book_object: book.Book = book.Book.query.filter_by(id=book_id).first()
         author_objects = author.Author.query.filter(
             *[
-                author.Author.id == author_object_id
-                for author_object_id in book_object.authors
+                author.Author.id == author_object.id
+                for author_object in book_object.authors
             ]
         ).all()
         if not book_object:
@@ -229,7 +238,7 @@ class Book(Resource):
 
     def patch(self) -> Response:
         args: dict = self.delete_parser.parse_args()
-        book_id: int = args.get("id")
+        book_id: str = args.get("id")
         isbn: str = args.get("isbn")
         title: str = args.get("title")
         publishing_house: str = args.get("publishing_house")

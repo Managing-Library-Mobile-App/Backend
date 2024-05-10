@@ -9,7 +9,7 @@ from models.many_to_many_tables import authors_released_books
 class Book(db.Model):  # type: ignore[name-defined]
     """The class representing table book in database."""
 
-    id = db.Column("id", db.Integer, primary_key=True)
+    id = db.Column("id", db.String, primary_key=True)
     language = db.Column(db.String(50), nullable=False)
     isbn = db.Column(db.String(13), nullable=False)
     title = db.Column(db.String(200), nullable=False)
@@ -39,10 +39,11 @@ class Book(db.Model):  # type: ignore[name-defined]
 
     def __init__(
         self,
+        id: str,
         isbn: str,
         language: str,
         title: str,
-        authors: list[int],
+        authors: list[str],
         publishing_house: str,
         description: str,
         premiere_date: datetime.datetime,
@@ -55,6 +56,7 @@ class Book(db.Model):  # type: ignore[name-defined]
         :param picture: link to the picture
         :param premiere_date: format(YYYY-MM-DD)
         """
+        self.id = id
         self.isbn = isbn
         self.language = language
         self.title = title

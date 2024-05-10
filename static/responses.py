@@ -155,6 +155,10 @@ INSUFFICIENT_PERMISSIONS_RESPONSE = {
     "message": "insufficient_permissions",
     "details": "Insufficient permissions",
 }, 404
+ID_MISSING_RESPONSE = {
+    "message": "id_missing",
+    "details": "Id missing",
+}, 404
 OPINION_ALREADY_EXISTS_RESPONSE = {
     "message": "opinion_already_exists",
     "details": "Opinion already exists",

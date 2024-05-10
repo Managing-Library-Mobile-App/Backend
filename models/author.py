@@ -8,7 +8,7 @@ class Author(db.Model):  # type: ignore[name-defined]
     """The class representing table author in database."""
 
     __tablename__ = "author"
-    id = db.Column("id", db.Integer, primary_key=True)
+    id = db.Column("id", db.String, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     genres = db.Column(ARRAY(db.String), default=[])
     biography = db.Column(db.String(3000), default="No biography")
@@ -34,6 +34,7 @@ class Author(db.Model):  # type: ignore[name-defined]
 
     def __init__(
         self,
+        id: str,
         name: str,
         biography: str,
         picture: str,
@@ -45,6 +46,7 @@ class Author(db.Model):  # type: ignore[name-defined]
         :param biography: description of the author
         :param picture: link to the picture
         """
+        self.id = id
         self.name = name
         self.biography = biography
         self.picture = picture

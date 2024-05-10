@@ -26,14 +26,14 @@ class FavouriteBook(Resource):
         )
         self.post_parser.add_arg("language", required=False)
         self.post_parser.add_arg("user_id", type=int, required=False)
-        self.post_parser.add_arg("book_id", type=int)
+        self.post_parser.add_arg("book_id", type=str)
 
         self.delete_parser: RequestParser = RequestParser(
             argument_class=APIArgument, bundle_errors=True
         )
         self.delete_parser.add_arg("language", required=False)
         self.delete_parser.add_arg("user_id", type=int, required=False)
-        self.delete_parser.add_arg("book_id", type=int)
+        self.delete_parser.add_arg("book_id", type=str)
         super(FavouriteBook, self).__init__()
 
     def get(self) -> Response:
@@ -41,7 +41,7 @@ class FavouriteBook(Resource):
         per_page: int = request.args.get("per_page", 8, type=int)
         language: str = request.args.get("language")
         user_id: int = request.args.get("user_id", type=int)
-        book_id: int = request.args.get("book_id", type=int)
+        book_id: int = request.args.get("book_id", type=str)
         email = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
@@ -87,7 +87,7 @@ class FavouriteBook(Resource):
         args: dict = self.post_parser.parse_args()
         language: str = args.get("language")
         user_id: int = args.get("user_id")
-        book_id: int = args.get("book_id")
+        book_id: str = args.get("book_id")
         email = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)

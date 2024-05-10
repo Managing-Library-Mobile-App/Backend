@@ -3,10 +3,11 @@ from typing import Any
 
 new_books: list[dict[str, Any]] = [
     {
+        "id": "NA",
         "language": "pol",
         "isbn": "567891234",
         "title": "The Great Britain",
-        "authors": [1, 2],
+        "authors": ["AMA", "AMI"],
         "publishing_house": "Adams House",
         "description": "The great britain is an amazing great britain that was a great britain...",
         "genres": [
@@ -17,10 +18,11 @@ new_books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("10-01-2024", "%d-%m-%Y"),
     },
     {
+        "id": "NB",
         "language": "pol",
         "isbn": "567891235",
         "title": "Potop",
-        "authors": [1, 3],
+        "authors": ["AMA", "DZ"],
         "publishing_house": "Jans House",
         "description": "The great britain is an amazing great britain that was a great britain...",
         "genres": ["Action & Adventure"],
@@ -28,10 +30,11 @@ new_books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("05-10-2024", "%d-%m-%Y"),
     },
     {
+        "id": "NC",
         "language": "eng",
         "isbn": "567891236",
         "title": "The Great America",
-        "authors": [1],
+        "authors": ["AMA"],
         "publishing_house": "Adams House",
         "description": "The great britain is an amazing great britain that was a great britain...",
         "genres": ["Thriller, Horror, Mystery and detective stories"],
@@ -39,10 +42,11 @@ new_books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("06-01-2024", "%d-%m-%Y"),
     },
     {
+        "id": "ND",
         "language": "pol",
         "isbn": "567891237",
         "title": "The Great Poland",
-        "authors": [2],
+        "authors": ["AMI"],
         "publishing_house": "Jans House",
         "description": "The great britain is an amazing great britain that was a great britain...",
         "genres": ["Thriller, Horror, Mystery and detective stories"],
@@ -50,10 +54,11 @@ new_books: list[dict[str, Any]] = [
         "premiere_date": datetime.strptime("07-01-2024", "%d-%m-%Y"),
     },
     {
+        "id": "NE",
         "language": "pol",
         "isbn": "567891238",
         "title": "The Great Great Far",
-        "authors": [3],
+        "authors": ["AMI"],
         "publishing_house": "Gothams House",
         "description": "The great britain is an amazing great britain that was a great britain...",
         "genres": ["Fantasy, Science fiction"],

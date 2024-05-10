@@ -10,7 +10,7 @@ class Opinion(db.Model):  # type: ignore[name-defined]
         db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False
     )
     book_id = db.Column(
-        db.Integer, db.ForeignKey("book.id", ondelete="CASCADE"), nullable=False
+        db.String, db.ForeignKey("book.id", ondelete="CASCADE"), nullable=False
     )
     stars_count = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.String(1000), default="")
@@ -20,7 +20,7 @@ class Opinion(db.Model):  # type: ignore[name-defined]
     )
 
     def __init__(
-        self, user_id: int, book_id: int, stars_count: int, comment: str
+        self, user_id: int, book_id: str, stars_count: int, comment: str
     ) -> None:
         """Initializing an object of the class.
         :param stars_count: x/5, only integer values are allowed

@@ -32,7 +32,7 @@ class Opinion(Resource):
         self.post_parser: RequestParser = RequestParser(
             argument_class=APIArgument, bundle_errors=True
         )
-        self.post_parser.add_arg("book_id", type=int)
+        self.post_parser.add_arg("book_id", type=str)
         self.post_parser.add_arg("stars_count", type=int_range_validation(min=1, max=5))
         self.post_parser.add_arg(
             "comment", type=string_range_validation(min=2, max=1000)
@@ -107,7 +107,7 @@ class Opinion(Resource):
 
     def post(self) -> Response:
         args: dict = self.post_parser.parse_args()
-        book_id: int = args.get("book_id")
+        book_id: str = args.get("book_id")
         stars_count: int = args.get("stars_count")
         comment: str = args.get("comment")
         language: str = args.get("language")

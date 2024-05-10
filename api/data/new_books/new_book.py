@@ -24,7 +24,7 @@ class NewBook(Resource):
         sorts: str = request.args.get("sorts", "title", type=str)
         language: str = request.args.get("language", type=str)
         book_language: str = request.args.get("book_language", type=str)
-        book_id: int = request.args.get("id", type=int)
+        book_id: str = request.args.get("id", type=str)
         genres: list[str] = request.args.getlist("genres", type=str)
         title: str = request.args.get("title", type=str)
         if not verify_jwt_token():
