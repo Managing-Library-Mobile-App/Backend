@@ -24,7 +24,7 @@ parser = argparse.ArgumentParser(description="Description of your script")
 parser.add_argument(
     "type_of_db",
     type=str,
-    help="Type of db. Currently used: 'api_tests' or 'e2e_tests' or 'prod'",
+    help="Type of db. Currently used: 'api_tests' or 'e2e_tests' or 'prod' or 'dev'",
 )
 args = parser.parse_args()
 
@@ -67,7 +67,7 @@ if __name__ == "__main__":
         cur.close()
         conn.close()
     except psycopg2.errors.DuplicateDatabase:
-        pass
+        logger.info(f"Database {database} already exists")
     with app.app_context():
         db.drop_all()
         db.create_all()
