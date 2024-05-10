@@ -30,7 +30,7 @@ class User(db.Model):  # type: ignore[name-defined]
     followed_authors_count = db.Column(db.Integer, default=0)
     profile_picture = db.Column(db.Integer)
     is_admin = db.Column(db.Boolean)
-    theme = db.Column(db.Integer)  # 1 - light, 2 - dark, 3 - blind
+    theme = db.Column(db.Integer)  # 1 - light, 2 - dark, 3 - blind 4 - blind_2
 
     def __init__(
         self,

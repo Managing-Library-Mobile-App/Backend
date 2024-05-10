@@ -18,7 +18,7 @@ class ChangeTheme(Resource):
         self.patch_parser: RequestParser = RequestParser(
             argument_class=APIArgument, bundle_errors=True
         )
-        self.patch_parser.add_arg("theme", type=int_range_validation(min=1, max=3))
+        self.patch_parser.add_arg("theme", type=int_range_validation(min=1, max=4))
         self.patch_parser.add_arg("language", required=False)
         super(ChangeTheme, self).__init__()
 
