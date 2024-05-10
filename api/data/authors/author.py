@@ -1,3 +1,5 @@
+import uuid
+
 from flask import Response, request
 from flask_restful import Resource
 from sqlalchemy import desc
@@ -120,8 +122,8 @@ class Author(Resource):
         )
 
     def post(self) -> Response:
+        id = str(uuid.uuid4())
         args: dict = self.post_parser.parse_args()
-        id: str = args.get("id")
         name: str = args.get("name")
         biography: str = args.get("biography")
         picture: str = args.get("picture")

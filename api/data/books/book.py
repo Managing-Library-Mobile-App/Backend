@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 from flask import Response, request
 from flask_restful import Resource
@@ -33,7 +34,7 @@ class Book(Resource):
         self.post_parser.add_arg("book_language", type=string_range_validation(max=50))
         self.post_parser.add_arg("isbn", type=string_range_validation(max=13))
         self.post_parser.add_arg("title", type=string_range_validation(max=200))
-        self.post_parser.add_arg("authors", type=str)
+        self.post_parser.add_arg("authors", type=list)
         self.post_parser.add_arg(
             "publishing_house", type=string_range_validation(max=200)
         )
@@ -147,8 +148,8 @@ class Book(Resource):
         )
 
     def post(self) -> Response:
+        id = str(uuid.uuid4())
         args: dict = self.post_parser.parse_args()
-        id: str = args.get("id")
         isbn: str = args.get("isbn")
         title: str = args.get("title")
         authors: list[str] = args.get("authors")
