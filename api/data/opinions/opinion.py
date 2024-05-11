@@ -10,7 +10,7 @@ from helpers.request_response import (
     string_range_validation,
     APIArgument,
 )
-from models import opinion, book
+from models import opinion, book, user
 from models.user import User
 from helpers.request_response import create_response
 from static.responses import (
@@ -152,16 +152,34 @@ class Opinion(Resource):
         email: str | None = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
-        user: User = User.query.filter_by(email=email).first()
+        user_object: User = User.query.filter_by(email=email).first()
 
         opinion_object: opinion.Opinion = opinion.Opinion.query.filter(
             *filters_list
         ).first()
         if not opinion_object:
             return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
-        if not user.is_admin and user.id != opinion_object.user_id:
+        if not user_object.is_admin and user_object.id != opinion_object.user_id:
             return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
+        existing_book: book.Book = book.Book.query.filter_by(
+            id=opinion_object.book_id
+        ).first()
+        if not existing_book:
+            return create_response(BOOK_DOES_NOT_EXIST_RESPONSE, language=language)
+
+        score = (
+            existing_book.score * existing_book.opinions_count
+            - opinion_object.stars_count
+        )
+        existing_book.opinions_count -= 1
+        if existing_book.opinions_count == 0:
+            existing_book.score = 0
+        else:
+            existing_book.score = score / existing_book.opinions_count
+        opinion_user = user.User.query.filter_by(id=opinion_object.user_id).first()
+        opinion_user.opinions_count -= 1
+        opinion_user.score -= 1
         db.session.delete(opinion_object)
         db.session.commit()
 
@@ -184,6 +202,19 @@ class Opinion(Resource):
 
         if modified_opinion:
             if stars_count:
+                existing_book: book.Book = book.Book.query.filter_by(
+                    id=modified_opinion.book_id
+                ).first()
+                if not existing_book:
+                    return create_response(
+                        BOOK_DOES_NOT_EXIST_RESPONSE, language=language
+                    )
+                score = (
+                    existing_book.score * existing_book.opinions_count
+                    - modified_opinion.stars_count
+                    + stars_count
+                )
+                existing_book.score = score / existing_book.opinions_count
                 modified_opinion.stars_count = stars_count
             if comment:
                 modified_opinion.comment = comment
