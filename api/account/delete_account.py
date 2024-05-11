@@ -5,6 +5,7 @@ from helpers.blocklist import LOGGED_IN_USER_TOKENS
 from helpers.init import db
 from helpers.jwt_auth import verify_jwt_token
 from helpers.request_response import RequestParser, APIArgument
+from models import opinion, book
 from models.user import User
 from helpers.request_response import create_response
 from static.responses import (
@@ -40,7 +41,20 @@ class DeleteAccount(Resource):
                 db.session.delete(user)
                 return create_response(CANNOT_DELETE_ADMIN_RESPONSE, language=language)
             LOGGED_IN_USER_TOKENS.pop(email)
+            opinion_objects: list[opinion.Opinion] = user.opinions
             db.session.delete(user)
             db.session.commit()
+            for opinion_object in opinion_objects:
+                book_object = book.Book.query.filter_by(
+                    id=opinion_object.book_id
+                ).first()
+                if book_object:
+                    score = (
+                        book_object.score * book_object.opinions_count
+                        - opinion_object.stars_count
+                    )
+                    book_object.opinions_count -= 1
+                    book_object.score = score / book_object.opinions_count
+                    db.session.commit()
             return create_response(USER_DELETED_RESPONSE, language=language)
         return create_response(USER_DOES_NOT_EXIST_RESPONSE, language=language)
