@@ -2,7 +2,7 @@ from flask import Response, request
 from flask_restful import Resource
 from helpers.jwt_auth import verify_jwt_token
 from helpers.request_response import create_response
-from models import book
+from models import book, library, user
 from static.responses import (
     TOKEN_INVALID_RESPONSE,
     BOOKS_RESPONSE,
@@ -15,15 +15,82 @@ class SimilarBooks(Resource):
 
     def get(self) -> Response:
         language: str = request.args.get("language", type=str)
-        id: int = request.args.get("id", type=int)
-        if not verify_jwt_token():
+        email = verify_jwt_token()
+        if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
 
-        book_object = book.Book.query.filter(book.Book.id == id).first()
+        user_object = user.User.query.filter_by(email=email).first()
+
+        library_object: library.Library = library.Library.query.filter_by(
+            user_id=user_object.id
+        ).first()
+        read_books_user = library_object.read_books
+        favourite_books_user = library_object.favourite_books
+        bought_books_user = library_object.bought_books
+
+        genres_with_count = {}
+
+        for book_object in [
+            *read_books_user,
+            *favourite_books_user,
+            *bought_books_user,
+        ]:
+            genres = book_object.genres
+            for genre in genres:
+                if genre not in genres_with_count:
+                    genres_with_count[genre] = 1
+                else:
+                    genres_with_count[genre] += 1
+
+        genre_with_highest_count = None
+
+        for genre, count in genres_with_count.items():
+            if not genre_with_highest_count:
+                genre_with_highest_count = genre
+            elif count > genres_with_count[genre_with_highest_count]:
+                genre_with_highest_count = genre
+
+        # teraz pobieramy wszystkie książki dla danego genre_with_highest_count lub jeśli user nie ma żadnych książek
+        # ulubionych read i bought to bierzemy najpopularniejszy genre w apce
+
+        if genre_with_highest_count:
+            similar_book_objects = book.Book.query.filter(
+                book.Book.genres.any(genre_with_highest_count)
+            ).all()
+        else:
+            genres_with_count_all_users = {}
+            all_library_objects = library.Library.query.all()
+            for library_object in all_library_objects:
+                for book_object in [
+                    *library_object.read_books,
+                    *library_object.bought_books,
+                    *library_object.favourite_books,
+                ]:
+                    genres = book_object.genres
+                    for genre in genres:
+                        if genre not in genres_with_count_all_users:
+                            genres_with_count_all_users[genre] = 1
+                        else:
+                            genres_with_count_all_users[genre] += 1
+
+            genre_with_highest_count_all_users = None
+            for genre, count in genres_with_count_all_users.items():
+                if not genre_with_highest_count_all_users:
+                    genre_with_highest_count_all_users = genre
+                elif (
+                    count
+                    > genres_with_count_all_users[genre_with_highest_count_all_users]
+                ):
+                    genre_with_highest_count_all_users = genre
+            similar_book_objects = book.Book.query.filter(
+                book.Book.genres.any(genre_with_highest_count_all_users)
+            ).all()
 
         similar_books_max_count = 10
-        similar_book_objects = book.Book.query.all()
         if len(similar_book_objects) >= similar_books_max_count:
+            # TODO dodatkowe filtry: okrające robimy po kolei i sprawdzamy length czy mniejsze niż 10
+            # score, opinions_count, premiere_date (raczej polecamy najświeższe), popularność autorów jeśli to za mało
+            # score - sortujemy po score, potem po opinions_count, potem po premiere_date i bierzemy 10 z góry
             similar_book_objects = similar_book_objects[:similar_books_max_count]
 
         return create_response(
