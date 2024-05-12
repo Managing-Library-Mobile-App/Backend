@@ -1,5 +1,7 @@
 from flask import Response, request
 from flask_restful import Resource
+from sqlalchemy import desc
+
 from helpers.jwt_auth import verify_jwt_token
 from helpers.request_response import create_response
 from models import book, library, user
@@ -56,7 +58,7 @@ class SimilarBooks(Resource):
         if genre_with_highest_count:
             similar_book_objects = book.Book.query.filter(
                 book.Book.genres.any(genre_with_highest_count)
-            ).all()
+            )
         else:
             genres_with_count_all_users = {}
             all_library_objects = library.Library.query.all()
@@ -84,14 +86,21 @@ class SimilarBooks(Resource):
                     genre_with_highest_count_all_users = genre
             similar_book_objects = book.Book.query.filter(
                 book.Book.genres.any(genre_with_highest_count_all_users)
-            ).all()
+            )
 
         similar_books_max_count = 10
-        if len(similar_book_objects) >= similar_books_max_count:
-            # TODO dodatkowe filtry: okrające robimy po kolei i sprawdzamy length czy mniejsze niż 10
-            # score, opinions_count, premiere_date (raczej polecamy najświeższe), popularność autorów jeśli to za mało
-            # score - sortujemy po score, potem po opinions_count, potem po premiere_date i bierzemy 10 z góry
-            similar_book_objects = similar_book_objects[:similar_books_max_count]
+        if len(similar_book_objects.all()) >= similar_books_max_count:
+            opinions_count_field = getattr(book.Book, "opinions_count")
+            premiere_date_field = getattr(book.Book, "premiere_date")
+
+            similar_book_objects = similar_book_objects.filter(book.Book.score > 4)
+            similar_book_objects = similar_book_objects.order_by(
+                desc(opinions_count_field)
+            )
+            similar_book_objects = similar_book_objects.order_by(
+                desc(premiere_date_field)
+            )
+            similar_book_objects = similar_book_objects.all()[:similar_books_max_count]
 
         return create_response(
             BOOKS_RESPONSE,
