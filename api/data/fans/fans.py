@@ -41,7 +41,7 @@ class Fan(Resource):
         per_page: int = request.args.get("per_page", 8, type=int)
         language: str = request.args.get("language")
         user_id: int = request.args.get("user_id", type=int)
-        author_id: int = request.args.get("author_id", type=str)
+        author_id: str = request.args.get("author_id", type=str)
         email = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)

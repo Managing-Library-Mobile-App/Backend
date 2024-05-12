@@ -24,12 +24,14 @@ class DeleteAccount(Resource):
         )
         self.delete_parser.add_arg("password")
         self.delete_parser.add_arg("language", required=False)
+        self.delete_parser.add_arg("user_id", required=False)
         super(DeleteAccount, self).__init__()
 
     def delete(self) -> Response:
         args: dict = self.delete_parser.parse_args()
         password: str = args.get("password")
         language: str = args.get("language")
+        user_id: str = args.get("user_id")
         email: str | None = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
@@ -38,8 +40,20 @@ class DeleteAccount(Resource):
             return create_response(INVALID_PASSWORD_RESPONSE, language=language)
         if user:
             if user.is_admin:
-                db.session.delete(user)
-                return create_response(CANNOT_DELETE_ADMIN_RESPONSE, language=language)
+                if user_id:
+                    user_normal: User = User.query.filter_by(id=user_id).first()
+                    if user_normal:
+                        db.session.delete(user_normal)
+                        db.session.commit()
+                        return create_response(USER_DELETED_RESPONSE, language=language)
+                    else:
+                        return create_response(
+                            USER_DOES_NOT_EXIST_RESPONSE, language=language
+                        )
+                else:
+                    return create_response(
+                        CANNOT_DELETE_ADMIN_RESPONSE, language=language
+                    )
             LOGGED_IN_USER_TOKENS.pop(email)
             opinion_objects: list[opinion.Opinion] = user.opinions
             db.session.delete(user)
@@ -54,7 +68,10 @@ class DeleteAccount(Resource):
                         - opinion_object.stars_count
                     )
                     book_object.opinions_count -= 1
-                    book_object.score = score / book_object.opinions_count
+                    if book_object.opinions_count == 0:
+                        book_object.score = 0
+                    else:
+                        book_object.score = score / book_object.opinions_count
                     db.session.commit()
             return create_response(USER_DELETED_RESPONSE, language=language)
         return create_response(USER_DOES_NOT_EXIST_RESPONSE, language=language)
