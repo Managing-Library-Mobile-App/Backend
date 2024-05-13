@@ -213,14 +213,14 @@ class Book(Resource):
             return create_response(INSUFFICIENT_PERMISSIONS_RESPONSE, language=language)
 
         book_object: book.Book = book.Book.query.filter_by(id=book_id).first()
+        if not book_object:
+            return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
         author_objects = author.Author.query.filter(
             *[
                 author.Author.id == author_object.id
                 for author_object in book_object.authors
             ]
         ).all()
-        if not book_object:
-            return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
         db.session.delete(book_object)
         db.session.commit()
 
@@ -254,21 +254,23 @@ class Book(Resource):
 
         modified_book: book.Book = book.Book.query.filter_by(id=book_id).first()
         if user:
-            if isbn:
-                modified_book.isbn = isbn
-            if title:
-                modified_book.title = title
-            if publishing_house:
-                modified_book.publishing_house = publishing_house
-            if description:
-                modified_book.description = description
-            if picture:
-                modified_book.picture = picture
-            if premiere_date:
-                modified_book.premiere_date = premiere_date
-            if book_language:
-                modified_book.book_language = book_language
-            db.session.commit()
-        return create_response(
-            OBJECT_MODIFIED_RESPONSE, modified_book.as_dict(), language=language
-        )
+            if modified_book:
+                if isbn:
+                    modified_book.isbn = isbn
+                if title:
+                    modified_book.title = title
+                if publishing_house:
+                    modified_book.publishing_house = publishing_house
+                if description:
+                    modified_book.description = description
+                if picture:
+                    modified_book.picture = picture
+                if premiere_date:
+                    modified_book.premiere_date = premiere_date
+                if book_language:
+                    modified_book.book_language = book_language
+                db.session.commit()
+                return create_response(
+                    OBJECT_MODIFIED_RESPONSE, modified_book.as_dict(), language=language
+                )
+        return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)

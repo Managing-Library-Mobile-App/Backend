@@ -1,3 +1,5 @@
+import datetime
+
 from flask import Response, request
 from flask_restful import Resource
 from sqlalchemy import desc
@@ -62,7 +64,7 @@ class Opinion(Resource):
         page: int = request.args.get("page", 1, type=int)
         per_page: int = request.args.get("per_page", 8, type=int)
         language: str = request.args.get("language", type=str)
-        sorts: str = request.args.get("sorts", "-stars_count", type=str)
+        sorts: str = request.args.get("sorts", "modified_date", type=str)
         opinion_id: int = request.args.get("id", type=int)
         if not verify_jwt_token():
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
@@ -216,10 +218,12 @@ class Opinion(Resource):
                 )
                 existing_book.score = score / existing_book.opinions_count
                 modified_opinion.stars_count = stars_count
+                modified_opinion.modified_date = datetime.datetime.now()
             if comment:
                 modified_opinion.comment = comment
+                modified_opinion.modified_date = datetime.datetime.now()
             db.session.commit()
-
-        return create_response(
-            OBJECT_MODIFIED_RESPONSE, modified_opinion.as_dict(), language=language
-        )
+            return create_response(
+                OBJECT_MODIFIED_RESPONSE, modified_opinion.as_dict(), language=language
+            )
+        return create_response(OBJECT_NOT_FOUND_RESPONSE, language=language)
