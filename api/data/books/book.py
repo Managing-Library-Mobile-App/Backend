@@ -32,7 +32,7 @@ class Book(Resource):
             argument_class=APIArgument, bundle_errors=True
         )
         self.post_parser.add_arg("book_language", type=string_range_validation(max=50))
-        self.post_parser.add_arg("isbn", type=string_range_validation(max=13))
+        self.post_parser.add_arg("isbn", type=string_range_validation(max=1000))
         self.post_parser.add_arg("title", type=string_range_validation(max=200))
         self.post_parser.add_arg("authors", type=list)
         self.post_parser.add_arg(
@@ -55,7 +55,7 @@ class Book(Resource):
         )
         self.patch_parser.add_arg("book_language")
         self.patch_parser.add_arg("id", type=str)
-        self.patch_parser.add_arg("isbn", type=string_range_validation(max=13))
+        self.patch_parser.add_arg("isbn", type=string_range_validation(max=1000))
         self.patch_parser.add_arg("title", type=string_range_validation(max=200))
         self.patch_parser.add_arg(
             "publishing_house", type=string_range_validation(max=200)
