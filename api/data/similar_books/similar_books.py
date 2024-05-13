@@ -101,7 +101,8 @@ class SimilarBooks(Resource):
                 desc(premiere_date_field)
             )
             similar_book_objects = similar_book_objects.all()[:similar_books_max_count]
-
+        else:
+            similar_book_objects = similar_book_objects.all()
         return create_response(
             BOOKS_RESPONSE,
             {
