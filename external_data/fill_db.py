@@ -152,5 +152,13 @@ if __name__ == "__main__":
         create_admin_accounts_in_db(db)
 
         print("Admins filled")
+        print("Deleting authors without books")
 
+        all_authors: list[Author] = Author.query.all()
+        for author_object in all_authors:
+            if len(author_object.released_books) == 0:
+                db.session.delete(author_object)
+                db.session.commit()
+
+        print("Authors without books deleted")
         print("Database filled")
