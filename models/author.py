@@ -11,7 +11,7 @@ class Author(db.Model):  # type: ignore[name-defined]
     id = db.Column("id", db.String, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     genres = db.Column(ARRAY(db.String), default=[])
-    biography = db.Column(db.String(3000), default="No biography")
+    biography = db.Column(db.String(150000), default="No biography")
     picture = db.Column(db.String(200), default=0)
     fans_count = db.Column(db.Integer, default=0)
     fans = db.relationship(
@@ -30,7 +30,7 @@ class Author(db.Model):  # type: ignore[name-defined]
     )
     birth_date = db.Column(db.String(200))
     death_date = db.Column(db.String(200))
-    website = db.Column(db.String(200))
+    website = db.Column(db.String(1000))
 
     def __init__(
         self,
