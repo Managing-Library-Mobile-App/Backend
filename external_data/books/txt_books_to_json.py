@@ -1,10 +1,32 @@
+import argparse
 import json
 import os
 
 import pandas as pd
 
-read_file_path = os.path.join("../raw_data", "ol_dump_editions_2024-03-31.txt")
-write_file_path = os.path.join("processed_data_editions", "ol_dump_editions_dev.json")
+arg_parser = argparse.ArgumentParser(description="Description of your script")
+arg_parser.add_argument(
+    "type_of_db",
+    type=str,
+    help="Type of db. Currently used: 'prod' or 'dev'",
+)
+args = arg_parser.parse_args()
+database: str = args.type_of_db
+
+read_file_path = os.path.join(
+    "external_data", "raw_data", "ol_dump_editions_2024-03-31.txt"
+)
+if database == "prod":
+    write_file_path = os.path.join(
+        "external_data",
+        "books",
+        "processed_data_editions",
+        "ol_dump_editions_prod.json",
+    )
+else:
+    write_file_path = os.path.join(
+        "external_data", "books", "processed_data_editions", "ol_dump_editions_dev.json"
+    )
 
 if os.path.exists(write_file_path):
     raise Exception("DO NOT OVERWRITE DATA! REMOVE THE FILE IF YOU WANT THAT")
@@ -45,20 +67,35 @@ for df in pd.read_csv(
     for column in columns:
         if column in df.columns:
             filtered_df = pd.concat([filtered_df, df[column]], axis="columns")
-    filtered_fields = [
-        "id",
-        "isbn_10",
-        # "isbn_13",
-        "title",
-        "authors",
-        "publishers",
-        "subjects",
-        "publish_date",
-        # "works",
-        "description.value",
-        "languages",
-        "number_of_pages",
-    ]
+
+    if database == "prod":
+        filtered_fields = [
+            "id",
+            "isbn_10",
+            # "isbn_13",
+            "title",
+            "authors",
+            "publishers",
+            "subjects",
+            "publish_date",
+            # "works",
+            "languages",
+        ]
+    else:
+        filtered_fields = [
+            "id",
+            "isbn_10",
+            # "isbn_13",
+            "title",
+            "authors",
+            "publishers",
+            "subjects",
+            "publish_date",
+            # "works",
+            "description.value",
+            "languages",
+            "number_of_pages",
+        ]
     for filter_field in filtered_fields:
         if filter_field in filtered_df.columns:
             filtered_df = filtered_df[filtered_df[filter_field].notna()]

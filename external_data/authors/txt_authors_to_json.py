@@ -1,10 +1,32 @@
+import argparse
 import json
 import os
 
 import pandas as pd
 
-read_file_path = os.path.join("../raw_data", "ol_dump_authors_2024-03-31.txt")
-write_file_path = os.path.join("processed_data_authors", "ol_dump_authors_dev.json")
+arg_parser = argparse.ArgumentParser(description="Description of your script")
+arg_parser.add_argument(
+    "type_of_db",
+    type=str,
+    help="Type of db. Currently used: 'prod' or 'dev'",
+)
+args = arg_parser.parse_args()
+database: str = args.type_of_db
+
+read_file_path = os.path.join(
+    "external_data", "raw_data", "ol_dump_authors_2024-03-31.txt"
+)
+if database == "prod":
+    write_file_path = os.path.join(
+        "external_data",
+        "authors",
+        "processed_data_authors",
+        "ol_dump_authors_prod.json",
+    )
+else:
+    write_file_path = os.path.join(
+        "external_data", "authors", "processed_data_authors", "ol_dump_authors_dev.json"
+    )
 
 if os.path.exists(write_file_path):
     raise Exception("DO NOT OVERWRITE DATA! REMOVE THE FILE IF YOU WANT THAT")
@@ -44,13 +66,19 @@ for df in pd.read_csv(
         else:
             filtered_df[column] = pd.Series()
 
-    filtered_fields = [
-        "id",
-        "name",
-        "photos",
-        "bio.value",
-        "birth_date",
-    ]
+    if database == "prod":
+        filtered_fields = [
+            "id",
+            "name",
+        ]
+    else:
+        filtered_fields = [
+            "id",
+            "name",
+            "photos",
+            "bio.value",
+            "birth_date",
+        ]
     for filter_field in filtered_fields:
         if filter_field in filtered_df.columns:
             filtered_df = filtered_df[filtered_df[filter_field].notna()]
@@ -83,14 +111,3 @@ for df in pd.read_csv(
 
 with open(write_file_path, encoding="utf8") as f:
     print(sum(1 for line in f))
-
-# id - authors dump 'key' - musi być
-# name - authors dump 'name' - musi być
-# genres - wypełniam samodzielnie na podstawie books (setem)
-# biography - authors dump 'bio' - nie musi być
-# picture - authors dump 'photos' - nie musi być
-# released_books - edition dump - brane z książek
-# death_date - authors dump 'death_date' - nie musi być
-# birth_date - authors dump 'birth_date' - nie musi być
-# location - authors dump 'location' - nie musi być
-# website - authors dump 'website' - nie musi być
