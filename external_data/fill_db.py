@@ -1,26 +1,41 @@
+import argparse
 import os
 
-import pandas as pd
-import dateutil.parser as parser
-from sqlalchemy.engine.reflection import Inspector
-from sqlalchemy.schema import DropConstraint, DropTable, MetaData, Table
+import sys
 
+# insert root directory into python module search path
+sys.path.insert(1, os.getcwd())
+
+import pandas as pd
+
+import dateutil.parser as parser
 import flask_restful
+import psycopg2
 from flask_restful import Api
 from helpers.api_add_resources import api_add_resources
+from helpers.delete_tables import delete_tables
 from helpers.init import app, cache, db, jwt, limiter
 from models.author import Author  # noqa
 from models.book import Book  # noqa
 from models.library import Library  # noqa
 from models.opinion import Opinion  # noqa
 from models.user import User  # noqa
+from test_data.fill_db_script import create_admin_accounts_in_db
 
 api: flask_restful.Api = Api(app)
 api_add_resources(api)
 
+arg_parser = argparse.ArgumentParser(description="Description of your script")
+arg_parser.add_argument(
+    "type_of_db",
+    type=str,
+    help="Type of db. Currently used: 'prod' or 'dev'",
+)
+args = arg_parser.parse_args()
+
 host: str = os.environ.get("host")
 port: str = os.environ.get("port")
-database: str = "dev"
+database: str = args.type_of_db
 user: str = os.environ.get("user")
 password: str = os.environ.get("password")
 
@@ -39,54 +54,59 @@ db.init_app(app)
 limiter.init_app(app)
 
 if __name__ == "__main__":
-    import psycopg2
-
-    try:
-        conn = psycopg2.connect(
-            dbname="postgres",
-            user=user,
-            password=password,
-            host=host,
-            port=port,
-        )
-        conn.autocommit = True
-        cur = conn.cursor()
-        cur.execute(f"CREATE DATABASE {database}")
-        print(f"CREATED DATABASE {database}")
-        cur.close()
-        conn.close()
-    except psycopg2.errors.DuplicateDatabase:
-        print(f"Database {database} already exists")
     with app.app_context():
-        con = db.engine.connect()
-        trans = con.begin()
-        inspector = Inspector.from_engine(db.engine)
-        meta = MetaData()
-        tables = []
-        all_fkeys = []
-        for table_name in inspector.get_table_names():
-            if table_name == "author":
-                continue
-            fkeys = []
-            for fkey in inspector.get_foreign_keys(table_name):
-                if not fkey["name"]:
-                    continue
-                fkeys.append(db.ForeignKeyConstraint((), (), name=fkey["name"]))
-            tables.append(Table(table_name, meta, *fkeys))
-            all_fkeys.extend(fkeys)
-        for fkey in all_fkeys:
-            con.execute(DropConstraint(fkey))
-        for table in tables:
-            con.execute(DropTable(table))
-        trans.commit()
+        delete_tables(db)
 
-        db.create_all()
-
-        read_file_path_books = os.path.join(
-            "books", "processed_data_editions", "ol_dump_editions_dev.json"
-        )
+        if database == "prod":
+            read_file_path_books = os.path.join(
+                "external_data",
+                "authors",
+                "processed_data_authors",
+                "ol_dump_authors_prod.json",
+            )
+        else:
+            read_file_path_books = os.path.join(
+                "external_data",
+                "authors",
+                "processed_data_authors",
+                "ol_dump_authors_dev.json",
+            )
         df_books = pd.read_json(read_file_path_books, orient="records", lines=True)
         print("Filling database")
+        print("Filling Authors")
+
+        for index, author_object in df_books.iterrows():
+            db.session.add(
+                Author(
+                    id=author_object["id"],
+                    name=author_object["name"],
+                    biography=author_object["biography"],
+                    picture=author_object["picture"],
+                    website=author_object["website"],
+                    birth_date=author_object["birth_date"],
+                    death_date=author_object["death_date"],
+                )
+            )
+            db.session.commit()
+
+        print("Authors filled")
+        print("Filling Books")
+
+        if database == "prod":
+            read_file_path_books = os.path.join(
+                "external_data",
+                "books",
+                "processed_data_editions",
+                "ol_dump_editions_prod.json",
+            )
+        else:
+            read_file_path_books = os.path.join(
+                "external_data",
+                "books",
+                "processed_data_editions",
+                "ol_dump_editions_dev.json",
+            )
+        df_books = pd.read_json(read_file_path_books, orient="records", lines=True)
 
         for index, book_object in df_books.iterrows():
             author_does_not_exist = False
@@ -101,6 +121,7 @@ if __name__ == "__main__":
             except parser.ParserError:
                 print(f"Premiere date is not valid for index {index}")
                 premiere_date = None
+
             db.session.add(
                 Book(
                     id=book_object["id"],
@@ -121,5 +142,15 @@ if __name__ == "__main__":
             except psycopg2.errors.UniqueViolation:
                 db.session.rollback()
                 print(f"DB SESSION ERROR, probably data duplicates")
+            except Exception as e:
+                db.session.rollback()
+                print(f"DB SESSION ERROR, probably data duplicates. Error code: {e}")
+
+        print("Books filled")
+        print("Filling Admins")
+
+        create_admin_accounts_in_db(db)
+
+        print("Admins filled")
 
         print("Database filled")

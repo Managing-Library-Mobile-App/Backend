@@ -7,7 +7,7 @@ read_file_path = os.path.join("../raw_data", "ol_dump_authors_2024-03-31.txt")
 write_file_path = os.path.join("processed_data_authors", "ol_dump_authors_prod.json")
 
 if os.path.exists(write_file_path):
-    os.remove(write_file_path)
+    raise Exception("DO NOT OVERWRITE DATA! REMOVE THE FILE IF YOU WANT THAT")
 
 # 13 million authors
 
@@ -65,6 +65,12 @@ for df in pd.read_csv(
     for key in columns_to_rename.keys():
         if key in filtered_df.columns:
             filtered_df = filtered_df.rename(columns={key: columns_to_rename[key]})
+
+    for index in filtered_df.index:
+        if filtered_df["picture"][index]:
+            filtered_df.loc[
+                index, "picture"
+            ] = f" https://covers.openlibrary.org/a/id/{filtered_df['picture'][index]}-M.jpg"
 
     if not os.path.exists(write_file_path):
         filtered_df.to_json(write_file_path, lines=True, orient="records", mode="w")
