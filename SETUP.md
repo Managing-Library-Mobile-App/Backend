@@ -13,6 +13,17 @@ clone https://github.com/Managing-Library-Mobile-App/Backend.git
 To run the app, two files are required in the static folder: cert.pem and key.pem
 They are not in the repository and need to be added manually as they cannot be exposed
 
+# CREATING JSON FILES FOR FILLING DB WITH DATA
+python ./external_data/author/ol_dump_authors_dev
+python ./external_data/author/ol_dump_authors_prod
+python ./external_data/books/ol_dump_books_dev
+python ./external_data/books/ol_dump_books_prod
+
+# FILLING DB WITH DATA
+python ./external_data/fill_db.py dev
+python ./external_data/fill_db.py prod
+
+
 # LOCAL SETUP
 Go to the project's root directory
 To run the app locally, use:
