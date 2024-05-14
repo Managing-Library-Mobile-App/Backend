@@ -114,7 +114,7 @@ for df in pd.read_csv(
         filtered_language = None
         for languages in row["languages"]:
             for language in languages:
-                if language["key"] in ["/languages/pol", "/languages/eng"]:
+                if language["key"] in ["/languages/pol"]:
                     filtered_language = language["key"]
         if not filtered_language:
             filtered_df.drop(index=[index], inplace=True)

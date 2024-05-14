@@ -101,7 +101,7 @@ for df in pd.read_csv(
         if filtered_df["picture"][index]:
             filtered_df.loc[
                 index, "picture"
-            ] = f" https://covers.openlibrary.org/a/id/{filtered_df['picture'][index]}-M.jpg"
+            ] = f"https://covers.openlibrary.org/a/id/{filtered_df['picture'][index]}-M.jpg"
 
     if not os.path.exists(write_file_path):
         filtered_df.to_json(write_file_path, lines=True, orient="records", mode="w")

@@ -72,9 +72,9 @@ if __name__ == "__main__":
             db.drop_all()
             db.create_all()
             if database != "test":
-                create_admin_accounts_in_db(db)
-            else:
                 fill_db(db)
+            else:
+                create_admin_accounts_in_db(db)
     # App setup
     run_simple(
         hostname="0.0.0.0",
