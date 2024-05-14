@@ -1,5 +1,6 @@
 from flask import Response, request
 from flask_restful import Resource
+from sqlalchemy import desc
 
 from helpers.jwt_auth import verify_jwt_token
 from models import user
@@ -7,6 +8,7 @@ from helpers.request_response import create_response
 from static.responses import (
     TOKEN_INVALID_RESPONSE,
     USERS_RESPONSE,
+    SORT_PARAM_DOES_NOT_EXIST,
 )
 
 
@@ -21,6 +23,7 @@ class User(Resource):
         user_id: int = request.args.get("id", type=int)  # optional
         username: str = request.args.get("username", type=str)  # optional
         get_self: bool = request.args.get("get_self", type=bool)  # optional
+        sorts: str = request.args.get("sorts", "username", type=str)
         email: str | None = verify_jwt_token()
         if not email:
             return create_response(TOKEN_INVALID_RESPONSE, language=language)
@@ -32,6 +35,20 @@ class User(Resource):
             user_query = user_query.filter(user.User.email == email)
         if user_id:
             user_query = user_query.filter(user.User.id == user_id)
+
+        for sort in sorts.split(","):
+            if sort.startswith("-"):
+                try:
+                    field = getattr(user.User, sort[1:])
+                except AttributeError:
+                    return create_response(SORT_PARAM_DOES_NOT_EXIST, language=language)
+                user_query = user_query.order_by(desc(field))
+            else:
+                try:
+                    field = getattr(user.User, sort)
+                except AttributeError:
+                    return create_response(SORT_PARAM_DOES_NOT_EXIST, language=language)
+                user_query = user_query.order_by(field)
 
         user_objects = user_query.paginate(
             page=page, per_page=per_page, error_out=False
