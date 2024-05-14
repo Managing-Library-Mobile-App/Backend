@@ -3,7 +3,6 @@ import os
 
 import sys
 
-# insert root directory into python module search path
 sys.path.insert(1, os.getcwd())
 
 import pandas as pd
