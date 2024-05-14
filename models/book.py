@@ -11,7 +11,7 @@ class Book(db.Model):  # type: ignore[name-defined]
 
     id = db.Column("id", db.String, primary_key=True)
     language = db.Column(db.String(50), nullable=False)
-    isbn = db.Column(db.String(13), nullable=False)
+    isbn = db.Column(db.String(1000), nullable=False)
     title = db.Column(db.String(200), nullable=False)
     authors = db.relationship(
         "Author",
@@ -20,12 +20,12 @@ class Book(db.Model):  # type: ignore[name-defined]
         back_populates="released_books",
     )
     publishing_house = db.Column(db.String(200))
-    description = db.Column(db.String(3000), default=0)
-    genres = db.Column(ARRAY(db.String(100)), default=[])
+    description = db.Column(db.String(50000), default=0)
+    genres = db.Column(ARRAY(db.String(1000)), default=[])
     picture = db.Column(
         db.String(200), default="https://demofree.sirv.com/nope-not-here.jpg?w=150"
     )
-    premiere_date = db.Column(db.Date, nullable=False)
+    premiere_date = db.Column(db.Date, default=None)
     score = db.Column(db.Float, default=0)
     opinions_count = db.Column(db.Integer, default=0)
     opinions = db.relationship(
@@ -46,7 +46,7 @@ class Book(db.Model):  # type: ignore[name-defined]
         authors: list[str],
         publishing_house: str,
         description: str,
-        premiere_date: datetime.datetime,
+        premiere_date: datetime.datetime = None,
         genres: list = None,
         picture: str = None,
         number_of_pages: int = None,

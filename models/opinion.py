@@ -1,3 +1,5 @@
+import datetime
+
 from helpers.init import db
 from models import user
 
@@ -14,6 +16,7 @@ class Opinion(db.Model):  # type: ignore[name-defined]
     )
     stars_count = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.String(1000), default="")
+    modified_date = db.Column(db.Date, default=datetime.datetime.now)
 
     __table_args__ = (
         db.UniqueConstraint("user_id", "book_id", name="uq_user_id_book_id"),
@@ -58,4 +61,5 @@ class Opinion(db.Model):  # type: ignore[name-defined]
             "book_id": self.book_id,
             "stars_count": self.stars_count,
             "comment": self.comment,
+            "modified_date": self.date.strftime("%d-%m-%Y"),
         }

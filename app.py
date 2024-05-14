@@ -1,4 +1,3 @@
-import datetime
 import os
 
 import argparse
@@ -69,12 +68,13 @@ if __name__ == "__main__":
     except psycopg2.errors.DuplicateDatabase:
         logger.info(f"Database {database} already exists")
     with app.app_context():
-        db.drop_all()
-        db.create_all()
-        if database == "test":
-            create_admin_accounts_in_db(db)
-        else:
-            fill_db(db)
+        if database not in ["prod", "dev"]:
+            db.drop_all()
+            db.create_all()
+            if database != "test":
+                create_admin_accounts_in_db(db)
+            else:
+                fill_db(db)
     # App setup
     run_simple(
         hostname="0.0.0.0",
@@ -82,4 +82,3 @@ if __name__ == "__main__":
         application=dispatcher,
         ssl_context=("static/cert.pem", "static/key.pem"),
     )
-    application_start_date = datetime.datetime.now().strftime("%m-%d-%Y %H-%M-%S")

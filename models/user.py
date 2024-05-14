@@ -37,7 +37,7 @@ class User(db.Model):  # type: ignore[name-defined]
         username: str,
         email: str,
         password: str,
-        theme: str,
+        theme: str = "light",
         is_admin: bool = False,
         profile_picture: int = 1,
     ) -> None:
