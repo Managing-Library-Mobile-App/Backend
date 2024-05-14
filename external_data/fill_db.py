@@ -119,7 +119,7 @@ if __name__ == "__main__":
                 premiere_date = parser.parse(book_object["premiere_date"])
             except parser.ParserError:
                 print(f"Premiere date is not valid for index {index}")
-                premiere_date = None
+                continue
 
             db.session.add(
                 Book(
