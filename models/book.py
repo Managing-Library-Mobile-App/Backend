@@ -11,7 +11,7 @@ class Book(db.Model):  # type: ignore[name-defined]
 
     id = db.Column("id", db.String, primary_key=True)
     language = db.Column(db.String(50), nullable=False)
-    isbn = db.Column(db.String(1000), nullable=False)
+    isbn = db.Column(db.String(1000), nullable=False, unique=True)
     title = db.Column(db.String(200), nullable=False)
     authors = db.relationship(
         "Author",

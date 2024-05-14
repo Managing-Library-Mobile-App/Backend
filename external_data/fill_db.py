@@ -138,12 +138,14 @@ if __name__ == "__main__":
             )
             try:
                 db.session.commit()
-            except psycopg2.errors.UniqueViolation:
+            except psycopg2.errors.UniqueViolation as e:
                 db.session.rollback()
-                print(f"DB SESSION ERROR, probably data duplicates")
+                print(
+                    f"DB SESSION ERROR, probably id or isbn not unique. Error code: {e}"
+                )
             except Exception as e:
                 db.session.rollback()
-                print(f"DB SESSION ERROR, probably data duplicates. Error code: {e}")
+                print(f"Unhandled error, probably data duplicates. Error code: {e}")
 
         print("Books filled")
         print("Filling Admins")
