@@ -3,6 +3,8 @@ import os
 
 import sys
 
+from helpers.translation import translate_any_to_known
+
 sys.path.insert(1, os.getcwd())
 
 import pandas as pd
@@ -19,7 +21,9 @@ from models.book import Book  # noqa
 from models.library import Library  # noqa
 from models.opinion import Opinion  # noqa
 from models.user import User  # noqa
-from test_data.fill_db_script import create_admin_accounts_in_db
+from test_data.fill_db_script import (
+    create_admins_users_opinions_in_db,
+)
 
 api: flask_restful.Api = Api(app)
 api_add_resources(api)
@@ -51,6 +55,51 @@ jwt.init_app(app)
 cache.init_app(app)
 db.init_app(app)
 limiter.init_app(app)
+
+
+def filter_out_genres(genres: list[str]) -> list[str]:
+    filtered_genres = []
+    for genre in genres:
+        if genre in [
+            "Science fiction",
+            "Fantasy",
+        ]:
+            filtered_genres.append("Fantasy, Science Fiction")
+        if genre in ["Thriller", "Horror", "Mystery and detective stories"]:
+            filtered_genres.append("Thriller, Horror, Mystery and detective stories")
+        if genre in ["Young Adult"]:
+            filtered_genres.append("Young Adult")
+        if genre in ["Romance"]:
+            filtered_genres.append("Romance")
+        if genre in [
+            "History",
+            "Ancient Civilization",
+            "Archaeology",
+            "Anthropology",
+            "World War II",
+            "Social Life and Customs",
+        ]:
+            filtered_genres.append("History")
+        if genre in ["Action & Adventure"]:
+            filtered_genres.append("Action & Adventure")
+        if genre in ["Biography"]:
+            filtered_genres.append("Biography")
+        if genre in [
+            "Science & Mathematics",
+            "Business & Finance",
+            "Social Sciences",
+            "Animals",
+            "Health & Wellness",
+        ]:
+            filtered_genres.append("Popular Science Literature")
+        if genre in ["Children's"]:
+            filtered_genres.append("Children's")
+        if genre in ["Poetry", "Plays"]:
+            filtered_genres.append("Poetry, Plays")
+        if genre in ["Comic Books"]:
+            filtered_genres.append("Comic Books")
+    return filtered_genres
+
 
 if __name__ == "__main__":
     with app.app_context():
@@ -121,6 +170,7 @@ if __name__ == "__main__":
                 print(f"Premiere date is not valid for index {index}")
                 continue
 
+            book_object["genres"] = filter_out_genres(book_object["genres"])
             db.session.add(
                 Book(
                     id=book_object["id"],
@@ -150,15 +200,20 @@ if __name__ == "__main__":
         print("Books filled")
         print("Filling Admins")
 
-        create_admin_accounts_in_db(db)
+        create_admins_users_opinions_in_db(db)
 
         print("Admins filled")
-        print("Deleting authors without books")
+        print("Deleting authors without books and changing bio language to polish")
 
         all_authors: list[Author] = Author.query.all()
         for author_object in all_authors:
             if len(author_object.released_books) == 0:
                 db.session.delete(author_object)
+                db.session.commit()
+            else:
+                author_object.biography = translate_any_to_known(
+                    author_object.biography, "pl"
+                )
                 db.session.commit()
 
         print("Authors without books deleted")
