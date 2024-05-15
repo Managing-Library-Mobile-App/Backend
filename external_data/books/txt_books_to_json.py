@@ -70,7 +70,6 @@ for df in pd.read_csv(
     if database == "prod":
         filtered_fields = [
             "id",
-            "isbn_10",
             "title",
             "authors",
             "publishers",
@@ -101,26 +100,21 @@ for df in pd.read_csv(
 
     for index in filtered_df.index:
         row = filtered_df.loc[[index]]
-        if database == "prod":
-            if len(row["isbn_10"][index]) == 0:
+        if len(row["languages"][index]) == 0 or len(row["publishers"][index]) == 0:
+            filtered_df.drop(index=[index], inplace=True)
+            continue
+        if isinstance(row["isbn_10"][index], list):
+            if row["isbn_10"][index]:
+                filtered_df.loc[index, "isbn_10"] = row["isbn_10"][index][0]
+            else:
                 filtered_df.drop(index=[index], inplace=True)
                 continue
-        else:
-            if len(row["languages"][index]) == 0 or len(row["publishers"][index]) == 0:
+        elif isinstance(row["isbn_13"][index], list):
+            if row["isbn_10"][index]:
+                filtered_df.loc[index, "isbn_10"] = row["isbn_13"][index][0]
+            else:
                 filtered_df.drop(index=[index], inplace=True)
                 continue
-            if isinstance(row["isbn_10"][index], list):
-                if row["isbn_10"][index]:
-                    filtered_df.loc[index, "isbn_10"] = row["isbn_10"][index][0]
-                else:
-                    filtered_df.drop(index=[index], inplace=True)
-                    continue
-            elif isinstance(row["isbn_13"][index], list):
-                if row["isbn_10"][index]:
-                    filtered_df.loc[index, "isbn_10"] = row["isbn_13"][index][0]
-                else:
-                    filtered_df.drop(index=[index], inplace=True)
-                    continue
         filtered_language = None
         for languages in row["languages"]:
             for language in languages:
