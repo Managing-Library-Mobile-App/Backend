@@ -14,7 +14,7 @@ args = arg_parser.parse_args()
 database: str = args.type_of_db
 
 read_file_path = os.path.join(
-    "external_data", "raw_data", "ol_dump_editions_2024-03-31.txt"
+    "external_data", "raw_data", "ol_dump_editions_2024-04-30.txt"
 )
 if database == "prod":
     write_file_path = os.path.join(
@@ -53,13 +53,12 @@ for df in pd.read_csv(
     columns = [
         "id",
         "isbn_10",
-        # "isbn_13",
+        "isbn_13",
         "title",
         "authors",
         "publishers",
         "subjects",
         "publish_date",
-        # "works",
         "description.value",
         "languages",
         "number_of_pages",
@@ -72,29 +71,23 @@ for df in pd.read_csv(
         filtered_fields = [
             "id",
             "isbn_10",
-            # "isbn_13",
             "title",
             "authors",
             "publishers",
             "subjects",
             "publish_date",
-            # "works",
             "languages",
         ]
     else:
         filtered_fields = [
             "id",
-            "isbn_10",
-            # "isbn_13",
             "title",
             "authors",
             "publishers",
             "subjects",
             "publish_date",
-            # "works",
             "description.value",
             "languages",
-            "number_of_pages",
         ]
     for filter_field in filtered_fields:
         if filter_field in filtered_df.columns:
@@ -102,15 +95,32 @@ for df in pd.read_csv(
         else:
             filtered_df[filter_field] = pd.Series()
 
+    filtered_df = filtered_df[
+        filtered_df["isbn_10"].notna() | filtered_df["isbn_13"].notna()
+    ]
+
     for index in filtered_df.index:
         row = filtered_df.loc[[index]]
-        if (
-            len(row["isbn_10"][index]) == 0
-            or len(row["languages"][index]) == 0
-            or len(row["publishers"][index]) == 0
-        ):
-            filtered_df.drop(index=[index], inplace=True)
-            continue
+        if database == "prod":
+            if len(row["isbn_10"][index]) == 0:
+                filtered_df.drop(index=[index], inplace=True)
+                continue
+        else:
+            if len(row["languages"][index]) == 0 or len(row["publishers"][index]) == 0:
+                filtered_df.drop(index=[index], inplace=True)
+                continue
+            if isinstance(row["isbn_10"][index], list):
+                if row["isbn_10"][index]:
+                    filtered_df.loc[index, "isbn_10"] = row["isbn_10"][index][0]
+                else:
+                    filtered_df.drop(index=[index], inplace=True)
+                    continue
+            elif isinstance(row["isbn_13"][index], list):
+                if row["isbn_10"][index]:
+                    filtered_df.loc[index, "isbn_10"] = row["isbn_13"][index][0]
+                else:
+                    filtered_df.drop(index=[index], inplace=True)
+                    continue
         filtered_language = None
         for languages in row["languages"]:
             for language in languages:
@@ -125,10 +135,10 @@ for df in pd.read_csv(
         language = row["languages"][index]
 
         filtered_df.at[index, "authors"] = [author["key"] for author in authors]
-        filtered_df.loc[index, "isbn_10"] = isbn[0]
         filtered_df.loc[index, "publishers"] = publishers[0]
         filtered_df.loc[index, "languages"] = filtered_language
 
+    df = df.drop("isbn_13", axis=1)
     columns_to_rename = {
         "publish_date": "premiere_date",
         "description.value": "description",

@@ -14,7 +14,7 @@ args = arg_parser.parse_args()
 database: str = args.type_of_db
 
 read_file_path = os.path.join(
-    "external_data", "raw_data", "ol_dump_authors_2024-03-31.txt"
+    "external_data", "raw_data", "ol_dump_authors_2024-04-30.txt"
 )
 if database == "prod":
     write_file_path = os.path.join(
