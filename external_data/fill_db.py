@@ -3,6 +3,8 @@ import os
 
 import sys
 
+import httpcore
+
 sys.path.insert(1, os.getcwd())
 
 import pandas as pd
@@ -169,6 +171,7 @@ if __name__ == "__main__":
                 print(f"Premiere date is not valid for index {index}")
                 continue
 
+            book_object["genres"] = filter_out_genres(book_object["genres"])
             db.session.add(
                 Book(
                     id=book_object["id"],
@@ -177,10 +180,8 @@ if __name__ == "__main__":
                     title=book_object["title"],
                     authors=book_object["authors"],
                     publishing_house=book_object["publishing_house"],
-                    description=translate_any_to_known(
-                        book_object["description"], "pl"
-                    ),
-                    genres=filter_out_genres(book_object["genres"]),
+                    description=book_object["description"],
+                    genres=book_object["genres"],
                     picture=book_object["picture"],
                     premiere_date=premiere_date,
                     number_of_pages=book_object["number_of_pages"],
@@ -206,15 +207,45 @@ if __name__ == "__main__":
         print("Deleting authors without books and changing bio language to polish")
 
         all_authors: list[Author] = Author.query.all()
-        for author_object in all_authors:
+        for index, author_object in enumerate(all_authors):
             if len(author_object.released_books) == 0:
                 db.session.delete(author_object)
                 db.session.commit()
             else:
-                author_object.biography = translate_any_to_known(
-                    author_object.biography, "pl"
-                )
+                while True:
+                    try:
+                        author_object.biography = translate_any_to_known(
+                            author_object.biography, "pl"
+                        )
+                        break
+                    except ValueError as e:
+                        print(
+                            f"Unknown source language for index {index}. Retrying. Error code: {e}"
+                        )
+                        break
+                    except httpcore._exceptions.ConnectError as e:
+                        print(
+                            f"translating failed due to connection issues for index {index}. Retrying. Error code: {e}"
+                        )
                 db.session.commit()
+
+        all_books: list[Book] = Book.query.all()
+        for index, book_object in enumerate(all_books):
+            while True:
+                try:
+                    book_object["description"] = translate_any_to_known(
+                        book_object["description"], "pl"
+                    )
+                    break
+                except ValueError as e:
+                    print(
+                        f"Unknown source language for index {index}. Retrying. Error code: {e}"
+                    )
+                    break
+                except httpcore._exceptions.ConnectError as e:
+                    print(
+                        f"translating failed due to connection issues for index {index}. Retrying. Error code: {e}"
+                    )
 
         print("Authors without books deleted")
         print("Database filled")
