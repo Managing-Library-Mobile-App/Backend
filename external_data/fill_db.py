@@ -192,11 +192,13 @@ if __name__ == "__main__":
             except psycopg2.errors.UniqueViolation as e:
                 db.session.rollback()
                 print(
-                    f"DB SESSION ERROR, probably id or isbn not unique. Error code: {e}"
+                    f"DB SESSION ERROR, probably id or isbn not unique for index {index}. Error code: {e}"
                 )
             except Exception as e:
                 db.session.rollback()
-                print(f"Unhandled error, probably data duplicates. Error code: {e}")
+                print(
+                    f"Unhandled error, probably data duplicates for index {index}. Error code: {e}"
+                )
 
         print("Books filled")
         print("Filling Admins")
