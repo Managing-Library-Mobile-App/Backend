@@ -76,6 +76,7 @@ for df in pd.read_csv(
             "subjects",
             "publish_date",
             "languages",
+            "number_of_pages",
         ]
     else:
         filtered_fields = [
@@ -87,6 +88,7 @@ for df in pd.read_csv(
             "publish_date",
             "description.value",
             "languages",
+            "number_of_pages",
         ]
     for filter_field in filtered_fields:
         if filter_field in filtered_df.columns:
@@ -118,7 +120,7 @@ for df in pd.read_csv(
         filtered_language = None
         for languages in row["languages"]:
             for language in languages:
-                if language["key"] in ["/languages/pol"]:
+                if language["key"] in ["/languages/pol", "/languages/eng"]:
                     filtered_language = language["key"]
         if not filtered_language:
             filtered_df.drop(index=[index], inplace=True)

@@ -3,11 +3,10 @@ import os
 
 import sys
 
-from helpers.translation import translate_any_to_known
-
 sys.path.insert(1, os.getcwd())
 
 import pandas as pd
+from helpers.translation import translate_any_to_known
 
 import dateutil.parser as parser
 import flask_restful
@@ -170,7 +169,6 @@ if __name__ == "__main__":
                 print(f"Premiere date is not valid for index {index}")
                 continue
 
-            book_object["genres"] = filter_out_genres(book_object["genres"])
             db.session.add(
                 Book(
                     id=book_object["id"],
@@ -179,8 +177,10 @@ if __name__ == "__main__":
                     title=book_object["title"],
                     authors=book_object["authors"],
                     publishing_house=book_object["publishing_house"],
-                    description=book_object["description"],
-                    genres=book_object["genres"],
+                    description=translate_any_to_known(
+                        book_object["description"], "pl"
+                    ),
+                    genres=filter_out_genres(book_object["genres"]),
                     picture=book_object["picture"],
                     premiere_date=premiere_date,
                     number_of_pages=book_object["number_of_pages"],
