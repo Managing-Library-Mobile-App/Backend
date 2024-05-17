@@ -1,5 +1,7 @@
 import argparse
+import datetime
 import os
+import random
 
 import sys
 
@@ -13,7 +15,6 @@ from helpers.translation import translate_any_to_known
 
 import dateutil.parser as parser
 import flask_restful
-import psycopg2
 from flask_restful import Api
 from helpers.api_add_resources import api_add_resources
 from helpers.delete_tables import delete_tables
@@ -158,7 +159,7 @@ if __name__ == "__main__":
             )
         df_books = pd.read_json(read_file_path_books, orient="records", lines=True)
 
-        for index, book_object in df_books.iterrows():
+        for index, book_object in df_books[:50000].iterrows():
             author_does_not_exist = False
             for author_id in book_object["authors"]:
                 if len(Author.query.filter_by(id=author_id).all()) < 1:
@@ -232,7 +233,7 @@ if __name__ == "__main__":
                         )
                     except httpcore._exceptions.ReadTimeout as e:
                         print(
-                            f"translating failed due to connection issues for index {index}. Retrying. Error code: {e}"
+                            f"translating failed due to connection issues for index {index}. Error code: {e}"
                         )
                         break
                 db.session.commit()
@@ -244,7 +245,7 @@ if __name__ == "__main__":
         for index, book_object in enumerate(all_books):
             while True:
                 try:
-                    book_object["description"] = translate_any_to_known(
+                    book_object.description = translate_any_to_known(
                         book_object.description, "pl"
                     )
                     break
@@ -259,7 +260,31 @@ if __name__ == "__main__":
                     )
                 except httpcore._exceptions.ReadTimeout as e:
                     print(
+                        f"translating failed due to connection issues for index {index}. Error code: {e}"
+                    )
+                    break
+
+        new_books: list[Book] = Book.quer.limit(100).all()
+        for index, book_object in enumerate(new_books):
+            while True:
+                try:
+                    book_object.premiere_date = (
+                        datetime.datetime.now()
+                        - datetime.timedelta(days=random.randint(0, 20))
+                    )
+                    break
+                except ValueError as e:
+                    print(
+                        f"Unknown source language for index {index}. Retrying. Error code: {e}"
+                    )
+                    break
+                except httpcore._exceptions.ConnectError as e:
+                    print(
                         f"translating failed due to connection issues for index {index}. Retrying. Error code: {e}"
+                    )
+                except httpcore._exceptions.ReadTimeout as e:
+                    print(
+                        f"translating failed due to connection issues for index {index}. Error code: {e}"
                     )
                     break
 

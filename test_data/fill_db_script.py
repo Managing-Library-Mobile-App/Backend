@@ -62,7 +62,7 @@ def create_admins_users_opinions_in_db(db: SQLAlchemy):
                     )
                 )
                 db.session.commit()
-    logger.info("Users and opinions created")
+    print("Users and opinions created")
 
 
 def create_admin_accounts_in_db(db: SQLAlchemy):
