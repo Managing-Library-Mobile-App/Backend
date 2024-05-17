@@ -109,24 +109,24 @@ if __name__ == "__main__":
         delete_tables(db)
 
         if database == "prod":
-            read_file_path_books = os.path.join(
+            read_file_path_authors = os.path.join(
                 "external_data",
                 "authors",
                 "processed_data_authors",
                 "ol_dump_authors_prod.json",
             )
         else:
-            read_file_path_books = os.path.join(
+            read_file_path_authors = os.path.join(
                 "external_data",
                 "authors",
                 "processed_data_authors",
                 "ol_dump_authors_dev.json",
             )
-        df_books = pd.read_json(read_file_path_books, orient="records", lines=True)
+        df_authors = pd.read_json(read_file_path_authors, orient="records", lines=True)
         print("Filling database")
         print("Filling Authors")
-
-        for index, author_object in df_books.iterrows():
+        for index, author_object in df_authors.iterrows():
+            print(f"{index}/{df_authors.shape}")
             db.session.add(
                 Author(
                     id=author_object["id"],
@@ -173,6 +173,7 @@ if __name__ == "__main__":
                 print(f"Premiere date is not valid for index {index}")
                 continue
 
+            print(f"{index}/{df_books.shape}")
             book_object["genres"] = filter_out_genres(book_object["genres"])
             db.session.add(
                 Book(
