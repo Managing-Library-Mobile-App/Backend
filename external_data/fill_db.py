@@ -232,6 +232,9 @@ if __name__ == "__main__":
                         )
                 db.session.commit()
 
+        print("Authors without books deleted")
+        print("Books translation")
+
         all_books: list[Book] = Book.query.all()
         for index, book_object in enumerate(all_books):
             while True:
@@ -250,5 +253,5 @@ if __name__ == "__main__":
                         f"translating failed due to connection issues for index {index}. Retrying. Error code: {e}"
                     )
 
-        print("Authors without books deleted")
+        print("Books translated")
         print("Database filled")

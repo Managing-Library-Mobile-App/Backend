@@ -38,7 +38,9 @@ class Book(Resource):
         self.post_parser.add_arg(
             "publishing_house", type=string_range_validation(max=200)
         )
-        self.post_parser.add_arg("description", type=string_range_validation(max=150000))
+        self.post_parser.add_arg(
+            "description", type=string_range_validation(max=150000)
+        )
         self.post_parser.add_arg("genres", type=list)
         self.post_parser.add_arg("picture", type=string_range_validation(max=200))
         self.post_parser.add_arg("premiere_date")
@@ -60,7 +62,9 @@ class Book(Resource):
         self.patch_parser.add_arg(
             "publishing_house", type=string_range_validation(max=200)
         )
-        self.patch_parser.add_arg("description", type=string_range_validation(max=150000))
+        self.patch_parser.add_arg(
+            "description", type=string_range_validation(max=150000)
+        )
         self.patch_parser.add_arg("picture", type=string_range_validation(max=200))
         self.patch_parser.add_arg("premiere_date")
         self.patch_parser.add_arg("language", required=False)
