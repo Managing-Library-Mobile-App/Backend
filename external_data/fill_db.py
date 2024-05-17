@@ -7,6 +7,7 @@ import sys
 
 import httpcore
 import sqlalchemy
+from googletrans import Translator
 
 sys.path.insert(1, os.getcwd())
 
@@ -105,6 +106,7 @@ def filter_out_genres(genres: list[str]) -> list[str]:
 
 
 if __name__ == "__main__":
+    translator_google = Translator()
     with app.app_context():
         delete_tables(db)
 
@@ -222,7 +224,7 @@ if __name__ == "__main__":
                 while True:
                     try:
                         author_object.biography = translate_any_to_known(
-                            author_object.biography, "pl"
+                            author_object.biography, "pl", translator_google
                         )
                         break
                     except ValueError as e:
@@ -251,7 +253,7 @@ if __name__ == "__main__":
             while True:
                 try:
                     book_object.description = translate_any_to_known(
-                        book_object.description, "pl"
+                        book_object.description, "pl", translator_google
                     )
                     break
                 except ValueError as e:
