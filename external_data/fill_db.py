@@ -252,6 +252,11 @@ if __name__ == "__main__":
                     print(
                         f"translating failed due to connection issues for index {index}. Retrying. Error code: {e}"
                     )
+                except httpcore._exceptions.ReadTimeout as e:
+                    print(
+                        f"translating failed due to connection issues for index {index}. Retrying. Error code: {e}"
+                    )
+                    break
 
         print("Books translated")
         print("Database filled")
