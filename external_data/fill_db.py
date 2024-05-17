@@ -271,7 +271,7 @@ if __name__ == "__main__":
                     )
                     break
 
-        new_books: list[Book] = Book.quer.limit(100).all()
+        new_books: list[Book] = Book.query.limit(100).all()
         for index, book_object in enumerate(new_books):
             while True:
                 try:
