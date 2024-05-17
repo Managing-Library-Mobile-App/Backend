@@ -4,6 +4,7 @@ import os
 import sys
 
 import httpcore
+import sqlalchemy
 
 sys.path.insert(1, os.getcwd())
 
@@ -189,7 +190,7 @@ if __name__ == "__main__":
             )
             try:
                 db.session.commit()
-            except psycopg2.errors.UniqueViolation as e:
+            except sqlalchemy.exc.IntegrityError as e:
                 db.session.rollback()
                 print(
                     f"DB SESSION ERROR, probably id or isbn not unique for index {index}."
