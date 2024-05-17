@@ -211,7 +211,9 @@ if __name__ == "__main__":
         print("Deleting authors without books and changing bio language to polish")
 
         all_authors: list[Author] = Author.query.all()
+        all_authors_length = len(all_authors)
         for index, author_object in enumerate(all_authors):
+            print(f"{index}/{all_authors_length}")
             if len(author_object.released_books) == 0:
                 db.session.delete(author_object)
                 db.session.commit()
@@ -242,7 +244,9 @@ if __name__ == "__main__":
         print("Books translation")
 
         all_books: list[Book] = Book.query.all()
+        all_books_length = len(all_books)
         for index, book_object in enumerate(all_books):
+            print(f"{index}/{all_books_length}")
             while True:
                 try:
                     book_object.description = translate_any_to_known(
