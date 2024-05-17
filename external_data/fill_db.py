@@ -192,7 +192,7 @@ if __name__ == "__main__":
             except psycopg2.errors.UniqueViolation as e:
                 db.session.rollback()
                 print(
-                    f"DB SESSION ERROR, probably id or isbn not unique for index {index}. Error code: {e}"
+                    f"DB SESSION ERROR, probably id or isbn not unique for index {index}."
                 )
             except Exception as e:
                 db.session.rollback()
@@ -236,7 +236,7 @@ if __name__ == "__main__":
             while True:
                 try:
                     book_object["description"] = translate_any_to_known(
-                        book_object["description"], "pl"
+                        book_object.description, "pl"
                     )
                     break
                 except ValueError as e:
