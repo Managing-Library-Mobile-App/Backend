@@ -1,6 +1,9 @@
+import random
+
 from flask_sqlalchemy import SQLAlchemy
 from loguru import logger
 
+from models import book
 from test_data.authors import authors
 from test_data.books import books
 from test_data.libraries import libraries
@@ -12,6 +15,54 @@ from models.book import Book
 from models.library import Library
 from models.opinion import Opinion
 from models.user import User
+
+
+def create_admins_users_opinions_in_db(db: SQLAlchemy):
+    for index, user in enumerate([*users, *admins]):
+        new_user: User = User(
+            username=user["username"],
+            password=user["password"],
+            email=user["email"],
+            profile_picture=user["profile_picture"]
+            if "profile_picture" in user.keys()
+            else 1,
+            theme=user["theme"] if "theme" in user.keys() else 1,
+        )
+        db.session.add(new_user)
+        db.session.commit()
+
+        book_objects: list[book.Book] = book.Book.query.limit(100).all()
+
+        new_user_library: Library = Library(
+            read_books=[book_object.id for book_object in book_objects[:30]],
+            favourite_books=[book_object.id for book_object in book_objects[30:65]],
+            bought_books=[book_object.id for book_object in book_objects[65:100]],
+            user_id=new_user.id,
+        )
+        db.session.add(new_user_library)
+        db.session.commit()
+
+        for book_object in book_objects:
+            if random.randint(0, 1) == 0:
+                stars_count = random.randint(1, 5)
+                db.session.add(
+                    Opinion(
+                        user_id=new_user.id,
+                        book_id=book_object.id,
+                        stars_count=stars_count,
+                        comment="Very bad book"
+                        if stars_count == 1
+                        else "Bad book"
+                        if stars_count == 2
+                        else "Neutral book"
+                        if stars_count == 3
+                        else "Good book"
+                        if stars_count == 4
+                        else "Very good book",
+                    )
+                )
+                db.session.commit()
+    print("Users and opinions created")
 
 
 def create_admin_accounts_in_db(db: SQLAlchemy):

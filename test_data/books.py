@@ -18,7 +18,7 @@ books: list[dict[str, Any]] = [
     {
         "id": "B",
         "language": "pol",
-        "isbn": "0101010102",
+        "isbn": "0101010546557",
         "title": "The Great Britain",
         "authors": ["BERET", "ANG"],
         "publishing_house": "Adams House",
@@ -70,7 +70,7 @@ books: list[dict[str, Any]] = [
     {
         "id": "Z",
         "language": "pol",
-        "isbn": "0101010102",
+        "isbn": "010101015602",
         "title": "The Great Britain",
         "authors": ["BERET", "ANG"],
         "publishing_house": "Adams House",
@@ -83,7 +83,7 @@ books: list[dict[str, Any]] = [
     {
         "id": "D",
         "language": "pol",
-        "isbn": "0101010102",
+        "isbn": "01010101345602",
         "title": "The Great Britain",
         "authors": ["BERET", "ANG"],
         "publishing_house": "Adams House",
@@ -96,7 +96,7 @@ books: list[dict[str, Any]] = [
     {
         "id": "E",
         "language": "pol",
-        "isbn": "0101010102",
+        "isbn": "01010105789102",
         "title": "The Great Britain",
         "authors": ["BERET", "ANG"],
         "publishing_house": "Adams House",
@@ -109,7 +109,7 @@ books: list[dict[str, Any]] = [
     {
         "id": "F",
         "language": "pol",
-        "isbn": "0101010102",
+        "isbn": "010101978670102",
         "title": "The Great Britain",
         "authors": ["BERET", "ANG"],
         "publishing_house": "Adams House",
@@ -122,7 +122,7 @@ books: list[dict[str, Any]] = [
     {
         "id": "G",
         "language": "pol",
-        "isbn": "0101010102",
+        "isbn": "010101019802",
         "title": "The Great Britain",
         "authors": ["BERET", "ANG"],
         "publishing_house": "Adams House",
@@ -135,7 +135,7 @@ books: list[dict[str, Any]] = [
     {
         "id": "H",
         "language": "pol",
-        "isbn": "0101010102",
+        "isbn": "0101010189002",
         "title": "The Great Britain",
         "authors": ["BERET", "ANG"],
         "publishing_house": "Adams House",
@@ -200,7 +200,7 @@ books: list[dict[str, Any]] = [
     {
         "id": "M",
         "language": "chi",
-        "isbn": "0101010111",
+        "isbn": "t678987654",
         "title": "The Great Britain",
         "authors": ["AMA"],
         "publishing_house": "Adams House",
@@ -213,7 +213,7 @@ books: list[dict[str, Any]] = [
     {
         "id": "N",
         "language": "chi",
-        "isbn": "0101010111",
+        "isbn": "7890-0987654",
         "title": "The Great Britain",
         "authors": ["AMA"],
         "publishing_house": "Adams House",
@@ -226,7 +226,7 @@ books: list[dict[str, Any]] = [
     {
         "id": "1",
         "language": "chi",
-        "isbn": "0101010111",
+        "isbn": "657890-987654",
         "title": "The Great Britain",
         "authors": ["AMA"],
         "publishing_house": "Adams House",
@@ -239,7 +239,7 @@ books: list[dict[str, Any]] = [
     {
         "id": "2",
         "language": "chi",
-        "isbn": "0101010111",
+        "isbn": "4567898765",
         "title": "The Great Britain",
         "authors": ["AMA"],
         "publishing_house": "Adams House",
@@ -252,7 +252,7 @@ books: list[dict[str, Any]] = [
     {
         "id": "3",
         "language": "chi",
-        "isbn": "0101010111",
+        "isbn": "5678908765",
         "title": "The Great Britain",
         "authors": ["AMA"],
         "publishing_house": "Adams House",
@@ -265,7 +265,7 @@ books: list[dict[str, Any]] = [
     {
         "id": "4",
         "language": "chi",
-        "isbn": "0101010111",
+        "isbn": "86749086",
         "title": "The Great Britain",
         "authors": ["AMA"],
         "publishing_house": "Adams House",
@@ -278,7 +278,7 @@ books: list[dict[str, Any]] = [
     {
         "id": "5",
         "language": "chi",
-        "isbn": "0101010111",
+        "isbn": "67879654",
         "title": "The Great Britain",
         "authors": ["AMA"],
         "publishing_house": "Adams House",

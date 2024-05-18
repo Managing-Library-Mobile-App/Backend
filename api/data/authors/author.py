@@ -30,7 +30,7 @@ class Author(Resource):
             argument_class=APIArgument, bundle_errors=True
         )
         self.post_parser.add_arg("name", type=string_range_validation(max=200))
-        self.post_parser.add_arg("biography", type=string_range_validation(max=150000))
+        self.post_parser.add_arg("biography", type=string_range_validation(max=15000))
         self.post_parser.add_arg("picture", type=string_range_validation(max=200))
         self.post_parser.add_arg("language", required=False)
 
@@ -48,7 +48,7 @@ class Author(Resource):
             "name", type=string_range_validation(max=200), required=False
         )
         self.patch_parser.add_arg(
-            "biography", type=string_range_validation(max=150000), required=False
+            "biography", type=string_range_validation(max=15000), required=False
         )
         self.patch_parser.add_arg(
             "picture", type=string_range_validation(max=200), required=False

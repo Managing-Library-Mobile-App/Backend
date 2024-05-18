@@ -11,7 +11,7 @@ class Book(db.Model):  # type: ignore[name-defined]
 
     id = db.Column("id", db.String, primary_key=True)
     language = db.Column(db.String(50), nullable=False)
-    isbn = db.Column(db.String(1000), nullable=False)
+    isbn = db.Column(db.String(1000), nullable=False, unique=True)
     title = db.Column(db.String(200), nullable=False)
     authors = db.relationship(
         "Author",
@@ -20,7 +20,7 @@ class Book(db.Model):  # type: ignore[name-defined]
         back_populates="released_books",
     )
     publishing_house = db.Column(db.String(200))
-    description = db.Column(db.String(50000), default=0)
+    description = db.Column(db.String(15000), default=0)
     genres = db.Column(ARRAY(db.String(1000)), default=[])
     picture = db.Column(
         db.String(200), default="https://demofree.sirv.com/nope-not-here.jpg?w=150"

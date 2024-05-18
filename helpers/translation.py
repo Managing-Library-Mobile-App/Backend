@@ -6,8 +6,9 @@ def translate_known_to_known(text_to_translate: str, src: str, language: str) ->
     return Translator().translate(text_to_translate, src=src, dest=language).text
 
 
-def translate_any_to_known(text_to_translate: str, language: str) -> str:
-    translator_google = Translator()
+def translate_any_to_known(
+    text_to_translate: str, language: str, translator_google=Translator()
+) -> str:
     detected_language: Detected = translator_google.detect(text_to_translate)
     if detected_language.confidence < 0.6:
         return text_to_translate
