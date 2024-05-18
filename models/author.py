@@ -11,7 +11,7 @@ class Author(db.Model):  # type: ignore[name-defined]
     id = db.Column("id", db.String, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     genres = db.Column(ARRAY(db.String), default=[])
-    biography = db.Column(db.String(150000), default="No biography")
+    biography = db.Column(db.String(15000), default="No biography")
     picture = db.Column(db.String(200), default=0)
     fans_count = db.Column(db.Integer, default=0)
     fans = db.relationship(

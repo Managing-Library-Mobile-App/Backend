@@ -20,7 +20,7 @@ class Book(db.Model):  # type: ignore[name-defined]
         back_populates="released_books",
     )
     publishing_house = db.Column(db.String(200))
-    description = db.Column(db.String(150000), default=0)
+    description = db.Column(db.String(15000), default=0)
     genres = db.Column(ARRAY(db.String(1000)), default=[])
     picture = db.Column(
         db.String(200), default="https://demofree.sirv.com/nope-not-here.jpg?w=150"
