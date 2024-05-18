@@ -289,6 +289,7 @@ if __name__ == "__main__":
                         datetime.datetime.now()
                         - datetime.timedelta(days=random.randint(0, 20))
                     )
+                    db.session.commit()
                     break
                 except ValueError as e:
                     print(
