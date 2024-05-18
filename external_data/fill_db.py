@@ -7,7 +7,6 @@ import sys
 
 import httpcore
 import sqlalchemy
-from googletrans import Translator
 
 sys.path.insert(1, os.getcwd())
 
@@ -106,7 +105,6 @@ def filter_out_genres(genres: list[str]) -> list[str]:
 
 
 if __name__ == "__main__":
-    translator_google = Translator()
     with app.app_context():
         delete_tables(db)
 
@@ -129,18 +127,27 @@ if __name__ == "__main__":
         print("Filling Authors")
         for index, author_object in df_authors.iterrows():
             print(f"{index}/{df_authors.shape}")
-            db.session.add(
-                Author(
-                    id=author_object["id"],
-                    name=author_object["name"],
-                    biography=author_object["biography"],
-                    picture=author_object["picture"],
-                    website=author_object["website"],
-                    birth_date=author_object["birth_date"],
-                    death_date=author_object["death_date"],
+            try:
+                db.session.add(
+                    Author(
+                        id=author_object["id"],
+                        name=author_object["name"],
+                        biography=author_object["biography"],
+                        picture=author_object["picture"],
+                        website=author_object["website"],
+                        birth_date=author_object["birth_date"],
+                        death_date=author_object["death_date"],
+                    )
                 )
-            )
-            db.session.commit()
+                db.session.commit()
+            except sqlalchemy.exc.DataError as e:
+                db.session.rollback()
+                print(f"DataError, probably length issue for index {index}.")
+            except Exception as e:
+                db.session.rollback()
+                print(
+                    f"Unhandled error, probably data duplicates for index {index}. Error code: {e}"
+                )
 
         print("Authors filled")
         print("Filling Books")
@@ -199,6 +206,9 @@ if __name__ == "__main__":
                 print(
                     f"DB SESSION ERROR, probably id or isbn not unique for index {index}."
                 )
+            except sqlalchemy.exc.DataError as e:
+                db.session.rollback()
+                print(f"DataError, probably length issue for index {index}.")
             except Exception as e:
                 db.session.rollback()
                 print(
@@ -224,7 +234,7 @@ if __name__ == "__main__":
                 while True:
                     try:
                         author_object.biography = translate_any_to_known(
-                            author_object.biography, "pl", translator_google
+                            author_object.biography, "pl"
                         )
                         break
                     except ValueError as e:
@@ -253,7 +263,7 @@ if __name__ == "__main__":
             while True:
                 try:
                     book_object.description = translate_any_to_known(
-                        book_object.description, "pl", translator_google
+                        book_object.description, "pl"
                     )
                     break
                 except ValueError as e:
