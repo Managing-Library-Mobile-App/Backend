@@ -21,6 +21,9 @@ class User(Resource):
         per_page: int = request.args.get("per_page", 8, type=int)
         language: str = request.args.get("language", type=str)  # optional
         user_id: int = request.args.get("id", type=int)  # optional
+        opinions_count_ge: int = request.args.get(
+            "opinions_count_ge", type=int
+        )  # optional
         username: str = request.args.get("username", type=str)  # optional
         get_self: bool = request.args.get("get_self", type=bool)  # optional
         sorts: str = request.args.get("sorts", "username", type=str)
@@ -35,6 +38,10 @@ class User(Resource):
             user_query = user_query.filter(user.User.email == email)
         if user_id:
             user_query = user_query.filter(user.User.id == user_id)
+        if opinions_count_ge:
+            user_query = user_query.filter(
+                user.User.opinions_count >= opinions_count_ge
+            )
 
         for sort in sorts.split(","):
             if sort.startswith("-"):
