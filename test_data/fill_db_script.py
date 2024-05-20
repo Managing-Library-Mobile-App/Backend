@@ -44,7 +44,7 @@ def create_admins_users_opinions_in_db(db: SQLAlchemy):
 
         for book_object in book_objects:
             if random.randint(0, 1) == 0:
-                stars_count = random.randint(1, 5)
+                stars_count = random.randint(4, 5)
                 db.session.add(
                     Opinion(
                         user_id=new_user.id,

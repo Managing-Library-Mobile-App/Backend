@@ -45,6 +45,7 @@ class SimilarBooks(Resource):
                     genres_with_count[genre] += 1
 
         genre_with_highest_count = None
+        book_ids_list = []
 
         for genre, count in genres_with_count.items():
             if not genre_with_highest_count:
@@ -88,21 +89,17 @@ class SimilarBooks(Resource):
                 book.Book.genres.any(genre_with_highest_count_all_users)
             )
 
-        similar_books_max_count = 10
-        if len(similar_book_objects.all()) >= similar_books_max_count:
-            opinions_count_field = getattr(book.Book, "opinions_count")
-            premiere_date_field = getattr(book.Book, "premiere_date")
+        similar_book_objects = similar_book_objects.filter(
+            book.Book.id.notin_(book_ids_list)
+        )
 
-            similar_book_objects = similar_book_objects.filter(book.Book.score > 4)
-            similar_book_objects = similar_book_objects.order_by(
-                desc(opinions_count_field)
-            )
-            similar_book_objects = similar_book_objects.order_by(
-                desc(premiere_date_field)
-            )
-            similar_book_objects = similar_book_objects.all()[:similar_books_max_count]
-        else:
-            similar_book_objects = similar_book_objects.all()
+        similar_books_max_count = 10
+        similar_book_objects = similar_book_objects.filter(book.Book.score > 4)
+        opinions_count_field = getattr(book.Book, "opinions_count")
+        premiere_date_field = getattr(book.Book, "premiere_date")
+        similar_book_objects = similar_book_objects.order_by(desc(opinions_count_field))
+        similar_book_objects = similar_book_objects.order_by(desc(premiere_date_field))
+        similar_book_objects = similar_book_objects.all()[:similar_books_max_count]
         return create_response(
             BOOKS_RESPONSE,
             {
