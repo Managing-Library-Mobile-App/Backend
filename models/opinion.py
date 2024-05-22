@@ -61,5 +61,5 @@ class Opinion(db.Model):  # type: ignore[name-defined]
             "book_id": self.book_id,
             "stars_count": self.stars_count,
             "comment": self.comment,
-            "modified_date": self.date.strftime("%d-%m-%Y"),
+            "modified_date": self.modified_date.strftime("%d-%m-%Y"),
         }

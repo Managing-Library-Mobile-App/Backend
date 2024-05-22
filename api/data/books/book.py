@@ -101,7 +101,7 @@ class Book(Resource):
                 *[book.Book.genres.any(genre) for genre in genres]
             )
         if title:
-            book_query = book_query.filter(book.Book.title.contains(title))
+            book_query = book_query.filter(book.Book.title.ilike(f"%{title}%"))
         if authors:
             book_query = book_query.filter(
                 *[book.Book.authors.any(author_id) for author_id in authors]
