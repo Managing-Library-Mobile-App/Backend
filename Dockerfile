@@ -5,4 +5,5 @@ RUN pip install -r requirements.txt
 EXPOSE 5000
 ARG DB_TYPE
 ENV DB_TYPE_ENV=$DB_TYPE
+EXPOSE 5000
 CMD python app.py $DB_TYPE_ENV

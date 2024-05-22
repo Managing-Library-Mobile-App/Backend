@@ -2,17 +2,16 @@ version: '3.8'
 
 services:
   prometheus:
-    image: prom/prometheus:v2.14.0
-    restart: 'no'
+    image: prom/prometheus:latest
     volumes:
-      - prometheus_data:/prometheus
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
     depends_on:
-     - flask
+      - flask
 
   grafana:
+    container_name: grafana
     image: grafana/grafana
     environment:
       GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource"
@@ -25,6 +24,7 @@ services:
       - prometheus
 
   flask:
+    container_name: flask
     build:
       context: .
       dockerfile: Dockerfile
