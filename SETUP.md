@@ -45,6 +45,10 @@ Check if your server/database has the same attributes as in the .env file
 To run the app using docker, use:
 $env:DB_TYPE="prod"; docker-compose up --build
 
+# DOCKER SETUP FOR DEVELOPMENT
+To run the app using docker, use:
+$env:DB_TYPE="dev"; docker-compose up --build
+
 # DOCKER SETUP FOR E2E TESTS
 To run the app using docker, use:
 $env:DB_TYPE="e2e_tests"; docker-compose up --build
