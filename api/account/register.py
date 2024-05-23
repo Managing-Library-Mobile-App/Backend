@@ -52,14 +52,16 @@ class Register(Resource):
 
         if user_already_exists:
             return create_response(USER_ALREADY_EXISTS_RESPONSE, language=language)
-
-        new_user: User = User(username=username, password=password, email=email)
-        db.session.add(new_user)
-        db.session.commit()
-        new_user_library: Library = Library(
-            read_books=[], bought_books=[], favourite_books=[], user_id=new_user.id
-        )
-        db.session.add(new_user_library)
-        db.session.commit()
+        try:
+            new_user: User = User(username=username, password=password, email=email)
+            db.session.add(new_user)
+            db.session.commit()
+            new_user_library: Library = Library(
+                read_books=[], bought_books=[], favourite_books=[], user_id=new_user.id
+            )
+            db.session.add(new_user_library)
+            db.session.commit()
+        except:
+            return create_response(USER_ALREADY_EXISTS_RESPONSE, language=language)
 
         return create_response(REGISTER_SUCCESSFUL_RESPONSE, language=language)
