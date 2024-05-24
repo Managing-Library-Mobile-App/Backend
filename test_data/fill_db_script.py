@@ -31,37 +31,79 @@ def create_admins_users_opinions_in_db(db: SQLAlchemy):
         db.session.add(new_user)
         db.session.commit()
 
-        book_objects: list[book.Book] = book.Book.query.limit(100).all()
+        book_objects: list[book.Book] = []
+        genres = [
+            "Fantasy, Science fiction",
+            "Thriller, Horror, Mystery and detective stories",
+            "Young Adult",
+            "Romance",
+            "History",
+            "Action & Adventure",
+            "Biography",
+            "Popular Science",
+            "Children's",
+            "Poetry, Plays",
+            "Comic books",
+            "Other",
+        ]
+        for genre in genres:
+            book_objects.extend(
+                book.Book.query.filter(book.Book.genres.any(genre)).limit(15).all()
+            )
 
         new_user_library: Library = Library(
-            read_books=[book_object.id for book_object in book_objects[:30]],
-            favourite_books=[book_object.id for book_object in book_objects[30:65]],
-            bought_books=[book_object.id for book_object in book_objects[65:100]],
+            read_books=[],
+            favourite_books=[],
+            bought_books=[],
             user_id=new_user.id,
         )
         db.session.add(new_user_library)
         db.session.commit()
 
+        for book_object in book_objects[:30]:
+            try:
+                new_user_library.add_read_book(book_object)
+                db.session.commit()
+            except:
+                logger.error(f"Book already in library")
+        for book_object in book_objects[30:60]:
+            try:
+                new_user_library.add_bought_book(book_object)
+                db.session.commit()
+            except:
+                logger.error(f"Book already in library")
+        for book_object in book_objects[60:90]:
+            try:
+                new_user_library.add_favourite_book(book_object)
+                db.session.commit()
+            except:
+                logger.error(f"Book already in library")
+                db.session.rollback()
+
         for book_object in book_objects:
             if random.randint(0, 1) == 0:
                 stars_count = random.randint(4, 5)
-                db.session.add(
-                    Opinion(
-                        user_id=new_user.id,
-                        book_id=book_object.id,
-                        stars_count=stars_count,
-                        comment="Very bad book"
-                        if stars_count == 1
-                        else "Bad book"
-                        if stars_count == 2
-                        else "Neutral book"
-                        if stars_count == 3
-                        else "Good book"
-                        if stars_count == 4
-                        else "Very good book",
+                try:
+                    db.session.add(
+                        Opinion(
+                            user_id=new_user.id,
+                            book_id=book_object.id,
+                            stars_count=stars_count,
+                            comment="Very bad book"
+                            if stars_count == 1
+                            else "Bad book"
+                            if stars_count == 2
+                            else "Neutral book"
+                            if stars_count == 3
+                            else "Good book"
+                            if stars_count == 4
+                            else "Very good book",
+                        )
                     )
-                )
-                db.session.commit()
+                    db.session.commit()
+                except:
+                    logger.error(f"Opinion already exists")
+                    db.session.rollback()
     print("Users and opinions created")
 
 
