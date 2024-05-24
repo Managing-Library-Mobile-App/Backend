@@ -63,44 +63,54 @@ limiter.init_app(app)
 def filter_out_genres(genres: list[str]) -> list[str]:
     filtered_genres = []
     for genre in genres:
-        if genre in [
-            "Science fiction",
-            "Fantasy",
-        ]:
-            filtered_genres.append("Fantasy, Science Fiction")
-        if genre in ["Thriller", "Horror", "Mystery and detective stories"]:
+        genre = genre.lower()
+        if "science fiction" in genre or "fantasy" in genre or "fiction" in genre:
+            filtered_genres.append("Fantasy, Science fiction")
+        if (
+            "thriller" in genre
+            or "horror" in genre
+            or "mystery" in genre
+            or "detective" in genre
+        ):
             filtered_genres.append("Thriller, Horror, Mystery and detective stories")
-        if genre in ["Young Adult"]:
+        if "adult" in genre:
             filtered_genres.append("Young Adult")
-        if genre in ["Romance"]:
+        if "romance" in genre:
             filtered_genres.append("Romance")
-        if genre in [
-            "History",
-            "Ancient Civilization",
-            "Archaeology",
-            "Anthropology",
-            "World War II",
-            "Social Life and Customs",
-        ]:
+        if (
+            "history" in genre
+            or "civilization" in genre
+            or "ancient" in genre
+            or "archaeology" in genre
+            or "anthropology" in genre
+            or "world War II" in genre
+            or "customs" in genre
+            or "life" in genre
+        ):
             filtered_genres.append("History")
-        if genre in ["Action & Adventure"]:
+        if "action" in genre or "adventure" in genre:
             filtered_genres.append("Action & Adventure")
-        if genre in ["Biography"]:
+        if "biography" in genre:
             filtered_genres.append("Biography")
-        if genre in [
-            "Science & Mathematics",
-            "Business & Finance",
-            "Social Sciences",
-            "Animals",
-            "Health & Wellness",
-        ]:
-            filtered_genres.append("Popular Science Literature")
-        if genre in ["Children's"]:
+        if (
+            "mathematics" in genre
+            or "science" in genre
+            or "business" in genre
+            or "finance" in genre
+            or "social" in genre
+            or "animals" in genre
+            or "wellness" in genre
+            or "health" in genre
+        ):
+            filtered_genres.append("Popular Science")
+        if "child" in genre:
             filtered_genres.append("Children's")
-        if genre in ["Poetry", "Plays"]:
+        if "poetry" in genre or "plays" in genre:
             filtered_genres.append("Poetry, Plays")
-        if genre in ["Comic Books"]:
-            filtered_genres.append("Comic Books")
+        if "comic" in genre or "cartoon" in genre or "caricature" in genre:
+            filtered_genres.append("Comic books")
+    if len(filtered_genres) == 0:
+        filtered_genres.append("Other")
     return filtered_genres
 
 

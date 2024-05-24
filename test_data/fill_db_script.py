@@ -31,7 +31,25 @@ def create_admins_users_opinions_in_db(db: SQLAlchemy):
         db.session.add(new_user)
         db.session.commit()
 
-        book_objects: list[book.Book] = book.Book.query.limit(100).all()
+        book_objects: list[book.Book] = []
+        genres = [
+            "Fantasy, Science fiction",
+            "Thriller, Horror, Mystery and detective stories",
+            "Young Adult",
+            "Romance",
+            "History",
+            "Action & Adventure",
+            "Biography",
+            "Popular Science",
+            "Children's",
+            "Poetry, Plays",
+            "Comic books",
+            "Other",
+        ]
+        for genre in genres:
+            book_objects.extend(
+                book.Book.query.filter(book.Book.genres.any(genre)).limit(15).all()
+            )
 
         new_user_library: Library = Library(
             read_books=[book_object.id for book_object in book_objects[:30]],
