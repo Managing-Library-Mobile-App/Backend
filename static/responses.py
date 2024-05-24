@@ -91,6 +91,10 @@ USER_NOT_FOUND_RESPONSE = {
     "message": "user_not_found",
     "details": "User not found",
 }, 404
+USER_OR_AUTHOR_NOT_FOUND_RESPONSE = {
+    "message": "user_or_author_not_found",
+    "details": "User or author not found",
+}, 404
 BOOK_NOT_FOUND_RESPONSE = {
     "message": "book_not_found",
     "details": "Book not found",
