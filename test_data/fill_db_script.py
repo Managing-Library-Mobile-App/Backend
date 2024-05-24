@@ -52,13 +52,33 @@ def create_admins_users_opinions_in_db(db: SQLAlchemy):
             )
 
         new_user_library: Library = Library(
-            read_books=[book_object.id for book_object in book_objects[:30]],
-            favourite_books=[book_object.id for book_object in book_objects[30:65]],
-            bought_books=[book_object.id for book_object in book_objects[65:100]],
+            read_books=[],
+            favourite_books=[],
+            bought_books=[],
             user_id=new_user.id,
         )
         db.session.add(new_user_library)
         db.session.commit()
+
+        for book_object in book_objects[:30]:
+            try:
+                new_user_library.add_read_book(book_object)
+                db.session.commit()
+            except:
+                logger.error(f"Book already in library")
+        for book_object in book_objects[30:60]:
+            try:
+                new_user_library.add_bought_book(book_object)
+                db.session.commit()
+            except:
+                logger.error(f"Book already in library")
+        for book_object in book_objects[60:90]:
+            try:
+                new_user_library.add_favourite_book(book_object)
+                db.session.commit()
+            except:
+                logger.error(f"Book already in library")
+                db.session.rollback()
 
         for book_object in book_objects:
             if random.randint(0, 1) == 0:
@@ -82,9 +102,8 @@ def create_admins_users_opinions_in_db(db: SQLAlchemy):
                     )
                     db.session.commit()
                 except:
-                    logger.error(
-                        f"Opinion for user {new_user.id} and book {book_object.id} already exists"
-                    )
+                    logger.error(f"Opinion already exists")
+                    db.session.rollback()
     print("Users and opinions created")
 
 
