@@ -16,6 +16,7 @@ from static.responses import (
     USER_NOT_IN_FANS_RESPONSE,
     OBJECT_REMOVED_RESPONSE,
     AUTHORS_RESPONSE,
+    USER_OR_AUTHOR_NOT_FOUND_RESPONSE,
 )
 
 
@@ -159,14 +160,14 @@ class Fan(Resource):
             if user_object not in author_object.fans:
                 author_object.fans.append(user_object)
                 author_object.fans_count += 1
-                user_object.followed_authors += 1
+                user_object.followed_authors_count += 1
                 db.session.commit()
                 return create_response(
                     OBJECT_CREATED_RESPONSE, user_object.as_dict(), language=language
                 )
             else:
                 return create_response(USER_ALREADY_IN_FANS_RESPONSE, language=language)
-        return create_response(USER_NOT_FOUND_RESPONSE, language=language)
+        return create_response(USER_OR_AUTHOR_NOT_FOUND_RESPONSE, language=language)
 
     def delete(self) -> Response:
         args: dict = self.post_parser.parse_args()
@@ -188,7 +189,7 @@ class Fan(Resource):
             if user_object in author_object.fans:
                 author_object.fans.remove(user_object)
                 author_object.fans_count -= 1
-                user_object.followed_authors -= 1
+                user_object.followed_authors_count -= 1
                 db.session.commit()
                 return create_response(
                     OBJECT_REMOVED_RESPONSE, author_object.as_dict(), language=language
