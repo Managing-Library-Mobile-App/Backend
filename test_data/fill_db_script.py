@@ -63,23 +63,28 @@ def create_admins_users_opinions_in_db(db: SQLAlchemy):
         for book_object in book_objects:
             if random.randint(0, 1) == 0:
                 stars_count = random.randint(4, 5)
-                db.session.add(
-                    Opinion(
-                        user_id=new_user.id,
-                        book_id=book_object.id,
-                        stars_count=stars_count,
-                        comment="Very bad book"
-                        if stars_count == 1
-                        else "Bad book"
-                        if stars_count == 2
-                        else "Neutral book"
-                        if stars_count == 3
-                        else "Good book"
-                        if stars_count == 4
-                        else "Very good book",
+                try:
+                    db.session.add(
+                        Opinion(
+                            user_id=new_user.id,
+                            book_id=book_object.id,
+                            stars_count=stars_count,
+                            comment="Very bad book"
+                            if stars_count == 1
+                            else "Bad book"
+                            if stars_count == 2
+                            else "Neutral book"
+                            if stars_count == 3
+                            else "Good book"
+                            if stars_count == 4
+                            else "Very good book",
+                        )
                     )
-                )
-                db.session.commit()
+                    db.session.commit()
+                except:
+                    logger.error(
+                        f"Opinion for user {new_user.id} and book {book_object.id} already exists"
+                    )
     print("Users and opinions created")
 
 
