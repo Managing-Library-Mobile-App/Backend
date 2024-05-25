@@ -14,10 +14,10 @@ To run the app, two files are required in the static folder: cert.pem and key.pe
 They are not in the repository and need to be added manually as they cannot be exposed
 
 # CREATING JSON FILES FOR FILLING DB WITH DATA
-python ./external_data/author/txt_authors_to_json prod
-python ./external_data/author/txt_authors_to_json dev
-python ./external_data/books/txt_books_to_json prod
-python ./external_data/books/txt_books_to_json dev
+python ./external_data/author/txt_authors_to_json.py prod
+python ./external_data/author/txt_authors_to_json.py dev
+python ./external_data/books/txt_books_to_json.py prod
+python ./external_data/books/txt_books_to_json.py dev
 
 # FILLING DB WITH DATA
 python ./external_data/fill_db.py dev
