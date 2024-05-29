@@ -1,13 +1,15 @@
-# LOCAL REQUIREMENTS
+# LOCAL REQUIREMENTS THAT NEED TO BE INSTALLED BEFORE RUNNING THE APP
 Python 3.10
 Pip
+PostgreSQL
+GIT
 
-# CONTAINER REQUIREMENTS
+# REQUIREMENTS TO RUN THE APP IN A CONTAINER
 Docker (and Docker Desktop on Windows)
 
 # DOWNLOAD
-To download the application, use
-clone https://github.com/Managing-Library-Mobile-App/Backend.git
+To download the application, use:
+git clone https://github.com/Managing-Library-Mobile-App/Backend.git
 
 # REQUIRED SECRET FILES
 To run the app, two files are required in the static folder: cert.pem and key.pem
@@ -18,10 +20,6 @@ python ./external_data/author/txt_authors_to_json.py prod
 python ./external_data/author/txt_authors_to_json.py dev
 python ./external_data/books/txt_books_to_json.py prod
 python ./external_data/books/txt_books_to_json.py dev
-
-# FILLING DB WITH DATA
-python ./external_data/fill_db.py dev
-python ./external_data/fill_db.py prod
 
 
 # LOCAL SETUP
@@ -57,13 +55,20 @@ $env:DB_TYPE="e2e_tests"; docker-compose up --build
 To run the app using docker, use:
 $env:DB_TYPE="api_tests"; docker-compose up --build
 
-## ON LINUX USE DB_TYPE=prod
+# DOCKER SETUP WITH TEST DATA
+To run the app using docker, use:
+$env:DB_TYPE="test_data"; docker-compose up --build
+
+## ON LINUX USE DB_TYPE=prod instead of $env:DB_TYPE="test_data"
+
+# FILLING DB WITH DATA
+python ./external_data/fill_db.py dev
+python ./external_data/fill_db.py prod
 
 # APP USAGE
-You can access the api using an address: http://192.168:100.7:5000
-or locally using http://127.0.0.1:5000
-or using curl command in the terminal:
-curl http://192.168:100.7:5000
+You can access the api using the addresses that shows up in the terminal after running the app.
+http://127.0.0.1:5000 is the default link to access the app locally. The second access link is generated semi-randomly and
+can be used to access the app in the local network.
 
 # TESTS
 To run tests, go to the root of the project and use:
